@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
@@ -7,12 +8,17 @@ from scipy.signal import savgol_filter
 # ---------------------------------------------------------------------------
 # 0. Configuration
 # ---------------------------------------------------------------------------
+# Script/ and data/ are sibling folders under the repo root, so this works
+# regardless of the working directory the script is launched from.
+DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+
 # Point this at whichever VI extraction you want to run phenology on -
 # fluxnet_all_highlat_s2_indices.csv, fluxnet_all_highlat_hls_indices.csv, etc.
 # The script only needs a site_id, a date column, and one or more of the VI
 # columns below; missing columns are skipped automatically.
-INPUT_CSV = "fluxnet_all_highlat_hls_indices.csv"
-OUTPUT_CSV = "phenology_sos_eos_by_site_year_index.csv"
+INPUT_CSV = DATA_DIR / "fluxnet_all_highlat_hls_indices.csv"
+OUTPUT_CSV = DATA_DIR / "phenology_sos_eos_by_site_year_index.csv"
 
 VI_COLUMNS = ['NDVI', 'EVI', 'NIRv', 'ARI1', 'CRI1', 'PRI']
 

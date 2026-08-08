@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import numpy as np
 import pandas as pd
 from scipy.stats import pearsonr
@@ -6,11 +7,16 @@ from scipy.stats import pearsonr
 # ---------------------------------------------------------------------------
 # 0. Configuration
 # ---------------------------------------------------------------------------
-PHENOLOGY_CSV = "phenology_sos_eos_by_site_year_index.csv"          # prova_sigmoid_fit.py output
-DAILY_ZSCORE_CSV = "fluxnet_daily_with_disturbance_zscores.csv"     # prova_zscore_disturbance.py output
+# Script/ and data/ are sibling folders under the repo root, so this works
+# regardless of the working directory the script is launched from.
+DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-OUTPUT_SITEYEAR_CSV = "disturbance_sum_vs_delta_eos90_site_year.csv"
-OUTPUT_CORRELATION_CSV = "disturbance_eos90_correlation_by_site.csv"
+PHENOLOGY_CSV = DATA_DIR / "phenology_sos_eos_by_site_year_index.csv"          # prova_sigmoid_fit.py output
+DAILY_ZSCORE_CSV = DATA_DIR / "fluxnet_daily_with_disturbance_zscores.csv"     # prova_zscore_disturbance.py output
+
+OUTPUT_SITEYEAR_CSV = DATA_DIR / "disturbance_sum_vs_delta_eos90_site_year.csv"
+OUTPUT_CORRELATION_CSV = DATA_DIR / "disturbance_eos90_correlation_by_site.csv"
 
 ANOMALY_VARS = ['GPP', 'stress']  # must match the prefixes used in prova_zscore_disturbance.py
 

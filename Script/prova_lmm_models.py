@@ -1,5 +1,6 @@
 import os
 import warnings
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import statsmodels.formula.api as smf
@@ -8,17 +9,22 @@ from scipy.stats import chi2
 # ---------------------------------------------------------------------------
 # 0. Configuration
 # ---------------------------------------------------------------------------
+# Script/ and data/ are sibling folders under the repo root, so this works
+# regardless of the working directory the script is launched from.
+DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+
 # Response variables: from prova_sigmoid_fit.py output. Each row there is one
 # (site_id, year, vi_index) combination, so the same environmental/biological/
 # biomass predictors get tested against phenology derived from every VI
 # separately (NDVI, EVI, NIRv, ARI1, CRI1 - Hypotheses 1-4).
-PHENOLOGY_CSV = "phenology_sos_eos_by_site_year_index.csv"
+PHENOLOGY_CSV = DATA_DIR / "phenology_sos_eos_by_site_year_index.csv"
 
 # Daily FLUXNET table (prova_fluxent_data.py output) - source of environmental
 # predictors (Tair, VPD, ...). NOTE: precipitation (P_F) is not currently
 # pulled by prova_fluxent_data.py's TARGET_MAPPING - add it there first if
 # you want a precipitation term; it is silently skipped below if absent.
-FLUX_CSV = "fluxnet_daily_selected_vars.csv"
+FLUX_CSV = DATA_DIR / "fluxnet_daily_selected_vars.csv"
 
 # Site-year table of "biological" (canopy N, chlorophyll, PRI, water status)
 # and "biomass" (GEDI/ICESat-2 height or S1 3D volume) predictors. This file
@@ -26,10 +32,10 @@ FLUX_CSV = "fluxnet_daily_selected_vars.csv"
 # ready. Expected columns: site_id, year, plus whichever of BIO_PREDICTORS /
 # BIOMASS_PREDICTORS below you have available. The script degrades
 # gracefully (Model 1 only) if the file or specific columns are missing.
-BIO_BIOMASS_CSV = "site_year_biological_biomass_predictors.csv"
+BIO_BIOMASS_CSV = DATA_DIR / "site_year_biological_biomass_predictors.csv"
 
-OUTPUT_SUMMARY_CSV = "lmm_model_comparison_summary.csv"
-OUTPUT_COEF_CSV = "lmm_fixed_effects_coefficients.csv"
+OUTPUT_SUMMARY_CSV = DATA_DIR / "lmm_model_comparison_summary.csv"
+OUTPUT_COEF_CSV = DATA_DIR / "lmm_fixed_effects_coefficients.csv"
 
 RESPONSE_VARS = ['EOS10', 'growing_season_length']
 GROUP_COL = 'site_id'

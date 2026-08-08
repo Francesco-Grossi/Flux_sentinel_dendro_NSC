@@ -2,6 +2,15 @@ import ee
 import pandas as pd
 import time
 import os
+from pathlib import Path
+
+# ---------------------------------------------------------------------------
+# 0. Repo-relative paths
+# ---------------------------------------------------------------------------
+# Script/ and data/ are sibling folders under the repo root, so this works
+# regardless of the working directory the script is launched from.
+DATA_DIR = Path(__file__).resolve().parent.parent / "Data"
+DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 # ---------------------------------------------------------------------------
 # 1. Initialize Earth Engine
@@ -24,7 +33,7 @@ except Exception:
 # ---------------------------------------------------------------------------
 CUTOFF_YEAR = 2013
 
-flux_file = "fluxnet_daily_selected_vars.csv"
+flux_file = DATA_DIR / "fluxnet_daily_selected_vars.csv"
 if not os.path.exists(flux_file):
     raise FileNotFoundError(f"Missing '{flux_file}'. Run 1_download_fluxnet_daily.py first!")
 
@@ -155,7 +164,7 @@ def make_s30_mapper(roi):
 # ---------------------------------------------------------------------------
 # 4. HLS Extraction Loop
 # ---------------------------------------------------------------------------
-output_csv = "fluxnet_all_highlat_hls_indices.csv"
+output_csv = DATA_DIR / "fluxnet_all_highlat_hls_indices.csv"
 if os.path.exists(output_csv):
     os.remove(output_csv)
 
@@ -166,13 +175,16 @@ def extract_hls_site(site_id, lat, lon, radius_m=500, start_date='2013-01-01', e
     point = ee.Geometry.Point([lon, lat])
     roi = point.buffer(radius_m)
 
-    l30_col = (ee.ImageCollection('NASA/HLS/HLSL30/v2.0')
+    # NOTE: Earth Engine re-registered these collections under the 'v002'
+    # suffix (the old 'v2.0' asset IDs no longer resolve and raise
+    # "ImageCollection asset ... not found").
+    l30_col = (ee.ImageCollection('NASA/HLS/HLSL30/v002')
                .filterBounds(roi)
                .filterDate(start_date, end_date)
                .filter(ee.Filter.lt('CLOUD_COVERAGE', CLOUD_COVERAGE_MAX))
                .map(make_l30_mapper(roi)))
 
-    s30_col = (ee.ImageCollection('NASA/HLS/HLSS30/v2.0')
+    s30_col = (ee.ImageCollection('NASA/HLS/HLSS30/v002')
                .filterBounds(roi)
                .filterDate(start_date, end_date)
                .filter(ee.Filter.lt('CLOUD_COVERAGE', CLOUD_COVERAGE_MAX))

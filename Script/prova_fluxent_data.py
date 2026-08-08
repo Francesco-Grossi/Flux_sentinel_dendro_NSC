@@ -3,7 +3,17 @@ import re
 import sys
 import glob
 import zipfile
+from pathlib import Path
 import pandas as pd
+
+# ---------------------------------------------------------------------------
+# 0. Repo-relative paths
+# ---------------------------------------------------------------------------
+# Script/ and data/ are sibling folders under the repo root, so this works
+# regardless of the working directory the script is launched from.
+DATA_DIR = Path(__file__).resolve().parent.parent / "Data"
+DATA_DIR_RAW = Path(__file__).resolve().parent.parent / "Data_raw"
+DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 # ---------------------------------------------------------------------------
 # 1. Import fluxnet_shuttle
@@ -76,8 +86,9 @@ MIN_LAT = 30.0
 # record either way).
 CUTOFF_YEAR = 2013
 
-DOWNLOAD_DIR = "./fluxnet_zips"
-OUTPUT_CSV = "fluxnet_daily_selected_vars.csv"
+# All downloaded archives and derived outputs live under data/ (processed data).
+DOWNLOAD_DIR = DATA_DIR_RAW 
+OUTPUT_CSV = DATA_DIR / "fluxnet_daily_selected_vars.csv"
 
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
@@ -85,7 +96,7 @@ os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 # 3. Query Master Catalog & Filter Sites > 30°N
 # ---------------------------------------------------------------------------
 print("Generating global FLUXNET site snapshot...")
-latest_snapshot = listall(output_dir=".")
+latest_snapshot = listall(output_dir=str(DATA_DIR))
 print(f"Catalog generated: {latest_snapshot}")
 
 df_catalog = pd.read_csv(latest_snapshot)
@@ -147,7 +158,7 @@ if sites_to_download:
     download(
         site_ids=sites_to_download,
         snapshot_file=latest_snapshot,
-        output_dir=DOWNLOAD_DIR
+        output_dir=str(DOWNLOAD_DIR)
     )
 else:
     print("All target sites already downloaded - skipping download step entirely.")

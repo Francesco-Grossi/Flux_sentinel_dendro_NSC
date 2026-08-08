@@ -1,15 +1,21 @@
 import os
+from pathlib import Path
 import numpy as np
 import pandas as pd
 
 # ---------------------------------------------------------------------------
 # 0. Configuration
 # ---------------------------------------------------------------------------
-FLUX_CSV = "fluxnet_daily_selected_vars.csv"
+# Script/ and data/ are sibling folders under the repo root, so this works
+# regardless of the working directory the script is launched from.
+DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+FLUX_CSV = DATA_DIR / "fluxnet_daily_selected_vars.csv"
 # Output stays at daily resolution: the original FLUXNET table with the new
 # z-score columns appended (no site-year aggregation/summing here - that
 # happens downstream, e.g. per-window in whatever correlates against EOS10).
-OUTPUT_DAILY_CSV = "fluxnet_daily_with_disturbance_zscores.csv"
+OUTPUT_DAILY_CSV = DATA_DIR / "fluxnet_daily_with_disturbance_zscores.csv"
 
 # Which FLUXNET columns count as "flux" (GPP) and "stress" for this analysis.
 # Add more entries here (e.g. 'GPP_DT': 'GPP_DT_VUT_REF', 'temp_stress':
