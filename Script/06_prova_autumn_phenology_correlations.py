@@ -22,7 +22,10 @@ OUTPUT_CORR_CSV = DATA_DIR / "autumn_phenology_correlations.csv"
 VI_INDICES = ['NDVI', 'NIRv']
 
 # The 4 parameters describing autumn/senescence phenology (script 5 output).
-AUTUMN_PARAMS = ['senescence_10', 'senescence_50', 'senescence_90', 'senescence_kinetic_i']
+# Ordered chronologically (EOS90 = earliest, near peak/early decline ->
+# EOS10 = latest, near dormancy), mirroring how leaf_out_10/50/90 progresses
+# forward through spring.
+AUTUMN_PARAMS = ['EOS90', 'EOS50', 'EOS10', 'senescence_kinetic_i']
 
 # The 4 parameters describing spring/green-up phenology (script 5 output) -
 # one of the predictor groups each autumn parameter is compared against.
@@ -143,7 +146,15 @@ records = []
 for _, row in pheno.iterrows():
     site_id, year = row['site_id'], int(row['year'])
     sos10, sos50 = row.get('leaf_out_10'), row.get('leaf_out_50')
-    eos50, eos90 = row.get('senescence_50'), row.get('senescence_90')
+    # EOS50 is the same point under either convention (50% lost = 50%
+    # remaining), so it's a direct read. For the "end of growing season"
+    # boundary used in the GPP/RECO window sums below, that's the point
+    # where the canopy is nearly dormant - under the standard EOS
+    # convention (EOS90 = still 90% green/early decline, EOS10 = down to
+    # 10%/near-dormant), that's EOS10, NOT EOS90. Using EOS90 here would
+    # wrongly truncate the window right after the onset of decline instead
+    # of covering the full active season.
+    eos50, eos_end_of_season = row.get('EOS50'), row.get('EOS10')
 
     growing_season_length = (eos50 - sos50) if pd.notna(eos50) and pd.notna(sos50) else np.nan
     sol_doy = solstice_doy(year)
@@ -153,12 +164,12 @@ for _, row in pheno.iterrows():
     rec['growing_season_length'] = growing_season_length
 
     for var_name in FLUX_VARS:
-        rec[f'total_{var_name}_growing_season'] = sum_flux_var(var_name, site_id, year, sos10, eos90)
+        rec[f'total_{var_name}_growing_season'] = sum_flux_var(var_name, site_id, year, sos10, eos_end_of_season)
         # Only GPP gets split into the pre-/post-solstice sub-windows for
         # now - RECO is added as a single growing-season total predictor.
         if var_name == 'gpp':
             rec[f'{var_name}_sos10_to_solstice'] = sum_flux_var(var_name, site_id, year, sos10, sol_doy)
-            rec[f'{var_name}_solstice_to_eos90'] = sum_flux_var(var_name, site_id, year, sol_doy, eos90)
+            rec[f'{var_name}_solstice_to_eos10'] = sum_flux_var(var_name, site_id, year, sol_doy, eos_end_of_season)
 
     records.append(rec)
 
@@ -172,7 +183,7 @@ print(f"Site-year-index predictor table written to '{OUTPUT_SITEYEAR_CSV}' ({len
 # Predictors: the 4 spring parameters, growing-season length (EOS50-SOS50),
 # the 3 GPP-based sub-window metrics, and total RECO over the growing
 # season as a single additional predictor.
-FLUX_PREDICTORS = ['total_gpp_growing_season', 'gpp_sos10_to_solstice', 'gpp_solstice_to_eos90',
+FLUX_PREDICTORS = ['total_gpp_growing_season', 'gpp_sos10_to_solstice', 'gpp_solstice_to_eos10',
                     'total_reco_growing_season']
 
 PREDICTORS = SPRING_PARAMS + ['growing_season_length'] + FLUX_PREDICTORS

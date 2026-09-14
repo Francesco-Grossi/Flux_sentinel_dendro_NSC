@@ -23,8 +23,10 @@ PHYSICAL_BOUNDS = {'NDVI': (-1, 1), 'EVI': (-1, 1), 'NIRv': (-1, 1)}
 MIN_POINTS_FOR_FIT = 12   # double-logistic has 6 free params; need real margin over that
 MIN_VALID_FRAC = 0.5      # QC floor on Fmask-derived clear-pixel fraction
 
-# Percentiles requested for each phase, as % of the seasonal amplitude
-# gained (green-up) / lost (senescence).
+# Percentiles for each phase, as % of the seasonal amplitude (vmin->vmax):
+# leaf_out_X = curve has risen TO X% (SOS-X convention); EOS_X = curve is
+# AT X% on the falling limb (standard Zhang/TIMESAT convention - EOS90 is
+# early decline/still mostly green, EOS10 is late decline/near dormancy).
 PERCENTILES = [10, 50, 90]
 
 if not os.path.exists(INPUT_CSV):
@@ -209,14 +211,16 @@ for gi, ((site_id, year), group) in enumerate(site_years, start=1):
             peak_doy = float(t_grid[np.argmax(y_grid)])
 
             # Green-up (leaf-out) percentiles: DOY at which the curve has
-            # risen to X% of its seasonal amplitude.
+            # risen to X% of its seasonal amplitude (SOS-X convention).
             leafout = {p: crossing_doy(t_grid, y_grid, p / 100.0, rising=True) for p in PERCENTILES}
-            # Senescence percentiles: DOY at which the curve has fallen to
-            # (100 - X)% of its amplitude remaining, i.e. X% of the
-            # amplitude has been lost. senescence_10 = early decline (only
-            # 10% lost), senescence_90 = late decline / near dormancy (90%
-            # lost) - mirrors the green-up definition above.
-            senescence = {p: crossing_doy(t_grid, y_grid, 1.0 - p / 100.0, rising=False) for p in PERCENTILES}
+            # EOS-X percentiles (standard Zhang/TIMESAT convention): DOY on
+            # the falling limb where the curve's VALUE is X% of the way
+            # from vmin to vmax - i.e. EOS90 is where the curve is STILL AT
+            # 90% (early decline, canopy still mostly green), and EOS10 is
+            # where the curve has fallen DOWN TO 10% (late decline, near
+            # dormancy). Same crossing_doy(frac_target=X/100) call as
+            # leaf-out, just on the falling side - no inversion.
+            eos = {p: crossing_doy(t_grid, y_grid, p / 100.0, rising=False) for p in PERCENTILES}
 
             gu_r2, gu_rmse, gu_corr = segment_fit_metrics(doy_all, vi_all, popt, peak_doy, rising=True)
             se_r2, se_rmse, se_corr = segment_fit_metrics(doy_all, vi_all, popt, peak_doy, rising=False)
@@ -230,7 +234,7 @@ for gi, ((site_id, year), group) in enumerate(site_years, start=1):
                 'greenup_corr': gu_corr, 'greenup_rmse': gu_rmse,
                 'leaf_out_10': leafout[10], 'leaf_out_50': leafout[50], 'leaf_out_90': leafout[90],
                 'senescence_corr': se_corr, 'senescence_rmse': se_rmse,
-                'senescence_10': senescence[10], 'senescence_50': senescence[50], 'senescence_90': senescence[90],
+                'EOS10': eos[10], 'EOS50': eos[50], 'EOS90': eos[90],
             })
         else:
             # No double-logistic curve could be fit (too few points or the
@@ -247,7 +251,7 @@ for gi, ((site_id, year), group) in enumerate(site_years, start=1):
                 'greenup_corr': np.nan, 'greenup_rmse': np.nan,
                 'leaf_out_10': np.nan, 'leaf_out_50': np.nan, 'leaf_out_90': np.nan,
                 'senescence_corr': np.nan, 'senescence_rmse': np.nan,
-                'senescence_10': np.nan, 'senescence_50': np.nan, 'senescence_90': np.nan,
+                'EOS10': np.nan, 'EOS50': np.nan, 'EOS90': np.nan,
             })
 
         results.append(row)
