@@ -36,6 +36,11 @@ MIN_COVERAGE_FRAC = 0.7   # a window's GPP sum is only trusted if at least
 MIN_PAIRS_FOR_CORR = 10   # minimum non-NaN (window-sum, autumn-param) pairs
                            # required before a correlation is computed
 
+# Quality gate on the Landsat phenology curve fit itself - see script 6 for
+# the same rationale (a poorly-fit curve's percentile crossings aren't
+# trustworthy regardless of how strong a correlation they end up in).
+MIN_FIT_CORR = 0.8
+
 if not os.path.exists(PHENOLOGY_CSV):
     raise FileNotFoundError(f"Missing '{PHENOLOGY_CSV}'. Run the double-logistic phenology script first.")
 if not os.path.exists(FLUX_CSV):
@@ -46,7 +51,9 @@ if not os.path.exists(FLUX_CSV):
 # 1. Load phenology results - only successful fits, only NDVI/NIRv
 # ---------------------------------------------------------------------------
 pheno = pd.read_csv(PHENOLOGY_CSV)
-pheno = pheno[pheno['vi_index'].isin(VI_INDICES) & (pheno['method'] == 'double_logistic')].copy()
+pheno = pheno[pheno['vi_index'].isin(VI_INDICES) & (pheno['method'] == 'double_logistic')
+              & (pheno['corr'] >= MIN_FIT_CORR)].copy()
+print(f"Phenology rows with successful fit and corr >= {MIN_FIT_CORR}: {len(pheno)}")
 pheno['year'] = pheno['year'].astype(int)
 
 # ---------------------------------------------------------------------------

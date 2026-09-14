@@ -98,13 +98,20 @@ print(f"Saved '{out_path}'.")
 # ---------------------------------------------------------------------------
 # 3. Separation plot - 2D projection of the clustering feature space,
 #    colored by cluster, so you can see how distinct the 8 groups actually
-#    are (tight, well-separated blobs vs. overlapping clusters).
+#    are (tight, well-separated blobs vs. overlapping clusters). Drought
+#    site-years (from the clustering script's within-site precip/VPD
+#    anomaly flag) are additionally ringed in black, since they're an
+#    explicit feature in the clustering now, not just incidentally captured.
 # ---------------------------------------------------------------------------
 if not os.path.exists(PROJECTION_CSV):
     print(f"\nNote: '{PROJECTION_CSV}' not found - skipping the separation plot. "
           "Re-run the climate-clustering script to generate it.")
 else:
     proj_df = pd.read_csv(PROJECTION_CSV)
+    if 'is_drought' in clusters_df.columns:
+        proj_df = proj_df.merge(clusters_df[['site_id', 'year', 'is_drought']], on=['site_id', 'year'], how='left')
+    else:
+        proj_df['is_drought'] = False
 
     fig, ax = plt.subplots(figsize=(7, 6))
     for cluster_id in sorted(proj_df['climate_cluster'].unique()):
@@ -112,6 +119,12 @@ else:
         ax.scatter(member['pc1'], member['pc2'], color=colors[int(cluster_id)],
                    alpha=0.7, s=35, edgecolor='white', linewidth=0.4,
                    label=f'Cluster {cluster_id} (n={len(member)})')
+
+    drought_pts = proj_df[proj_df['is_drought'] == True]
+    if not drought_pts.empty:
+        ax.scatter(drought_pts['pc1'], drought_pts['pc2'], facecolors='none',
+                   edgecolors='black', linewidth=1.2, s=90,
+                   label=f'Drought site-year (n={len(drought_pts)})')
 
     ax.set_xlabel('PC1 (climate feature space)')
     ax.set_ylabel('PC2 (climate feature space)')

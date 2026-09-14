@@ -22,6 +22,7 @@ VI_COLORS = {'NDVI': '#2b6cb0', 'NIRv': '#38a169'}
 GPP_COLUMN = 'GPP_NT_VUT_REF'
 GPP_PLAUSIBLE_RANGE = (-5, 50)
 MIN_COVERAGE_FRAC = 0.7   # must match script 8's setting to reproduce the same window sums
+MIN_FIT_CORR = 0.8        # must match script 8's setting to reproduce the same site-year set
 
 for path in (PHENOLOGY_CSV, FLUX_CSV, BEST_CSV):
     if not os.path.exists(path):
@@ -35,7 +36,8 @@ for path in (PHENOLOGY_CSV, FLUX_CSV, BEST_CSV):
 #    "best window" row can be recomputed for plotting.
 # ---------------------------------------------------------------------------
 pheno = pd.read_csv(PHENOLOGY_CSV)
-pheno = pheno[pheno['vi_index'].isin(VI_INDICES) & (pheno['method'] == 'double_logistic')].copy()
+pheno = pheno[pheno['vi_index'].isin(VI_INDICES) & (pheno['method'] == 'double_logistic')
+              & (pheno['corr'] >= MIN_FIT_CORR)].copy()
 pheno['year'] = pheno['year'].astype(int)
 
 flux = pd.read_csv(FLUX_CSV)

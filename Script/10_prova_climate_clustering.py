@@ -4,6 +4,7 @@ import subprocess
 from pathlib import Path
 import numpy as np
 import pandas as pd
+from scipy.ndimage import uniform_filter1d
 
 try:
     from sklearn.decomposition import PCA
@@ -51,7 +52,26 @@ MIN_COMPLETENESS = 0.7
 # clustering on ~245 raw, highly autocorrelated daily values directly).
 PCA_VARIANCE_RETAINED = 0.90
 
-N_CLUSTERS = 4
+# Rolling-mean window (days) applied to each variable's daily curve before
+# PCA. Raw daily values carry a lot of weather noise (a random cold snap, a
+# rainy week) that has nothing to do with a site's climate TYPE - smoothing
+# keeps the seasonal shape (level, amplitude, timing) while damping that
+# noise, which is what the PCA components should actually be picking up on.
+SMOOTHING_WINDOW_DAYS = 15
+
+# Drought identification: rather than relying on the general clustering to
+# happen to isolate dry years, this computes an explicit per-site-year
+# drought signal and feeds it in as its own feature. Drought is fundamentally
+# a WITHIN-SITE anomaly (a dry year relative to THAT site's own normal), not
+# an absolute climate value - a raw precipitation total is dominated by
+# between-site geography (a desert site's "normal" dry season looks nothing
+# like a rainforest site's drought), so each site-year's precipitation and
+# VPD are z-scored against that same site's own multi-year mean/std before
+# being used. drought_index = vpd_anomaly_z - precip_anomaly_z: positive
+# means drier and more atmospheric water demand than that site's own norm.
+DROUGHT_THRESHOLD = 1.0  # drought_index >= this -> flagged as a drought site-year
+
+N_CLUSTERS = 8
 RANDOM_STATE = 42
 
 if not os.path.exists(FLUX_CSV):
@@ -115,22 +135,86 @@ print(f"Site-years with >= {int(MIN_COMPLETENESS * 100)}% coverage in all 4 clim
 # Interpolate remaining small gaps (linear, within the growing-season
 # window only - no extrapolation past the window edges) for the kept
 # site-years, then stack into a (n_site_years, n_days) array per variable.
+# This RAW (unsmoothed) version is kept separately for the drought totals
+# below, which need actual daily values, not smoothed ones.
 clean_matrices = {}
 for var in CLIMATE_VARS:
     sub = var_matrices[var].loc[kept_keys]
     sub = sub.interpolate(axis=1, limit_direction='both')
     clean_matrices[var] = sub.to_numpy(dtype=float)
 
+# Smoothed version used for the shape-PCA below - a rolling mean removes
+# day-to-day weather noise while preserving the seasonal curve (level,
+# amplitude, timing), which is the actual "climate type" signal.
+# uniform_filter1d with mode='nearest' extends the edge value outward
+# rather than wrapping or zero-padding, avoiding an artificial dip/spike at
+# the start/end of the growing-season window.
+smoothed_matrices = {
+    var: uniform_filter1d(clean_matrices[var], size=SMOOTHING_WINDOW_DAYS, axis=1, mode='nearest')
+    for var in CLIMATE_VARS
+}
+
 # ---------------------------------------------------------------------------
-# 3. Per-variable PCA on the standardized daily curves - this is what
-#    encodes "the whole time series shape" (timing, amplitude, curve
+# 2b. Drought anomaly features - per-site-year precipitation and VPD,
+#     z-scored against EACH SITE'S OWN multi-year mean/std (not the global
+#     mean), so what's captured is "drier/more atmospheric demand than this
+#     site's own normal", not just "less rain than a wet site elsewhere".
+#     Sites with only one kept year have no within-site variability to
+#     compare against - their anomaly is set to 0 (can't tell if it was an
+#     unusual year without a baseline) rather than treated as neutral by
+#     assumption alone; they're also excluded from is_drought.
+# ---------------------------------------------------------------------------
+site_year_index = pd.DataFrame(kept_keys, columns=['site_id', 'year'])
+site_year_index['precip_total'] = clean_matrices['P_F'].sum(axis=1)
+site_year_index['vpd_mean'] = clean_matrices['VPD_F'].mean(axis=1)
+
+site_stats = site_year_index.groupby('site_id').agg(
+    precip_mean=('precip_total', 'mean'), precip_std=('precip_total', 'std'),
+    vpd_mean_mean=('vpd_mean', 'mean'), vpd_mean_std=('vpd_mean', 'std'),
+    n_years=('year', 'count'),
+)
+site_year_index = site_year_index.merge(site_stats, on='site_id', how='left')
+
+single_year_site = site_year_index['n_years'] <= 1
+n_single_year = int(single_year_site.sum())
+if n_single_year:
+    print(f"{n_single_year} site-year(s) belong to a site with only 1 kept year - "
+          "no within-site baseline exists, so their drought anomaly is set to 0 "
+          "(neutral) and they're excluded from the is_drought flag.")
+
+precip_std_safe = site_year_index['precip_std'].replace(0, np.nan)
+vpd_std_safe = site_year_index['vpd_mean_std'].replace(0, np.nan)
+site_year_index['precip_anomaly_z'] = (
+    (site_year_index['precip_total'] - site_year_index['precip_mean']) / precip_std_safe
+).fillna(0.0)
+site_year_index['vpd_anomaly_z'] = (
+    (site_year_index['vpd_mean'] - site_year_index['vpd_mean_mean']) / vpd_std_safe
+).fillna(0.0)
+site_year_index.loc[single_year_site, ['precip_anomaly_z', 'vpd_anomaly_z']] = 0.0
+
+# Positive = drier AND more atmospheric water demand than that site's own
+# norm - a simple proxy in the spirit of SPEI (precipitation deficit +
+# evaporative demand), using VPD in place of full potential
+# evapotranspiration since that's what's available from the tower.
+site_year_index['drought_index'] = site_year_index['vpd_anomaly_z'] - site_year_index['precip_anomaly_z']
+site_year_index['is_drought'] = (site_year_index['drought_index'] >= DROUGHT_THRESHOLD) & ~single_year_site
+
+n_drought = int(site_year_index['is_drought'].sum())
+print(f"Identified {n_drought} drought site-year(s) out of {len(site_year_index)} "
+      f"(drought_index >= {DROUGHT_THRESHOLD}).")
+
+drought_features = site_year_index[['precip_anomaly_z', 'vpd_anomaly_z']].to_numpy()
+
+# ---------------------------------------------------------------------------
+# 3. Per-variable PCA on the standardized, SMOOTHED daily curves - this is
+#    what encodes "the whole time series shape" (timing, amplitude, curve
 #    features) into a manageable number of features per variable, instead
 #    of reducing each variable to a single sum/mean.
 # ---------------------------------------------------------------------------
 pc_blocks = []
 pc_variable_labels = []
 for var in CLIMATE_VARS:
-    X = clean_matrices[var]
+    X = smoothed_matrices[var]
     X_scaled = StandardScaler().fit_transform(X)  # standardize each day-of-year column across site-years
     pca = PCA(n_components=PCA_VARIANCE_RETAINED, random_state=RANDOM_STATE)
     scores = pca.fit_transform(X_scaled)
@@ -139,11 +223,17 @@ for var in CLIMATE_VARS:
     print(f"{var}: {scores.shape[1]} PCs retained to explain "
           f"{pca.explained_variance_ratio_.sum() * 100:.1f}% of variance.")
 
+# Drought anomaly features are appended as their own block, unsmoothed and
+# already in a meaningful (within-site z-score) unit - they aren't run
+# through PCA since there are only 2 of them.
+pc_blocks.append(drought_features)
+pc_variable_labels += ['precip_anomaly_z', 'vpd_anomaly_z']
+
 combined_features = np.concatenate(pc_blocks, axis=1)
 # Re-standardize the combined feature set - PCA components from a variable
 # with more retained PCs (or larger raw variance) would otherwise dominate
-# the distance metric KMeans uses, even though each variable is meant to
-# contribute equally to what "similar climate" means here.
+# the distance metric KMeans uses, even though each variable (now including
+# the drought anomaly block) is meant to contribute comparably.
 combined_features_scaled = StandardScaler().fit_transform(combined_features)
 
 # ---------------------------------------------------------------------------
@@ -155,10 +245,14 @@ cluster_labels = kmeans.fit_predict(combined_features_scaled)
 clusters_df = pd.DataFrame(kept_keys, columns=['site_id', 'year'])
 clusters_df['climate_cluster'] = cluster_labels
 clusters_df = clusters_df.merge(site_meta, on='site_id', how='left')
+clusters_df = clusters_df.merge(
+    site_year_index[['site_id', 'year', 'precip_anomaly_z', 'vpd_anomaly_z', 'drought_index', 'is_drought']],
+    on=['site_id', 'year'], how='left'
+)
 clusters_df.to_csv(OUTPUT_CLUSTERS_CSV, index=False)
 
 print(f"\nCluster sizes:\n{clusters_df['climate_cluster'].value_counts().sort_index().to_string()}")
-print(f"\nSite-year cluster assignments written to '{OUTPUT_CLUSTERS_CSV}'.")
+print(f"\nSite-year cluster assignments (with drought flag) written to '{OUTPUT_CLUSTERS_CSV}'.")
 
 # ---------------------------------------------------------------------------
 # 4b. 2D projection for visualizing cluster separation. This is a SEPARATE,
@@ -187,7 +281,9 @@ print(f"2D cluster projection written to '{OUTPUT_CLUSTER_PROJECTION_CSV}'.")
 # ---------------------------------------------------------------------------
 # 5. Per-cluster mean daily curve for each variable - lets you actually
 #    interpret what each of the 8 groups' climate looks like (e.g. plot
-#    these later: warm/dry vs cool/wet vs high-radiation groups, etc.)
+#    these later: warm/dry vs cool/wet vs high-radiation groups, etc.).
+#    Uses the RAW (unsmoothed) curves so the reported means reflect actual
+#    observed values, not the smoothed curves used internally for PCA.
 # ---------------------------------------------------------------------------
 mean_rows = []
 for var in CLIMATE_VARS:

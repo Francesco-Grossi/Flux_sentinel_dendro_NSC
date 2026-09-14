@@ -36,6 +36,13 @@ SPRING_PARAMS = ['leaf_out_10', 'leaf_out_50', 'leaf_out_90', 'greenup_kinetic_i
 # site-years producing a meaningless "perfect" correlation.
 MIN_PAIRS_FOR_CORR = 5
 
+# Quality gate on the Landsat phenology curve fit itself - a site-year
+# whose double-logistic curve doesn't actually track its VI observations
+# well (whole-season corr, from the phenology script) shouldn't feed into
+# correlations about autumn timing, since the timing estimates it would
+# contribute (leaf_out_X, EOS_X) are themselves unreliable.
+MIN_FIT_CORR = 0.8
+
 # FLUXNET columns used for the flux-based predictors below, and the
 # physically plausible daily range (gC m-2 d-1) for each - anything outside
 # this range is almost certainly a leftover fill/sentinel value (e.g.
@@ -56,8 +63,15 @@ MIN_PAIRS_FOR_CORR = 5
 # heterotrophic respiration without additional chamber/biometric data or a
 # partitioning model), so it's intentionally not included here.
 FLUX_VARS = {
-    'gpp': {'column': 'GPP_NT_VUT_REF', 'plausible_range': (-5, 50)},
-    'reco': {'column': 'RECO_NT_VUT_REF', 'plausible_range': (-5, 40)},
+    'gpp': {'column': 'GPP_NT_VUT_REF', 'plausible_range': (-5, 50), 'agg': 'sum'},
+    'reco': {'column': 'RECO_NT_VUT_REF', 'plausible_range': (-5, 40), 'agg': 'sum'},
+    # Radiation and temperature are averaged rather than summed - a sum of
+    # degrees C or W/m^2 across a season isn't a physically meaningful
+    # quantity the way cumulative GPP/RECO is. Plausible ranges are generous
+    # daily bounds (W/m^2 for radiation, deg C for temperature) to catch
+    # leftover sentinel values without discarding genuine extremes.
+    'radiation': {'column': 'SW_IN_F', 'plausible_range': (0, 500), 'agg': 'mean'},
+    'temperature': {'column': 'TA_F', 'plausible_range': (-60, 50), 'agg': 'mean'},
 }
 
 if not os.path.exists(PHENOLOGY_CSV):
@@ -73,8 +87,10 @@ if not os.path.exists(FLUX_CSV):
 # double-logistic script), so they can't contribute to a correlation and
 # are dropped here rather than silently producing all-NaN pairs downstream.
 pheno = pd.read_csv(PHENOLOGY_CSV)
-pheno = pheno[pheno['vi_index'].isin(VI_INDICES) & (pheno['method'] == 'double_logistic')].copy()
-print(f"Phenology rows available for correlation (NDVI/NIRv, successful fits only): {len(pheno)}")
+pheno = pheno[pheno['vi_index'].isin(VI_INDICES) & (pheno['method'] == 'double_logistic')
+              & (pheno['corr'] >= MIN_FIT_CORR)].copy()
+print(f"Phenology rows available for correlation (NDVI/NIRv, successful fits only, "
+      f"corr >= {MIN_FIT_CORR}): {len(pheno)}")
 
 # ---------------------------------------------------------------------------
 # 2. Load daily FLUXNET data (full year, not just growing season), clean
@@ -98,8 +114,8 @@ for var_name, spec in FLUX_VARS.items():
     implausible = (flux[col] < lo) | (flux[col] > hi)
     n_implausible = int(implausible.sum())
     if n_implausible:
-        print(f"Excluding {n_implausible} implausible '{col}' value(s) outside [{lo}, {hi}] gC m-2 d-1 "
-              "(likely leftover fill/sentinel values) before summing.")
+        print(f"Excluding {n_implausible} implausible '{col}' value(s) outside [{lo}, {hi}] "
+              "(likely leftover fill/sentinel values) before aggregating.")
         flux.loc[implausible, col] = np.nan
 
     flux_lookups[var_name] = {
@@ -108,11 +124,11 @@ for var_name, spec in FLUX_VARS.items():
     }
 
 
-def sum_flux_var(var_name, site_id, year, doy_start, doy_end):
-    """Sum of a daily flux variable (GPP or RECO, per FLUX_VARS) over
-    [doy_start, doy_end] (inclusive) for one site-year. NaN if either
-    boundary is undefined, the window is inverted, or there's simply no
-    flux record for that site-year."""
+def agg_flux_var(var_name, site_id, year, doy_start, doy_end):
+    """Sum or mean (per FLUX_VARS[var_name]['agg']) of a daily flux
+    variable over [doy_start, doy_end] (inclusive) for one site-year. NaN
+    if either boundary is undefined, the window is inverted, or there's
+    simply no flux record for that site-year."""
     if pd.isna(doy_start) or pd.isna(doy_end) or doy_start > doy_end:
         return np.nan
     g = flux_lookups[var_name].get((site_id, year))
@@ -120,10 +136,11 @@ def sum_flux_var(var_name, site_id, year, doy_start, doy_end):
         return np.nan
     col = FLUX_VARS[var_name]['column']
     mask = (g['doy'] >= doy_start) & (g['doy'] <= doy_end)
-    vals = g.loc[mask, col]
-    if vals.dropna().empty:
+    vals = g.loc[mask, col].dropna()
+    if vals.empty:
         return np.nan
-    return float(vals.sum(skipna=True))
+    agg = FLUX_VARS[var_name]['agg']
+    return float(vals.sum()) if agg == 'sum' else float(vals.mean())
 
 
 def solstice_doy(year):
@@ -132,6 +149,44 @@ def solstice_doy(year):
     day depending on year/leap year, which a fixed calendar date already
     accounts for via dayofyear, unlike a hardcoded DOY like 172 would)."""
     return pd.Timestamp(year=year, month=6, day=21).dayofyear
+
+
+def photoperiod_hours(doy, lat_deg):
+    """Day length (hours) at a given latitude and day-of-year, via the
+    standard solar-declination approximation (ignores atmospheric
+    refraction/twilight, which shifts sunrise/sunset by only a few minutes -
+    negligible here). Returns NaN if doy or lat is missing; returns 24 or 0
+    for polar day/night rather than raising (the arccos argument is clipped
+    to [-1, 1]).
+
+    NOTE ON INTERPRETATION: when used as photoperiod_at_EOS90 (day length
+    on the DOY where the site's own curve reaches EOS90), this is computed
+    FROM one of the response variables (EOS90's DOY) rather than from an
+    independent driver - it isn't a predictor in the same sense as
+    temperature or GPP. What it actually tests is the classic "photoperiod
+    control" hypothesis in phenology: converting each site-year's raw
+    senescence DOY into the day length experienced at that moment, then
+    checking whether that value is more consistent (e.g. clusters near a
+    site- or species-specific threshold) than the raw DOY is across sites
+    spanning different latitudes. Correlating it against EOS90 itself will
+    trivially show a strong relationship (day length declines through
+    autumn) modulated by latitude; correlating it against the OTHER autumn
+    parameters (EOS50, EOS10, senescence_kinetic_i) or comparing its
+    variance across sites is more informative than the EOS90 correlation
+    alone.
+    """
+    if pd.isna(doy) or pd.isna(lat_deg):
+        return np.nan
+    lat_rad = np.radians(lat_deg)
+    declination_deg = -23.44 * np.cos(np.radians(360.0 / 365.0 * (doy + 10)))
+    declination_rad = np.radians(declination_deg)
+    cos_hour_angle = -np.tan(lat_rad) * np.tan(declination_rad)
+    cos_hour_angle = np.clip(cos_hour_angle, -1.0, 1.0)  # polar day/night
+    return float((24.0 / np.pi) * np.arccos(cos_hour_angle))
+
+
+# Site latitude lookup, for the photoperiod predictor below.
+site_lat = flux.groupby('site_id')['lat'].first().to_dict()
 
 
 # ---------------------------------------------------------------------------
@@ -164,12 +219,20 @@ for _, row in pheno.iterrows():
     rec['growing_season_length'] = growing_season_length
 
     for var_name in FLUX_VARS:
-        rec[f'total_{var_name}_growing_season'] = sum_flux_var(var_name, site_id, year, sos10, eos_end_of_season)
+        agg = FLUX_VARS[var_name]['agg']
+        label = 'total' if agg == 'sum' else 'mean'
+        rec[f'{label}_{var_name}_growing_season'] = agg_flux_var(var_name, site_id, year, sos10, eos_end_of_season)
         # Only GPP gets split into the pre-/post-solstice sub-windows for
-        # now - RECO is added as a single growing-season total predictor.
+        # now - RECO/radiation/temperature are added as a single
+        # growing-season summary predictor each.
         if var_name == 'gpp':
-            rec[f'{var_name}_sos10_to_solstice'] = sum_flux_var(var_name, site_id, year, sos10, sol_doy)
-            rec[f'{var_name}_solstice_to_eos10'] = sum_flux_var(var_name, site_id, year, sol_doy, eos_end_of_season)
+            rec[f'{var_name}_sos10_to_solstice'] = agg_flux_var(var_name, site_id, year, sos10, sol_doy)
+            rec[f'{var_name}_solstice_to_eos10'] = agg_flux_var(var_name, site_id, year, sol_doy, eos_end_of_season)
+
+    # Photoperiod at EOS90 - see photoperiod_hours() docstring for the
+    # interpretation caveat (computed from EOS90's own DOY, not an
+    # independent driver).
+    rec['photoperiod_at_EOS90'] = photoperiod_hours(row.get('EOS90'), site_lat.get(site_id))
 
     records.append(rec)
 
@@ -181,10 +244,11 @@ print(f"Site-year-index predictor table written to '{OUTPUT_SITEYEAR_CSV}' ({len
 # 4. Correlate each autumn parameter against each predictor, per VI index
 # ---------------------------------------------------------------------------
 # Predictors: the 4 spring parameters, growing-season length (EOS50-SOS50),
-# the 3 GPP-based sub-window metrics, and total RECO over the growing
-# season as a single additional predictor.
+# the 3 GPP-based sub-window metrics, total RECO, mean radiation, mean
+# temperature (all over the growing season), and photoperiod at EOS90.
 FLUX_PREDICTORS = ['total_gpp_growing_season', 'gpp_sos10_to_solstice', 'gpp_solstice_to_eos10',
-                    'total_reco_growing_season']
+                    'total_reco_growing_season', 'mean_radiation_growing_season',
+                    'mean_temperature_growing_season', 'photoperiod_at_EOS90']
 
 PREDICTORS = SPRING_PARAMS + ['growing_season_length'] + FLUX_PREDICTORS
 
