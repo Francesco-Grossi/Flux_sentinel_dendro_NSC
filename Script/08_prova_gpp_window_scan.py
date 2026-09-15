@@ -26,7 +26,7 @@ GPP_PLAUSIBLE_RANGE = (-5, 50)  # gC m-2 d-1 - guards against leftover sentinel 
 # Mar-Oct growing season range used elsewhere in this pipeline (DOY 60-305)
 # rather than the full calendar year, since a GPP window entirely outside
 # the growing season isn't a meaningful "cumulative GPP" period to test.
-SEARCH_START_DOY = 60
+SEARCH_START_DOY = 30
 SEARCH_END_DOY = 305
 WINDOW_STEP_DAYS = 5      # granularity of both the start and end grid
 MIN_WINDOW_LENGTH_DAYS = 15  # shortest window tested - very short windows are noisy

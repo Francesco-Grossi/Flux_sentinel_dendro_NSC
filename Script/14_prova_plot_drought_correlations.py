@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import numpy as np
 import pandas as pd
+from scipy.stats import linregress
 import matplotlib.pyplot as plt
 
 # ---------------------------------------------------------------------------
@@ -12,9 +13,11 @@ FIGURE_DIR = Path(__file__).resolve().parent.parent / "figure" / "drought_correl
 FIGURE_DIR.mkdir(parents=True, exist_ok=True)
 
 COMPARISON_CSV = DATA_DIR / "drought_vs_nondrought_comparison.csv"  # script 13 output
+SITEYEAR_CSV = DATA_DIR / "phenology_flux_predictors_with_drought_flag.csv"  # script 13 output
 
 VI_INDICES = ['NDVI', 'NIRv']
 GROUP_COLORS = {'drought': '#c53030', 'non_drought': '#2b6cb0'}
+GROUPS = {'Drought': True, 'Non-drought': False}
 
 if not os.path.exists(COMPARISON_CSV):
     raise FileNotFoundError(f"Missing '{COMPARISON_CSV}'. Run the drought-correlation script first.")
@@ -84,3 +87,66 @@ for autumn_p in autumn_params:
     print(f"Saved '{out_path}'.")
 
 print("\nDone.")
+
+# ---------------------------------------------------------------------------
+# 2. 2x2 scatter+fit grid per (autumn_parameter, predictor) pair - columns
+#    are Drought / Non-drought, rows are NDVI / NIRv, so the same pair can
+#    be compared across both dimensions in one figure.
+# ---------------------------------------------------------------------------
+if not os.path.exists(SITEYEAR_CSV):
+    print(f"\nNote: '{SITEYEAR_CSV}' not found - skipping the 2x2 scatter grids. "
+          "Re-run the drought-correlation script to generate it.")
+else:
+    siteyear_df = pd.read_csv(SITEYEAR_CSV)
+    scatter_dir = FIGURE_DIR / "scatter_2x2"
+    scatter_dir.mkdir(parents=True, exist_ok=True)
+
+    pairs = comparison_df[['autumn_parameter', 'predictor']].drop_duplicates()
+    print(f"\nPlotting {len(pairs)} 2x2 drought x VI-index scatter grids to '{scatter_dir}'...")
+
+    n_plotted = 0
+    for _, prow in pairs.iterrows():
+        autumn_p, pred = prow['autumn_parameter'], prow['predictor']
+        missing = [c for c in (pred, autumn_p) if c not in siteyear_df.columns]
+        if missing:
+            continue
+
+        fig, axes = plt.subplots(2, 2, figsize=(10, 9), sharex='col', sharey='row')
+        for row_idx, vi in enumerate(VI_INDICES):
+            for col_idx, (group_label, flag_value) in enumerate(GROUPS.items()):
+                ax = axes[row_idx, col_idx]
+                sub = siteyear_df[(siteyear_df['vi_index'] == vi) & (siteyear_df['is_drought'] == flag_value)]
+                pair = sub[[pred, autumn_p]].dropna()
+
+                if len(pair) < 2:
+                    ax.text(0.5, 0.5, "not enough data", ha='center', va='center',
+                            fontsize=9, color='gray', transform=ax.transAxes)
+                else:
+                    x = pair[pred].to_numpy(dtype=float)
+                    y = pair[autumn_p].to_numpy(dtype=float)
+                    color = GROUP_COLORS['drought' if flag_value else 'non_drought']
+                    ax.scatter(x, y, alpha=0.6, s=30, color=color, edgecolor='white', linewidth=0.5)
+                    if np.std(x) > 0 and np.std(y) > 0:
+                        slope, intercept, r_value, p_value, std_err = linregress(x, y)
+                        x_line = np.linspace(x.min(), x.max(), 100)
+                        ax.plot(x_line, slope * x_line + intercept, color='#333333', linewidth=2)
+                        ax.text(0.03, 0.96, f"r = {r_value:.2f}, p = {p_value:.3g}, n = {len(pair)}",
+                                transform=ax.transAxes, ha='left', va='top', fontsize=8)
+
+                if row_idx == 0:
+                    ax.set_title(group_label, fontsize=11, fontweight='bold')
+                if col_idx == 0:
+                    ax.set_ylabel(f"{vi}\n{autumn_p}")
+                if row_idx == 1:
+                    ax.set_xlabel(pred)
+                ax.grid(True, linestyle='--', alpha=0.4)
+
+        fig.suptitle(f"{autumn_p} vs {pred}: drought x VI index", fontsize=13, fontweight='bold')
+        fig.tight_layout(rect=[0, 0, 1, 0.96])
+
+        out_path = scatter_dir / f"{safe_filename(autumn_p)}_vs_{safe_filename(pred)}_2x2.png"
+        fig.savefig(out_path, dpi=150)
+        plt.close(fig)
+        n_plotted += 1
+
+    print(f"Done. {n_plotted} 2x2 scatter grids saved under '{scatter_dir}'.")

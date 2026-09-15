@@ -20,8 +20,27 @@ OUTPUT_CSV = DATA_DIR / "phenology_double_logistic_by_site_year_index.csv"
 VI_COLUMNS = ['NDVI', 'EVI', 'NIRv']
 PHYSICAL_BOUNDS = {'NDVI': (-1, 1), 'EVI': (-1, 1), 'NIRv': (-1, 1)}
 
-MIN_POINTS_FOR_FIT = 12   # double-logistic has 6 free params; need real margin over that
+MIN_POINTS_FOR_FIT = 15   # double-logistic has 6 free params; 12 was too thin a
+                           # margin and let genuinely underdetermined fits through
 MIN_VALID_FRAC = 0.5      # QC floor on Fmask-derived clear-pixel fraction
+
+# Upper bound on the kinetic (steepness) rate parameters during fitting.
+# The 10-90% transition of a logistic phase takes roughly 4.4/i days, so
+# i=5.0 (the old bound) allows a full green-up or senescence transition to
+# complete in under a day - a near-vertical step, not a real phenological
+# transition. That's exactly the failure mode seen in fits that report a
+# deceptively high r/low RMSE (a handful of points can look "well fit" by
+# a step) while being visually nonsensical. Capping at 1.0 still allows a
+# fast ~4-5 day transition, comfortably covering real abrupt events (e.g.
+# frost-triggered senescence), while ruling out step-function degenerate
+# solutions.
+MAX_KINETIC_RATE = 1.0
+
+# How far outside the actual observed DOY range a fitted inflection point
+# (S or A) is allowed to fall before the fit is rejected as implausible -
+# an inflection point extrapolated far past the data isn't meaningfully
+# constrained by any observation.
+MAX_INFLECTION_EXTRAPOLATION_DAYS = 30
 
 # Percentiles for each phase, as % of the seasonal amplitude (vmin->vmax):
 # leaf_out_X = curve has risen TO X% (SOS-X convention); EOS_X = curve is
@@ -76,13 +95,15 @@ def fit_double_logistic(doy, vi, weights):
 
     p0 = [
         vmin_obs, vmax_obs,
-        max(peak_guess - 20, trough_guess_lo - 60),   # S: green-up inflection guess
+        max(peak_guess - 20, trough_guess_lo - MAX_INFLECTION_EXTRAPOLATION_DAYS),   # S: green-up inflection guess
         rate_guess,                                    # i_sos > 0
-        min(peak_guess + 20, trough_guess_hi + 60),    # A: senescence inflection guess
+        min(peak_guess + 20, trough_guess_hi + MAX_INFLECTION_EXTRAPOLATION_DAYS),   # A: senescence inflection guess
         rate_guess,                                     # i_eos > 0 (sign handled inside the model)
     ]
-    lower = [vmin_obs - amp, vmax_obs - amp, doy.min() - 60, 1e-4, doy.min() - 60, 1e-4]
-    upper = [vmin_obs + amp, vmax_obs + amp, doy.max() + 60, 5.0, doy.max() + 60, 5.0]
+    lower = [vmin_obs - amp, vmax_obs - amp, doy.min() - MAX_INFLECTION_EXTRAPOLATION_DAYS, 1e-4,
+             doy.min() - MAX_INFLECTION_EXTRAPOLATION_DAYS, 1e-4]
+    upper = [vmin_obs + amp, vmax_obs + amp, doy.max() + MAX_INFLECTION_EXTRAPOLATION_DAYS, MAX_KINETIC_RATE,
+             doy.max() + MAX_INFLECTION_EXTRAPOLATION_DAYS, MAX_KINETIC_RATE]
     # Defensive clip: guarantees p0 is inside (lower, upper) even in edge
     # cases (e.g. very short doy spans) so least_squares never raises on
     # "initial guess outside bounds".
@@ -103,6 +124,39 @@ def fit_double_logistic(doy, vi, weights):
         return popt, r2, rmse, corr
     except (RuntimeError, ValueError):
         return None, None, None, None
+
+
+def fit_is_plausible(popt, doy_min, doy_max):
+    """Post-fit sanity check, independent of (and complementary to) the
+    numeric r2/rmse/corr metrics. A fit can score deceptively well on those
+    metrics - a handful of scattered points can make a near-vertical step
+    look "well correlated" - while still being a biologically nonsensical
+    curve (e.g. senescence starting before green-up, or a transition so
+    abrupt it's pinned at the fitting bound). Returns (True, None) if the
+    fit passes, or (False, reason) if it should be rejected outright."""
+    vmin, vmax, S, i_sos, A, i_eos = popt
+
+    if not (S < A):
+        return False, "S >= A (senescence inflection at or before green-up inflection)"
+
+    lo = doy_min - MAX_INFLECTION_EXTRAPOLATION_DAYS
+    hi = doy_max + MAX_INFLECTION_EXTRAPOLATION_DAYS
+    if not (lo <= S <= hi):
+        return False, "S extrapolated far outside the observed DOY range"
+    if not (lo <= A <= hi):
+        return False, "A extrapolated far outside the observed DOY range"
+
+    # A kinetic rate pinned at (or essentially at) the upper bound means the
+    # optimizer wanted an even steeper/more step-like transition than
+    # allowed - a sign the data doesn't actually constrain a smooth curve,
+    # not a confirmed "fast but real" transition.
+    pin_tolerance = 1e-3
+    if i_sos >= MAX_KINETIC_RATE - pin_tolerance:
+        return False, "green-up kinetic rate pinned at the upper bound (near-step transition)"
+    if i_eos >= MAX_KINETIC_RATE - pin_tolerance:
+        return False, "senescence kinetic rate pinned at the upper bound (near-step transition)"
+
+    return True, None
 
 
 def crossing_doy(t_grid, y_grid, frac_target, rising):
@@ -205,6 +259,17 @@ for gi, ((site_id, year), group) in enumerate(site_years, start=1):
 
         row = {'site_id': site_id, 'year': year, 'vi_index': vi_col, 'n_obs': len(sub)}
 
+        # Even a numerically successful fit can be an implausible curve
+        # (see fit_is_plausible) - check that BEFORE treating popt as
+        # usable, so a degenerate fit is reported the same way as a failed
+        # one (NaN metrics, excluded downstream) rather than contributing
+        # spurious percentile crossings.
+        rejection_reason = None
+        if popt is not None:
+            plausible, rejection_reason = fit_is_plausible(popt, doy_all.min(), doy_all.max())
+            if not plausible:
+                popt = None
+
         if popt is not None:
             t_grid = np.linspace(doy_all.min() - 10, doy_all.max() + 10, 2000)
             y_grid = double_logistic(t_grid, *popt)
@@ -225,9 +290,16 @@ for gi, ((site_id, year), group) in enumerate(site_years, start=1):
             gu_r2, gu_rmse, gu_corr = segment_fit_metrics(doy_all, vi_all, popt, peak_doy, rising=True)
             se_r2, se_rmse, se_corr = segment_fit_metrics(doy_all, vi_all, popt, peak_doy, rising=False)
 
+            # RMSE alone is scale-dependent (0.05 means something different
+            # for an index ranging 0.6-0.9 vs. 0.1-0.9) - normalizing by the
+            # OBSERVED amplitude gives a comparable "fraction of the range"
+            # error, useful as an additional filter alongside corr.
+            observed_amp = max(float(np.nanmax(vi_all) - np.nanmin(vi_all)), 1e-6)
+            relative_rmse = rmse / observed_amp
+
             row.update({
                 'method': 'double_logistic',
-                'r2': r2, 'rmse': rmse, 'corr': corr,
+                'r2': r2, 'rmse': rmse, 'relative_rmse': relative_rmse, 'corr': corr,
                 'vmin': popt[0], 'vmax': popt[1],
                 'S': popt[2], 'greenup_kinetic_i': popt[3],
                 'A': popt[4], 'senescence_kinetic_i': popt[5],
@@ -237,14 +309,18 @@ for gi, ((site_id, year), group) in enumerate(site_years, start=1):
                 'EOS10': eos[10], 'EOS50': eos[50], 'EOS90': eos[90],
             })
         else:
-            # No double-logistic curve could be fit (too few points or the
-            # optimizer didn't converge) - report NaN across the board
-            # rather than estimating percentile crossings some other way.
-            # A crossing DOY derived without an actual fitted curve isn't
+            # No usable double-logistic curve - either the optimizer never
+            # converged/had too few points (fit_double_logistic returned
+            # None), or it converged to a numerically-fine but implausible
+            # curve (fit_is_plausible rejected it, rejection_reason set).
+            # Either way: report NaN across the board rather than
+            # estimating percentile crossings some other way. A crossing
+            # DOY derived without a genuinely usable fitted curve isn't
             # comparable to the ones that are, so it's not reported at all.
             row.update({
-                'method': 'fit_failed',
-                'r2': np.nan, 'rmse': np.nan, 'corr': np.nan,
+                'method': 'fit_rejected_implausible' if rejection_reason else 'fit_failed',
+                'rejection_reason': rejection_reason,
+                'r2': np.nan, 'rmse': np.nan, 'relative_rmse': np.nan, 'corr': np.nan,
                 'vmin': np.nan, 'vmax': np.nan,
                 'S': np.nan, 'greenup_kinetic_i': np.nan,
                 'A': np.nan, 'senescence_kinetic_i': np.nan,
@@ -264,6 +340,13 @@ results_df.to_csv(OUTPUT_CSV, index=False)
 
 n_fit = (results_df['method'] == 'double_logistic').sum()
 n_failed = (results_df['method'] == 'fit_failed').sum()
+n_implausible = (results_df['method'] == 'fit_rejected_implausible').sum()
 print(f"\nDone. {len(results_df)} site-year-index rows written to '{OUTPUT_CSV}'.")
 print(f"Fits: {n_fit} double-logistic succeeded, {n_failed} failed "
-      "(too few points or non-convergent - all metrics NaN for those rows).")
+      f"(too few points or non-convergent), {n_implausible} rejected as implausible "
+      "(converged, but to a biologically nonsensical curve - see 'rejection_reason'). "
+      "All metrics NaN for failed/rejected rows.")
+if n_implausible:
+    print("\nImplausible-fit rejection reasons:")
+    print(results_df.loc[results_df['method'] == 'fit_rejected_implausible', 'rejection_reason']
+          .value_counts().to_string())

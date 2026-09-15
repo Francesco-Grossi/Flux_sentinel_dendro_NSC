@@ -15,6 +15,7 @@ CLUSTERS_CSV = DATA_DIR / "site_year_climate_clusters.csv"                      
 
 OUTPUT_GRID_CSV = DATA_DIR / "drought_vs_nondrought_correlations.csv"       # every (group x pair) tested
 OUTPUT_COMPARISON_CSV = DATA_DIR / "drought_vs_nondrought_comparison.csv"   # drought and non-drought r side by side
+OUTPUT_SITEYEAR_CSV = DATA_DIR / "phenology_flux_predictors_with_drought_flag.csv"  # site-year rows + is_drought
 
 VI_INDICES = ['NDVI', 'NIRv']
 AUTUMN_PARAMS = ['EOS90', 'EOS50', 'EOS10', 'senescence_kinetic_i']
@@ -69,6 +70,13 @@ print(f"{len(merged)} of {len(predictors_df)} phenology rows have a drought-flag
 n_drought = int((merged.drop_duplicates(['site_id', 'year'])['is_drought']).sum())
 n_total_siteyears = merged.drop_duplicates(['site_id', 'year']).shape[0]
 print(f"Drought site-years: {n_drought} / {n_total_siteyears}.")
+
+# Save the merged site-year-index rows (predictors + autumn params +
+# is_drought) for downstream plotting - e.g. scatter plots split by
+# drought/non-drought, which need the actual data points, not just the
+# aggregate r/p/n this script otherwise produces.
+merged.to_csv(OUTPUT_SITEYEAR_CSV, index=False)
+print(f"Merged site-year table (with drought flag) written to '{OUTPUT_SITEYEAR_CSV}'.")
 
 GROUPS = {'drought': True, 'non_drought': False}
 

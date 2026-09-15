@@ -33,6 +33,10 @@ MIN_POINTS_FOR_RATE = 5
 # autumn-phenology-correlation script for the full rationale.
 MIN_FIT_CORR = 0.8
 
+# Length of the pre-EOS90 window (days) used for gpp_pre_eos90_rate below -
+# the 15 days immediately before, and including, the EOS90 crossing itself.
+PRE_EOS90_WINDOW_DAYS = 15
+
 # GPP_NT_VUT_REF: nighttime-partitioning GPP (see the main correlation
 # script for why NT over DT). TA_F: air temperature. Plausible ranges guard
 # against leftover -9999-style sentinel values.
@@ -137,6 +141,16 @@ def photoperiod_rate(doy_start, doy_end, lat_deg):
 # temperature/photoperiod_senescence_rate: fit over the senescence window
 # (EOS90->EOS10, onset-of-decline to near-dormancy) - the autumn
 # cooling/daylight-loss rate, specifically during the decline itself.
+# gpp_pre_eos90_rate: fit over the PRE_EOS90_WINDOW_DAYS days immediately
+# before EOS90 (inclusive). NOTE: like photoperiod_at_EOS90 elsewhere in
+# this pipeline, this window's END boundary is anchored to EOS90's own DOY,
+# so correlating it against EOS90 itself isn't testing an independent
+# driver in the strictest sense - different site-years get different
+# windows depending on their own EOS90 timing. It's still informative
+# (a real, computed carbon-flux trend, not a deterministic function of
+# EOS90 the way photoperiod is), but keep that anchoring in mind when
+# interpreting the EOS90 correlation specifically; the correlations against
+# EOS50, EOS10, and senescence_kinetic_i are more clearly independent.
 records = []
 for _, row in pheno.iterrows():
     site_id, year = row['site_id'], int(row['year'])
@@ -151,6 +165,12 @@ for _, row in pheno.iterrows():
         'gpp_greenup_rate': rate_flux_var('gpp', site_id, year, sos10, sos90),
         'temperature_senescence_rate': rate_flux_var('temperature', site_id, year, eos90, eos10),
         'photoperiod_senescence_rate': photoperiod_rate(eos90, eos10, lat),
+        # GPP trend in the 15 days leading up to, and including, EOS90 -
+        # tests whether carbon-uptake trajectory right at the onset of
+        # decline (rather than the whole prior season) relates to how/when
+        # senescence subsequently plays out.
+        'gpp_pre_eos90_rate': (rate_flux_var('gpp', site_id, year, eos90 - PRE_EOS90_WINDOW_DAYS, eos90)
+                                if pd.notna(eos90) else np.nan),
     }
     records.append(rec)
 
@@ -165,7 +185,8 @@ print(f"Rate-predictor table written to '{OUTPUT_SITEYEAR_CSV}' ({len(analysis_d
 #    the ones specifically motivated by senescence_kinetic_i, but are still
 #    tested against all 4 for completeness.
 # ---------------------------------------------------------------------------
-RATE_PREDICTORS = ['gpp_greenup_rate', 'temperature_senescence_rate', 'photoperiod_senescence_rate']
+RATE_PREDICTORS = ['gpp_greenup_rate', 'temperature_senescence_rate', 'photoperiod_senescence_rate',
+                    'gpp_pre_eos90_rate']
 
 corr_rows = []
 for vi in VI_INDICES:

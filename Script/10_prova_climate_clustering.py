@@ -65,11 +65,22 @@ SMOOTHING_WINDOW_DAYS = 15
 # a WITHIN-SITE anomaly (a dry year relative to THAT site's own normal), not
 # an absolute climate value - a raw precipitation total is dominated by
 # between-site geography (a desert site's "normal" dry season looks nothing
-# like a rainforest site's drought), so each site-year's precipitation and
-# VPD are z-scored against that same site's own multi-year mean/std before
-# being used. drought_index = vpd_anomaly_z - precip_anomaly_z: positive
-# means drier and more atmospheric water demand than that site's own norm.
+# like a rainforest site's drought), so each site-year's precipitation, VPD,
+# and LE are z-scored against that same site's own multi-year mean/std
+# before being used. drought_index = vpd_anomaly_z - precip_anomaly_z -
+# le_anomaly_z: positive means drier, more atmospheric water demand, AND
+# less actual evapotranspiration than that site's own norm - LE is
+# subtracted (not added) because during real drought stress, actual ET
+# typically DROPS even as atmospheric demand rises (stomatal closure limits
+# water loss despite the air "wanting" more), so a reduced LE anomaly is
+# itself a drought signal, not a contradiction to be averaged away.
 DROUGHT_THRESHOLD = 1.0  # drought_index >= this -> flagged as a drought site-year
+
+# Latent heat flux (LE_F_MDS) - proxy for actual evapotranspiration. Kept
+# separate from CLIMATE_VARS (used for the general climate-type shape
+# clustering) since it's only used for the drought signal here, not for
+# characterizing a site-year's overall climate type.
+LE_VAR = 'LE_F_MDS'
 
 N_CLUSTERS = 8
 RANDOM_STATE = 42
@@ -155,22 +166,44 @@ smoothed_matrices = {
 }
 
 # ---------------------------------------------------------------------------
-# 2b. Drought anomaly features - per-site-year precipitation and VPD,
-#     z-scored against EACH SITE'S OWN multi-year mean/std (not the global
-#     mean), so what's captured is "drier/more atmospheric demand than this
-#     site's own normal", not just "less rain than a wet site elsewhere".
-#     Sites with only one kept year have no within-site variability to
-#     compare against - their anomaly is set to 0 (can't tell if it was an
-#     unusual year without a baseline) rather than treated as neutral by
-#     assumption alone; they're also excluded from is_drought.
+# 2b. Drought anomaly features - per-site-year precipitation, VPD, and LE
+#     (evapotranspiration), z-scored against EACH SITE'S OWN multi-year
+#     mean/std (not the global mean), so what's captured is "drier/more
+#     atmospheric demand/less ET than this site's own normal", not just
+#     "less rain than a wet site elsewhere". Sites with only one kept year
+#     have no within-site variability to compare against - their anomaly is
+#     set to 0 (can't tell if it was an unusual year without a baseline)
+#     rather than treated as neutral by assumption alone; they're also
+#     excluded from is_drought.
 # ---------------------------------------------------------------------------
 site_year_index = pd.DataFrame(kept_keys, columns=['site_id', 'year'])
 site_year_index['precip_total'] = clean_matrices['P_F'].sum(axis=1)
 site_year_index['vpd_mean'] = clean_matrices['VPD_F'].mean(axis=1)
 
+# LE isn't part of CLIMATE_VARS, so it needs its own pivot/interpolation
+# here, restricted to the same kept_keys and growing-season window as
+# everything else. If the column is entirely absent, LE's contribution is
+# skipped gracefully (le_anomaly_z stays 0 for every site-year) rather than
+# raising, since it's an enhancement to the drought signal, not a hard
+# requirement to run this script at all.
+if LE_VAR in flux.columns:
+    le_pivot = flux.pivot_table(index=['site_id', 'year'], columns='doy', values=LE_VAR, aggfunc='mean')
+    le_pivot = le_pivot.reindex(columns=day_range).reindex(kept_keys)
+    le_pivot = le_pivot.interpolate(axis=1, limit_direction='both')
+    with np.errstate(invalid='ignore'):
+        site_year_index['le_mean'] = np.nanmean(le_pivot.to_numpy(dtype=float), axis=1)
+    # nanmean on an all-NaN row still yields NaN (with a harmless runtime
+    # warning, suppressed above) - falls through to the anomaly
+    # fillna(0.0) below like any other missing case.
+else:
+    print(f"Note: '{LE_VAR}' not found in FLUX_CSV - drought index will use "
+          "precipitation and VPD only (le_anomaly_z fixed at 0).")
+    site_year_index['le_mean'] = np.nan
+
 site_stats = site_year_index.groupby('site_id').agg(
     precip_mean=('precip_total', 'mean'), precip_std=('precip_total', 'std'),
     vpd_mean_mean=('vpd_mean', 'mean'), vpd_mean_std=('vpd_mean', 'std'),
+    le_mean_mean=('le_mean', 'mean'), le_mean_std=('le_mean', 'std'),
     n_years=('year', 'count'),
 )
 site_year_index = site_year_index.merge(site_stats, on='site_id', how='left')
@@ -184,26 +217,34 @@ if n_single_year:
 
 precip_std_safe = site_year_index['precip_std'].replace(0, np.nan)
 vpd_std_safe = site_year_index['vpd_mean_std'].replace(0, np.nan)
+le_std_safe = site_year_index['le_mean_std'].replace(0, np.nan)
 site_year_index['precip_anomaly_z'] = (
     (site_year_index['precip_total'] - site_year_index['precip_mean']) / precip_std_safe
 ).fillna(0.0)
 site_year_index['vpd_anomaly_z'] = (
     (site_year_index['vpd_mean'] - site_year_index['vpd_mean_mean']) / vpd_std_safe
 ).fillna(0.0)
-site_year_index.loc[single_year_site, ['precip_anomaly_z', 'vpd_anomaly_z']] = 0.0
+site_year_index['le_anomaly_z'] = (
+    (site_year_index['le_mean'] - site_year_index['le_mean_mean']) / le_std_safe
+).fillna(0.0)
+site_year_index.loc[single_year_site, ['precip_anomaly_z', 'vpd_anomaly_z', 'le_anomaly_z']] = 0.0
 
-# Positive = drier AND more atmospheric water demand than that site's own
-# norm - a simple proxy in the spirit of SPEI (precipitation deficit +
-# evaporative demand), using VPD in place of full potential
-# evapotranspiration since that's what's available from the tower.
-site_year_index['drought_index'] = site_year_index['vpd_anomaly_z'] - site_year_index['precip_anomaly_z']
+# Positive = drier, more atmospheric water demand, AND less actual ET than
+# that site's own norm - a simple proxy in the spirit of SPEI/ESI
+# (precipitation deficit + evaporative demand + evaporative-stress
+# shortfall), using VPD in place of full potential evapotranspiration and
+# LE in place of a direct soil-moisture or stress measurement, since
+# that's what's available from the tower.
+site_year_index['drought_index'] = (
+    site_year_index['vpd_anomaly_z'] - site_year_index['precip_anomaly_z'] - site_year_index['le_anomaly_z']
+)
 site_year_index['is_drought'] = (site_year_index['drought_index'] >= DROUGHT_THRESHOLD) & ~single_year_site
 
 n_drought = int(site_year_index['is_drought'].sum())
 print(f"Identified {n_drought} drought site-year(s) out of {len(site_year_index)} "
       f"(drought_index >= {DROUGHT_THRESHOLD}).")
 
-drought_features = site_year_index[['precip_anomaly_z', 'vpd_anomaly_z']].to_numpy()
+drought_features = site_year_index[['precip_anomaly_z', 'vpd_anomaly_z', 'le_anomaly_z']].to_numpy()
 
 # ---------------------------------------------------------------------------
 # 3. Per-variable PCA on the standardized, SMOOTHED daily curves - this is
@@ -227,7 +268,7 @@ for var in CLIMATE_VARS:
 # already in a meaningful (within-site z-score) unit - they aren't run
 # through PCA since there are only 2 of them.
 pc_blocks.append(drought_features)
-pc_variable_labels += ['precip_anomaly_z', 'vpd_anomaly_z']
+pc_variable_labels += ['precip_anomaly_z', 'vpd_anomaly_z', 'le_anomaly_z']
 
 combined_features = np.concatenate(pc_blocks, axis=1)
 # Re-standardize the combined feature set - PCA components from a variable
@@ -246,7 +287,8 @@ clusters_df = pd.DataFrame(kept_keys, columns=['site_id', 'year'])
 clusters_df['climate_cluster'] = cluster_labels
 clusters_df = clusters_df.merge(site_meta, on='site_id', how='left')
 clusters_df = clusters_df.merge(
-    site_year_index[['site_id', 'year', 'precip_anomaly_z', 'vpd_anomaly_z', 'drought_index', 'is_drought']],
+    site_year_index[['site_id', 'year', 'precip_anomaly_z', 'vpd_anomaly_z', 'le_anomaly_z',
+                      'drought_index', 'is_drought']],
     on=['site_id', 'year'], how='left'
 )
 clusters_df.to_csv(OUTPUT_CLUSTERS_CSV, index=False)
