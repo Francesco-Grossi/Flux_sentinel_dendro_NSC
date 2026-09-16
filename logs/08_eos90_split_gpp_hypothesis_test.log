@@ -1,0 +1,45 @@
+659 site-year-index rows available.
+
+
+======================================================================
+NDVI
+======================================================================
+n_obs=160, n_sites=45
+
+[Contrast] effects differ: diff=31.07, p=1.438e-12
+[Contrast] mirror image:   sum=22.43, p=2.711e-11
+[Reparam] asymmetry (timing): coef=15.76, p=4.267e-09
+[Reparam] total (sum):        coef=14.30, p=6.23e-06
+
+[AIC] baseline=1548.9  total_gpp=1492.7  split_gpp=1461.8
+[LRT] baseline->total_gpp:  chi2=58.15, p=2.427e-14
+[LRT] baseline->split_gpp:  chi2=91.05, p=1.696e-20
+[LRT] total_gpp->split_gpp: chi2=32.89, p=9.729e-09
+
+[Leave-one-site-out CV]
+  baseline_no_gpp        n= 160  RMSE= 34.19d  R2=0.047
+  total_gpp              n= 160  RMSE= 28.88d  R2=0.320
+  split_gpp_pre_post     n= 160  RMSE= 26.95d  R2=0.408
+
+======================================================================
+NIRv
+======================================================================
+n_obs=230, n_sites=51
+
+[Contrast] effects differ: diff=29.49, p=2.379e-21
+[Contrast] mirror image:   sum=11.37, p=0.0001996
+[Reparam] asymmetry (timing): coef=17.46, p=9.407e-21
+[Reparam] total (sum):        coef=8.47, p=0.0005879
+
+[AIC] baseline=2158.7  total_gpp=2135.6  split_gpp=2062.4
+[LRT] baseline->total_gpp:  chi2=25.04, p=5.609e-07
+[LRT] baseline->split_gpp:  chi2=100.30, p=1.659e-22
+[LRT] total_gpp->split_gpp: chi2=75.26, p=4.127e-18
+
+[Leave-one-site-out CV]
+  baseline_no_gpp        n= 230  RMSE= 30.96d  R2=0.104
+  total_gpp              n= 230  RMSE= 31.83d  R2=0.052
+  split_gpp_pre_post     n= 230  RMSE= 26.12d  R2=0.362
+
+
+Written: 'eos90_opposite_effect_contrast_tests.csv', 'eos90_gpp_model_comparison.csv', 'eos90_gpp_cv_results.csv'

@@ -1,0 +1,210 @@
+C:\Users\Lenovo\AppData\Local\Programs\Python\Python310\lib\site-packages\google\api_core\_python_version_support.py:254: FutureWarning: You are using a Python version (3.10.4) which Google will stop supporting in new releases of google.api_core once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.api_core past that date.
+  warnings.warn(message, FutureWarning)
+Filtering FLUXNET sites for > 30 deg N and >= 5 years duration...
+Found 103 qualifying sites.
+
+[1/103] Fetching Landsat: BE-Dor (2011-01-01 to 2025-01-01)
+   -> Saved 154 records
+[2/103] Fetching Landsat: BE-Maa (2016-01-01 to 2026-01-01)
+   -> Saved 153 records
+[3/103] Fetching Landsat: CA-Ca1 (1997-01-01 to 2011-01-01)
+[4/103] Fetching Landsat: CA-Ca2 (2000-01-01 to 2011-01-01)
+[5/103] Fetching Landsat: CA-Ca3 (2001-01-01 to 2025-01-01)
+   -> Saved 222 records
+[6/103] Fetching Landsat: CA-Cbo (1996-01-01 to 2025-01-01)
+   -> Saved 94 records
+[7/103] Fetching Landsat: CA-Gro (2003-01-01 to 2015-01-01)
+   -> Saved 18 records
+[8/103] Fetching Landsat: CA-LP1 (2007-01-01 to 2025-01-01)
+   -> Saved 139 records
+[9/103] Fetching Landsat: CA-Man (1994-01-01 to 2009-01-01)
+[10/103] Fetching Landsat: CA-Ojp (1999-01-01 to 2011-01-01)
+[11/103] Fetching Landsat: CA-SCC (2013-01-01 to 2025-01-01)
+   -> Saved 137 records
+[12/103] Fetching Landsat: CA-TP1 (2002-01-01 to 2024-01-01)
+   -> Saved 82 records
+[13/103] Fetching Landsat: CA-TP3 (2002-01-01 to 2024-01-01)
+   -> Saved 93 records
+[14/103] Fetching Landsat: CA-TP4 (2002-01-01 to 2024-01-01)
+   -> Saved 86 records
+[15/103] Fetching Landsat: CA-TPD (2012-01-01 to 2024-01-01)
+   -> Saved 80 records
+[16/103] Fetching Landsat: CH-Oe1 (2002-01-01 to 2012-01-01)
+[17/103] Fetching Landsat: CH-Oe3 (2002-01-01 to 2012-01-01)
+[18/103] Fetching Landsat: CN-HaM (2001-01-01 to 2015-01-01)
+   -> Saved 37 records
+[19/103] Fetching Landsat: DE-Gri (2004-01-01 to 2025-01-01)
+   -> Saved 155 records
+[20/103] Fetching Landsat: DE-GsB (2015-01-01 to 2025-01-01)
+   -> Saved 156 records
+[21/103] Fetching Landsat: DE-Hai (2000-01-01 to 2025-01-01)
+   -> Saved 148 records
+[22/103] Fetching Landsat: DE-HoH (2015-01-01 to 2026-01-01)
+   -> Saved 177 records
+[23/103] Fetching Landsat: DE-RuR (2011-01-01 to 2025-01-01)
+   -> Saved 75 records
+[24/103] Fetching Landsat: DE-RuW (2011-01-01 to 2025-01-01)
+   -> Saved 127 records
+[25/103] Fetching Landsat: DE-Tha (1996-01-01 to 2025-01-01)
+   -> Saved 147 records
+[26/103] Fetching Landsat: DK-Sor (1996-01-01 to 2025-01-01)
+   -> Saved 139 records
+[27/103] Fetching Landsat: FI-Hyy (1997-01-01 to 2026-01-01)
+   -> Saved 127 records
+[28/103] Fetching Landsat: FI-Let (2009-01-01 to 2025-01-01)
+   -> Saved 205 records
+[29/103] Fetching Landsat: FR-Bil (2014-01-01 to 2026-01-01)
+   -> Saved 121 records
+[30/103] Fetching Landsat: FR-FBn (2008-01-01 to 2025-01-01)
+   -> Saved 379 records
+[31/103] Fetching Landsat: FR-Hes (1997-01-01 to 2025-01-01)
+   -> Saved 106 records
+[32/103] Fetching Landsat: FR-LBr (1998-01-01 to 2009-01-01)
+[33/103] Fetching Landsat: FR-Pue (2000-01-01 to 2026-01-01)
+   -> Saved 212 records
+[34/103] Fetching Landsat: IT-Cp2 (2012-01-01 to 2026-01-01)
+   -> Saved 214 records
+[35/103] Fetching Landsat: IT-MBo (2003-01-01 to 2025-01-01)
+   -> Saved 195 records
+[36/103] Fetching Landsat: IT-Ren (1999-01-01 to 2026-01-01)
+   -> Saved 275 records
+[37/103] Fetching Landsat: IT-SR2 (2013-01-01 to 2026-01-01)
+   -> Saved 394 records
+[38/103] Fetching Landsat: IT-Tor (2008-01-01 to 2025-01-01)
+   -> Saved 100 records
+[39/103] Fetching Landsat: IT-TrF (2012-01-01 to 2025-01-01)
+   -> Saved 112 records
+[40/103] Fetching Landsat: JP-Api (2000-01-01 to 2023-01-01)
+   -> Saved 41 records
+[41/103] Fetching Landsat: JP-Fhk (2006-01-01 to 2024-01-01)
+   -> Saved 94 records
+[42/103] Fetching Landsat: JP-Fmt (2014-01-01 to 2024-01-01)
+   -> Saved 237 records
+[43/103] Fetching Landsat: JP-Khw (2000-01-01 to 2022-01-01)
+   -> Saved 128 records
+[44/103] Fetching Landsat: JP-NsC (2004-01-01 to 2016-01-01)
+   -> Saved 31 records
+[45/103] Fetching Landsat: JP-NsM (2004-01-01 to 2016-01-01)
+   -> Saved 31 records
+[46/103] Fetching Landsat: JP-Tef (2001-01-01 to 2024-01-01)
+   -> Saved 89 records
+[47/103] Fetching Landsat: NL-Loo (1997-01-01 to 2026-01-01)
+   -> Saved 167 records
+[48/103] Fetching Landsat: NL-Vkp (2014-01-01 to 2025-01-01)
+   -> Saved 158 records
+[49/103] Fetching Landsat: RU-Fy2 (2015-01-01 to 2025-01-01)
+   -> Saved 100 records
+[50/103] Fetching Landsat: SE-Svb (2014-01-01 to 2025-01-01)
+   -> Saved 120 records
+[51/103] Fetching Landsat: US-A10 (2011-01-01 to 2023-01-01)
+   -> Saved 44 records
+[52/103] Fetching Landsat: US-Akn (2011-01-01 to 2023-01-01)
+   -> Saved 114 records
+[53/103] Fetching Landsat: US-Aud (2002-01-01 to 2025-01-01)
+   -> Saved 510 records
+[54/103] Fetching Landsat: US-Bar (2004-01-01 to 2024-01-01)
+   -> Saved 214 records
+[55/103] Fetching Landsat: US-CMW (2001-01-01 to 2022-01-01)
+   -> Saved 156 records
+[56/103] Fetching Landsat: US-Ced (2005-01-01 to 2015-01-01)
+   -> Saved 28 records
+[57/103] Fetching Landsat: US-ChR (2006-01-01 to 2020-01-01)
+   -> Saved 67 records
+[58/103] Fetching Landsat: US-Cwt (2011-01-01 to 2025-01-01)
+   -> Saved 279 records
+[59/103] Fetching Landsat: US-EML (2008-01-01 to 2024-01-01)
+   -> Saved 86 records
+[60/103] Fetching Landsat: US-GLE (2005-01-01 to 2021-01-01)
+   -> Saved 78 records
+[61/103] Fetching Landsat: US-Ha1 (1991-01-01 to 2026-01-01)
+   -> Saved 287 records
+[62/103] Fetching Landsat: US-Ho2 (1999-01-01 to 2026-01-01)
+   -> Saved 129 records
+[63/103] Fetching Landsat: US-Ho3 (2003-01-01 to 2022-01-01)
+   -> Saved 63 records
+[64/103] Fetching Landsat: US-ICh (2007-01-01 to 2026-01-01)
+   -> Saved 85 records
+[65/103] Fetching Landsat: US-ICt (2007-01-01 to 2026-01-01)
+   -> Saved 89 records
+[66/103] Fetching Landsat: US-Jo1 (2010-01-01 to 2023-01-01)
+   -> Saved 184 records
+[67/103] Fetching Landsat: US-Jo2 (2010-01-01 to 2021-01-01)
+   -> Saved 132 records
+[68/103] Fetching Landsat: US-KFS (2007-01-01 to 2020-01-01)
+   -> Saved 63 records
+[69/103] Fetching Landsat: US-Kon (2004-01-01 to 2020-01-01)
+   -> Saved 77 records
+[70/103] Fetching Landsat: US-MMS (1999-01-01 to 2024-01-01)
+   -> Saved 118 records
+[71/103] Fetching Landsat: US-MOz (2004-01-01 to 2022-01-01)
+   -> Saved 81 records
+[72/103] Fetching Landsat: US-Me6 (2010-01-01 to 2026-01-01)
+   -> Saved 191 records
+[73/103] Fetching Landsat: US-Mpj (2008-01-01 to 2026-01-01)
+   -> Saved 249 records
+[74/103] Fetching Landsat: US-MtB (2009-01-01 to 2025-01-01)
+   -> Saved 191 records
+[75/103] Fetching Landsat: US-NC2 (2005-01-01 to 2026-01-01)
+   -> Saved 187 records
+[76/103] Fetching Landsat: US-NGB (2012-01-01 to 2024-01-01)
+   -> Saved 43 records
+[77/103] Fetching Landsat: US-NR1 (1998-01-01 to 2026-01-01)
+   -> Saved 153 records
+[78/103] Fetching Landsat: US-NR3 (2007-01-01 to 2025-01-01)
+   -> Saved 88 records
+[79/103] Fetching Landsat: US-Oho (2004-01-01 to 2014-01-01)
+   -> Saved 4 records
+[80/103] Fetching Landsat: US-Prr (2010-01-01 to 2023-01-01)
+   -> Saved 119 records
+[81/103] Fetching Landsat: US-Rls (2014-01-01 to 2024-01-01)
+   -> Saved 230 records
+[82/103] Fetching Landsat: US-Rms (2014-01-01 to 2024-01-01)
+   -> Saved 182 records
+[83/103] Fetching Landsat: US-Ro4 (2014-01-01 to 2026-01-01)
+   -> Saved 264 records
+[84/103] Fetching Landsat: US-Rpf (2008-01-01 to 2025-01-01)
+   -> Saved 138 records
+[85/103] Fetching Landsat: US-Rwf (2014-01-01 to 2024-01-01)
+   -> Saved 211 records
+[86/103] Fetching Landsat: US-Rws (2014-01-01 to 2024-01-01)
+   -> Saved 242 records
+[87/103] Fetching Landsat: US-SRG (2008-01-01 to 2026-01-01)
+   -> Saved 476 records
+[88/103] Fetching Landsat: US-SRM (2004-01-01 to 2026-01-01)
+   -> Saved 282 records
+[89/103] Fetching Landsat: US-Seg (2007-01-01 to 2026-01-01)
+   -> Saved 565 records
+[90/103] Fetching Landsat: US-Ses (2007-01-01 to 2026-01-01)
+   -> Saved 557 records
+[91/103] Fetching Landsat: US-Slt (2005-01-01 to 2023-01-01)
+   -> Saved 160 records
+[92/103] Fetching Landsat: US-Syv (2001-01-01 to 2026-01-01)
+   -> Saved 200 records
+[93/103] Fetching Landsat: US-Ton (2001-01-01 to 2026-01-01)
+   -> Saved 511 records
+[94/103] Fetching Landsat: US-UMd (2007-01-01 to 2026-01-01)
+   -> Saved 208 records
+[95/103] Fetching Landsat: US-Uaf (2003-01-01 to 2026-01-01)
+   -> Saved 197 records
+[96/103] Fetching Landsat: US-UiD (2008-01-01 to 2025-01-01)
+   -> Saved 271 records
+[97/103] Fetching Landsat: US-Var (2000-01-01 to 2026-01-01)
+   -> Saved 517 records
+[98/103] Fetching Landsat: US-Vcm (2007-01-01 to 2026-01-01)
+   -> Saved 309 records
+[99/103] Fetching Landsat: US-Vcp (2007-01-01 to 2026-01-01)
+   -> Saved 439 records
+[100/103] Fetching Landsat: US-WCr (1999-01-01 to 2026-01-01)
+   -> Saved 84 records
+[101/103] Fetching Landsat: US-Whs (2007-01-01 to 2026-01-01)
+   -> Saved 288 records
+[102/103] Fetching Landsat: US-Wjs (2007-01-01 to 2026-01-01)
+   -> Saved 262 records
+[103/103] Fetching Landsat: US-Wkg (2004-01-01 to 2026-01-01)
+   -> Saved 296 records
+
+Raw-band extraction complete -> 'C:\Users\Lenovo\OneDrive - Università degli Studi di Milano\Desktop\FLUX\Flux_sentinel_dendro_NSC\data\fluxnet_all_highlat_landsat_raw_bands.csv'.
+
+Computing indices (NDVI, EVI, NIRv) from raw bands...
+Inferred reflectance scale factor: 1.0
+Indices written to 'C:\Users\Lenovo\OneDrive - Università degli Studi di Milano\Desktop\FLUX\Flux_sentinel_dendro_NSC\data\fluxnet_all_highlat_landsat_indices.csv' (17053 rows).

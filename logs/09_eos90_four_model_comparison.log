@@ -1,0 +1,55 @@
+659 site-year-index rows available.
+
+
+======================================================================
+NDVI
+======================================================================
+n_obs=160, n_sites=45
+
+Model fit (ML):
+                                   model  n_predictors      loglik         aic         bic
+                      A_environment_only             5 -759.747508 1535.495016 1560.096406
+              B_environment_plus_leafout             6 -758.544585 1535.089170 1562.765734
+             C_environment_plus_splitgpp             7 -704.615106 1429.230212 1459.981950
+D_environment_plus_leafout_plus_splitgpp             8 -702.834658 1427.669317 1461.496229
+
+Pairwise likelihood-ratio tests:
+  A_environment_only                            -> B_environment_plus_leafout                     chi2=  2.41  df=1  p=0.1209
+  A_environment_only                            -> C_environment_plus_splitgpp                    chi2=110.26  df=2  p=1.138e-24
+  B_environment_plus_leafout                    -> D_environment_plus_leafout_plus_splitgpp       chi2=111.42  df=2  p=6.39e-25
+  C_environment_plus_splitgpp                   -> D_environment_plus_leafout_plus_splitgpp       chi2=  3.56  df=1  p=0.05916
+  A_environment_only                            -> D_environment_plus_leafout_plus_splitgpp       chi2=113.83  df=3  p=1.648e-24
+
+Leave-one-site-out CV:
+  A_environment_only                            n= 160  RMSE= 31.89d  R2=0.171
+  B_environment_plus_leafout                    n= 160  RMSE= 31.69d  R2=0.181
+  C_environment_plus_splitgpp                   n= 160  RMSE= 26.21d  R2=0.440
+  D_environment_plus_leafout_plus_splitgpp      n= 160  RMSE= 25.58d  R2=0.467
+
+======================================================================
+NIRv
+======================================================================
+n_obs=230, n_sites=51
+
+Model fit (ML):
+                                   model  n_predictors       loglik         aic         bic
+                      A_environment_only             5 -1072.692428 2161.384857 2188.889491
+              B_environment_plus_leafout             6 -1068.537043 2155.074086 2186.016800
+             C_environment_plus_splitgpp             7 -1011.441715 2042.883431 2077.264224
+D_environment_plus_leafout_plus_splitgpp             8 -1010.388917 2042.777835 2080.596707
+
+Pairwise likelihood-ratio tests:
+  A_environment_only                            -> B_environment_plus_leafout                     chi2=  8.31  df=1  p=0.003941
+  A_environment_only                            -> C_environment_plus_splitgpp                    chi2=122.50  df=2  p=2.507e-27
+  B_environment_plus_leafout                    -> D_environment_plus_leafout_plus_splitgpp       chi2=116.30  df=2  p=5.579e-26
+  C_environment_plus_splitgpp                   -> D_environment_plus_leafout_plus_splitgpp       chi2=  2.11  df=1  p=0.1468
+  A_environment_only                            -> D_environment_plus_leafout_plus_splitgpp       chi2=124.61  df=3  p=7.854e-27
+
+Leave-one-site-out CV:
+  A_environment_only                            n= 230  RMSE= 31.98d  R2=0.044
+  B_environment_plus_leafout                    n= 230  RMSE= 31.14d  R2=0.093
+  C_environment_plus_splitgpp                   n= 230  RMSE= 26.06d  R2=0.365
+  D_environment_plus_leafout_plus_splitgpp      n= 230  RMSE= 25.88d  R2=0.374
+
+
+Written: 'eos90_four_model_comparison.csv', 'eos90_four_model_lrt.csv', 'eos90_four_model_cv.csv'

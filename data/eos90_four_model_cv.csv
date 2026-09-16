@@ -1,0 +1,9 @@
+vi_index,model,n_predicted,loso_rmse_days,loso_r2
+NDVI,A_environment_only,160,31.89359227139556,0.17082228162975355
+NDVI,B_environment_plus_leafout,160,31.692005565886433,0.18127096078667193
+NDVI,C_environment_plus_splitgpp,160,26.21271302176189,0.43990113429699607
+NDVI,D_environment_plus_leafout_plus_splitgpp,160,25.57956041710317,0.4666320674709299
+NIRv,A_environment_only,230,31.976052138500098,0.04399159532223473
+NIRv,B_environment_plus_leafout,230,31.14421141901714,0.09308475707236707
+NIRv,C_environment_plus_splitgpp,230,26.06117422554636,0.36496160664459887
+NIRv,D_environment_plus_leafout_plus_splitgpp,230,25.878840132010808,0.3738164721920705

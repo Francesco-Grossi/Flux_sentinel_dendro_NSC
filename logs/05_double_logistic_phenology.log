@@ -1,0 +1,37 @@
+Fitting double-logistic phenology curves for: ['NDVI', 'EVI', 'NIRv']
+  processed 25/837 site-years
+  processed 50/837 site-years
+  processed 75/837 site-years
+  processed 100/837 site-years
+  processed 125/837 site-years
+  processed 150/837 site-years
+  processed 175/837 site-years
+  processed 200/837 site-years
+  processed 225/837 site-years
+  processed 250/837 site-years
+  processed 275/837 site-years
+  processed 300/837 site-years
+  processed 325/837 site-years
+  processed 350/837 site-years
+  processed 375/837 site-years
+  processed 400/837 site-years
+  processed 425/837 site-years
+  processed 450/837 site-years
+  processed 475/837 site-years
+  processed 500/837 site-years
+  processed 525/837 site-years
+  processed 550/837 site-years
+  processed 575/837 site-years
+  processed 600/837 site-years
+  processed 625/837 site-years
+  processed 650/837 site-years
+  processed 675/837 site-years
+  processed 700/837 site-years
+  processed 725/837 site-years
+  processed 750/837 site-years
+  processed 775/837 site-years
+  processed 800/837 site-years
+  processed 825/837 site-years
+  processed 837/837 site-years
+
+Done. 1122/1122 rows fit successfully -> 'C:\Users\Lenovo\OneDrive - Università degli Studi di Milano\Desktop\FLUX\Flux_sentinel_dendro_NSC\data\phenology_double_logistic_by_site_year_index.csv'.

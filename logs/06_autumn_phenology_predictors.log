@@ -1,0 +1,6 @@
+Phenology rows available (successful fits, corr >= 0.8): 659
+Excluding 37292 implausible 'GPP_NT_VUT_REF' value(s) outside [-5, 50].
+Excluding 37246 implausible 'RECO_NT_VUT_REF' value(s) outside [-5, 40].
+Excluding 2 implausible 'SW_IN_F' value(s) outside [0, 500].
+Predictor table -> 'C:\Users\Lenovo\OneDrive - Università degli Studi di Milano\Desktop\FLUX\Flux_sentinel_dendro_NSC\data\phenology_flux_predictors_by_site_year_index.csv' (659 rows).
+Correlation table -> 'C:\Users\Lenovo\OneDrive - Università degli Studi di Milano\Desktop\FLUX\Flux_sentinel_dendro_NSC\data\autumn_phenology_correlations.csv' (96 rows).
