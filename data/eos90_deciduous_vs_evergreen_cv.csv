@@ -1,0 +1,9 @@
+leaf_habit,vi_index,model,n_predicted,loso_rmse_days,loso_r2
+deciduous,NDVI,baseline_no_gpp,45,31.559006585166237,-0.29428813324169356
+deciduous,NDVI,split_gpp_pre_post,45,46.32737800410463,-1.789072242215752
+deciduous,NIRv,baseline_no_gpp,51,26.471987455825168,0.0865457779727935
+deciduous,NIRv,split_gpp_pre_post,51,15.695563490471931,0.6788798819316688
+evergreen,NDVI,baseline_no_gpp,45,35.349402044105034,0.04909782459883161
+evergreen,NDVI,split_gpp_pre_post,45,28.348715956743234,0.3884408304880803
+evergreen,NIRv,baseline_no_gpp,65,39.07933058976322,-1.2746574996782583
+evergreen,NIRv,split_gpp_pre_post,65,19.59565816115432,0.4280718260525468
