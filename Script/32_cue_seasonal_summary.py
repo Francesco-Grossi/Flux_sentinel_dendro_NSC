@@ -1,5 +1,5 @@
 """
-PIPELINE STEP 23 - Describe the CUE estimates of step 22 at three time scales
+PIPELINE STEP 32 - Describe the CUE estimates of step 26 at three time scales
 and check how they relate to each other:
 
   annual    one CUE per site-year (the Luo et al. method)
@@ -14,7 +14,7 @@ Questions:
      between CUE_pre and CUE_post)
   3. How different is NPP from the daily CUE (NPPd) from NPP from the annual
      CUE (NPP), for the pre- and post-solstice sums?
-The EOS relationships themselves are tested by steps 12-17, which pick up
+The EOS relationships themselves are tested by steps 27 and 33-38, which pick up
 NPP, NPPd and CUEd (window-mean daily CUE) automatically.
 
 Input : data/cue_luo2025_site_year.csv, cue_luo2025_seasonal.csv, npp_luo2025_daily.csv
@@ -37,7 +37,7 @@ OUT_MEANS = ec.DATA_DIR / "cue_seasonal_means_by_site_year.csv"
 OUT_AGREE = ec.DATA_DIR / "cue_scale_agreement.csv"
 FIG_DIR = ec.FIGURE_DIR / "cue_seasonal"
 FIG_DIR.mkdir(parents=True, exist_ok=True)
-ec.require(CUE_CSV, SEASON_CSV, ec.NPP_CSV, hint="Run 22_cue_luo2025.py first.")
+ec.require(CUE_CSV, SEASON_CSV, ec.NPP_CSV, hint="Run 26_cue_npp_luo2025.py first.")
 
 PRE_START, POST_END = 80, 300
 MIN_DAYS = 30                 # days with a value needed for a seasonal mean / sum

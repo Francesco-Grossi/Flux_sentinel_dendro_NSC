@@ -1,0 +1,78 @@
+site_id,site_name,lat,lon,elev,n_trees,species,dentype,nearest_flux,igbp,dist_km,status
+7,FRFon,48.4763412,2.780054721,98,12,"Car bet, Que pet",Circumference,FR-Fon,DBF,0.0,"downloaded, not in pipeline"
+31,Rajec_old,49.4437019,16.6964856,639,4,Pic abi,Circumference,CZ-RAJ,ENF,0.0,"downloaded, not in pipeline"
+35,Bily Kriz,49.5020633,18.5368172,855,8,Pic abi,Circumference,CZ-BK1,ENF,0.0,"downloaded, not in pipeline"
+32,Rajec_young,49.4437019,16.6964856,639,3,Pic abi,Circumference,CZ-RAJ,ENF,0.0,"downloaded, not in pipeline"
+36,Stitna nad Vlari,49.0359392,17.9698567,557,8,Fag syl,Circumference,CZ-Stn,DBF,0.01,"downloaded, not in pipeline"
+83,Davos Seehornwald,46.81522,9.8558,1613,9,Pic abi,Radius/Point,CH-Dav,ENF,0.01,"downloaded, not in pipeline"
+43,Matsch_SF1,46.6777,10.5781,1222,7,"Lar dec, Pin nig",Circumference converted to radius,IT-MtP,GRA,0.91,"downloaded, not in pipeline"
+45,Matsch_SF3,46.6977,10.6072,2010,4,Lar dec,Circumference converted to radius,IT-MtP,GRA,2.25,"downloaded, not in pipeline"
+44,Matsch_SF2,46.6944,10.6129,1766,4,Lar dec,Circumference converted to radius,IT-MtP,GRA,2.4,"downloaded, not in pipeline"
+46,Matsch_SF4,46.66987,10.6422,2446,7,"Lar dec, Pin cem",Circumference converted to radius,IT-MtP,GRA,4.64,"downloaded, not in pipeline"
+48,Matsch_WgN,46.6961,10.6476,2239,4,Pin cem,Circumference converted to radius,IT-MtP,GRA,4.94,"downloaded, not in pipeline"
+33,Rovna,49.4848267,16.6146578,325,3,Pic abi,Circumference,CZ-RAJ,ENF,7.48,"downloaded, not in pipeline"
+49,Matsch_WgS,46.7389,10.6884,2062,4,Lar dec,Circumference converted to radius,IT-MtP,GRA,9.94,"downloaded, not in pipeline"
+47,Matsch_SF5,46.7389,10.6884,2062,8,"Lar dec, Pin cem",Circumference converted to radius,IT-MtP,GRA,9.94,"downloaded, not in pipeline"
+5,CZ_SJ8,49.1674,13.1888,1263,3,Pic abi,Circumference,DE-Lkb,ENF,11.31,"downloaded, not in pipeline"
+41,Tschirgant,47.2314,10.8475,720,4,Pin syl,Circumference,AT-Mmg,ENF,13.24,"downloaded, not in pipeline"
+42,Tschirgant xeric,47.2311,10.8444,720,13,"Lar dec, Pic abi, Pin syl",Circumference,AT-Mmg,ENF,13.42,"downloaded, not in pipeline"
+30,Habruvka,49.3110953,16.71253,496,3,Pic abi,Circumference,CZ-RAJ,ENF,14.79,"downloaded, not in pipeline"
+25,Praxmar,47.1525,11.1266,1821,4,Pic abi,Circumference,AT-Neu,GRA,15.19,"downloaded, not in pipeline"
+52,Experimental forest Aelmoeseneie,50.975,3.8043,14,2,Fag syl,Radius/Point,BE-Lcr,DBF,15.59,"downloaded, not in pipeline"
+85,Aelivka,49.6753,15.2297,475,6,Pic abi,Circumference converted to diameter,CZ-KrP,CRO,15.71,not downloaded
+64,Alvaneu,46.683,9.6411,1233,3,Pin syl,Radius/Point,CH-Aws,GRA,15.93,"downloaded, not in pipeline"
+24,Patscherkofel,47.221606,11.467668,1725,6,Pic abi,Circumference,AT-Neu,GRA,16.16,"downloaded, not in pipeline"
+59,Utechov,49.2798,16.6487,387,3,Fag syl,Circumference,CZ-RAJ,ENF,18.55,"downloaded, not in pipeline"
+58,Bilovice,49.2485,16.6867,318,5,Que pet,Circumference,CZ-RAJ,ENF,21.72,"downloaded, not in pipeline"
+57,Dooary Forest,52.9486,-7.2644,245,4,Pic sit,Radius/Point,IE-CaN,CRO,25.28,not downloaded
+65,Neunkirch,47.6837,8.5339,471,3,Fag syl,Radius/Point,CH-Lae,MF,26.14,"downloaded, not in pipeline"
+1,Absamer Vorberg,47.3149,11.5112,921,9,"Fag syl, Pic abi, Pin syl",Circumference,AT-Neu,GRA,26.37,"downloaded, not in pipeline"
+68,Eldena,54.078493,13.475531,10,17,"Ace pse, Car bet, Fag syl, Que rob",Radius/Point,DE-Hdn,CRO,27.01,not downloaded
+40,Vijlnerbos,50.765878,5.968734,191,5,Fag syl,Circumference,DE-RuR,GRA,28.54,in pipeline
+4,CZ_SB3,48.9923,13.8213,1225,4,Pic abi,Circumference,DE-Lkb,ENF,39.5,"downloaded, not in pipeline"
+28,Avegno 02,46.21416667,8.739722222,489,2,Ail alt,Radius/Point,CH-Frk,GRA,47.21,"downloaded, not in pipeline"
+27,Avegno 01,46.21219444,8.745666667,369,4,"Ail alt, Cas sat",Radius/Point,CH-Frk,GRA,47.63,"downloaded, not in pipeline"
+67,Saillon Eiche,46.1701,7.1664,1031,3,Que pub,Radius/Point,IT-Tor,GRA,48.19,in pipeline
+66,Saillon Buche,46.1713,7.1655,1031,4,Fag syl,Radius/Point,IT-Tor,GRA,48.33,in pipeline
+69,Vilm,54.326367,13.540346,10,14,"Ace pse, Fag syl, Que rob",Radius/Point,DE-Akm,WET,52.02,not downloaded
+15,LTAL_N08,46.3026,7.7411,699,8,"Lar dec, Pic abi",Circumference/Radius/Point,IT-Tor,GRA,52.47,in pipeline
+38,SK_SRA_008_1,49.1899,19.1095,859,5,"Abi alb, Fag syl, Pic abi",Circumference,CZ-BK2,GRA,53.22,"downloaded, not in pipeline"
+39,SK_SRA_010_2,49.1864,19.1083,859,6,"Abi alb, Fag syl, Pic abi",Circumference,CZ-BK2,GRA,53.4,"downloaded, not in pipeline"
+50,Champenoux,48.7208,6.34,232,5,Que pet,Circumference,FR-Hes,DBF,53.44,"downloaded, not in pipeline"
+19,LTAL_N19,46.3869,7.7738,1815,8,"Lar dec, Pic abi",Circumference/Radius/Point,CH-Frk,GRA,53.94,"downloaded, not in pipeline"
+22,LTAL_N22,46.3812,7.7728,2120,3,Lar dec,Circumference/Radius/Point,CH-Frk,GRA,54.27,"downloaded, not in pipeline"
+17,LTAL_N13W,46.3934,7.7639,1416,5,"Lar dec, Pic abi",Radius/Point,CH-Frk,GRA,54.36,"downloaded, not in pipeline"
+18,LTAL_N16,46.3871,7.7643,1510,7,"Lar dec, Pic abi",Circumference/Radius/Point,CH-Frk,GRA,54.6,"downloaded, not in pipeline"
+16,LTAL_N13,46.3918,7.7613,1416,6,"Lar dec, Pic abi",Circumference/Radius/Point,CH-Frk,GRA,54.61,"downloaded, not in pipeline"
+20,LTAL_S16,46.3972,7.7554,1628,8,"Lar dec, Pic abi",Circumference/Radius/Point,CH-Frk,GRA,54.81,"downloaded, not in pipeline"
+21,LTAL_S19,46.3967,7.7459,1875,9,"Lar dec, Pic abi",Circumference/Radius/Point,CH-Frk,GRA,55.51,"downloaded, not in pipeline"
+11,CHS81,44.04,1.75,325,5,Que pet,Circumference,FR-Tou,GRA,60.04,"downloaded, not in pipeline"
+3,CZ_J08,50.064,18.2577,184,4,Pic abi,Circumference,CZ-BK1,ENF,65.62,"downloaded, not in pipeline"
+14,Charmes,48.3725,6.293333333,274,10,Que pet,Circumference,FR-Hes,DBF,65.96,"downloaded, not in pipeline"
+84,Beneovice,49.7419,12.8614,514,6,Pin syl,Circumference converted to diameter,DE-Lkb,ENF,78.29,"downloaded, not in pipeline"
+2,CZ_J01,50.0754,17.2507,1229,4,Pic abi,Circumference,CZ-RAJ,ENF,80.74,"downloaded, not in pipeline"
+34,Vidly,50.1063825,17.2671386,807,3,Pic abi,Circumference,CZ-RAJ,ENF,84.31,"downloaded, not in pipeline"
+29,ES1000,50.1177742,17.2470447,1012,2,Pic abi,Circumference,CZ-RAJ,ENF,84.74,"downloaded, not in pipeline"
+51,Ban,48.104,6.2098,427,5,Fag syl,Circumference,FR-Hes,DBF,89.46,"downloaded, not in pipeline"
+13,Laveyron,43.77611111,-0.2167,132,9,Que pet,Circumference,FR-Bil,ENF,99.24,in pipeline
+9,CHS58,46.9696,3.66,269,10,Que pet,Circumference,FR-LGt,WET,111.22,not downloaded
+61,Lazy,50.0433,12.625,828,6,Pic abi,Circumference converted to diameter,DE-Obe,ENF,113.43,"downloaded, not in pipeline"
+12,Cheze,42.9167,-0.0333,1004,10,Que pet,Circumference,FR-Aur,CRO,116.08,not downloaded
+8,CHS01,46.1708,5.238,277,6,Que pet,Circumference,CH-For,CRO,123.32,not downloaded
+10,CHS72,47.7955,0.3796,165,9,Que pet,Circumference,FR-LGt,WET,152.26,not downloaded
+81,BF_27,52.61566051,23.75227176,160,3,Pin syl,Circumference,CZ-BK1,ENF,502.48,"downloaded, not in pipeline"
+71,BF_05,52.67223274,23.68712014,164,3,Aln glu,Circumference,CZ-BK1,ENF,503.41,"downloaded, not in pipeline"
+82,BF_33,52.6322939,23.77211952,161,5,"Pic abi, Que rob",Circumference,CZ-BK1,ENF,504.71,"downloaded, not in pipeline"
+70,BF_03,52.67668999,23.75127473,175,6,Pin syl,Circumference,CZ-BK1,ENF,506.95,"downloaded, not in pipeline"
+72,BF_09,52.76775392,23.73877387,173,6,"Bet spp, Til cor",Circumference,CZ-BK1,ENF,513.17,"downloaded, not in pipeline"
+73,BF_10,52.7706735,23.7365344,173,7,"Ace pla, Fra exc",Circumference,CZ-BK1,ENF,513.28,"downloaded, not in pipeline"
+80,BF_24,52.73445245,23.83206177,167,3,Ulm spp,Circumference,CZ-BK1,ENF,515.29,"downloaded, not in pipeline"
+74,BF_12,52.78150845,23.78133852,164,1,Til cor,Circumference,CZ-BK1,ENF,516.31,"downloaded, not in pipeline"
+79,BF_21,52.72732003,23.8658468,172,4,Ace pse,Circumference,CZ-BK1,ENF,516.45,"downloaded, not in pipeline"
+75,BF_15,52.75539849,23.84901769,166,3,Que rob,Circumference,CZ-BK1,ENF,517.7,"downloaded, not in pipeline"
+76,BF_17,52.8028119,23.84674109,160,6,"Bet spp, Pin syl",Circumference,CZ-BK1,ENF,521.14,"downloaded, not in pipeline"
+78,BF_20,52.77027595,23.89939167,159,4,Aln glu,Circumference,CZ-BK1,ENF,521.32,"downloaded, not in pipeline"
+77,BF_19,52.79235137,23.8944342,167,3,Fra exc,Circumference,CZ-BK1,ENF,522.72,"downloaded, not in pipeline"
+56,RO_FA9_457,45.5715,24.6046,1502,3,Pic abi,Circumference,CZ-BK2,GRA,630.01,"downloaded, not in pipeline"
+55,RO_BEL_004_1,45.6414,24.965,1391,1,Fag syl,Circumference,CZ-BK2,GRA,644.34,"downloaded, not in pipeline"
+54,RO_BEL_002_2,45.6369,24.9659,1391,3,"Abi alb, Fag syl",Circumference,CZ-BK2,GRA,644.74,"downloaded, not in pipeline"

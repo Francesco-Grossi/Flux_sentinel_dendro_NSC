@@ -1,5 +1,5 @@
 """
-PIPELINE STEP 17 - Do growth RATE and accumulated carbon act the same way on
+PIPELINE STEP 37 - Do growth RATE and accumulated carbon act the same way on
 EOS? (Notion D.2: "GPPmean/NPPmean more directly link with EOS10 compared to
 GPPcum/NPPcum?", "growth rate matters more", "effect differs among tree species".)
 
@@ -27,7 +27,7 @@ Groups: 'ALL' plus every IGBP class with >= MIN_SITES sites. Optionally supply
 data/site_leafout_strategy.csv (site_id, group) - e.g. deterministic vs
 non-deterministic species after Baumgarten et al. 2026 - used as extra groups.
 
-Input : data/eos_window_predictors_{fixed,year}_anchor.csv   (step 12)
+Input : data/eos_window_predictors_{fixed,year}_anchor.csv   (step 27)
         data/site_leafout_strategy.csv                        (optional)
 Output: data/eos_rate_vs_cumulative.csv
 """
@@ -40,7 +40,7 @@ TARGETS_17 = ['EOS10']          # Notion: focus on EOS10 first; add 'EOS50' here
 LOSO_ONLY_FOR = ('ALL', 'fixed')  # leave-one-site-out refits are slow; run them only for the headline comparison
 STRATEGY_CSV = ec.DATA_DIR / "site_leafout_strategy.csv"
 WINDOWS = ['SOS_to_SOL', 'SOS_to_EOS90', 'SOS_to_EOS50', 'SOS_to_EOS10', 'SOL_to_EOS90', 'SOL_to_EOS10']
-ec.require(ec.WINDOW_FIXED_CSV, ec.WINDOW_YEAR_CSV, hint="Run 12_build_window_predictors.py first.")
+ec.require(ec.WINDOW_FIXED_CSV, ec.WINDOW_YEAR_CSV, hint="Run 27_window_predictors.py first.")
 
 strategy = pd.read_csv(STRATEGY_CSV) if STRATEGY_CSV.exists() else None
 if strategy is not None:

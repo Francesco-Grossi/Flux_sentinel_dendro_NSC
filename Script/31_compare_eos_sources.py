@@ -1,12 +1,12 @@
 """
-PIPELINE STEP 21 - How well do the different EOS sources agree, and which
-one should be the outcome of the EOS <-> carbon analyses (steps 12-17)?
+PIPELINE STEP 31 - How well do the different EOS sources agree, and which
+one should be the outcome of the EOS <-> carbon analyses (steps 27 and 33-38)?
 
 Sources (every vi_index present after QC, plus the flux-derived dates):
-    NDVI / NIRv         satellite, HLS            (step 5)
-    NDVI_tower          tower broadband NDVI      (step 19)
-    GCC                 PhenoCam greenness        (step 20)
-    GPP                 flux-derived, EOS10 only  (step 18) - NOT independent of
+    NDVI / NIRv         satellite, HLS            (step 23)
+    NDVI_tower          tower broadband NDVI      (step 24)
+    GCC                 PhenoCam greenness        (step 25)
+    GPP                 flux-derived, EOS10 only  (step 30) - NOT independent of
                         the GPP predictors; shown for reference only
 
 The EOS <-> carbon analyses use year-to-year differences WITHIN a site, so
@@ -19,7 +19,7 @@ removed), over sites with >= MIN_YEARS_PER_SITE shared years:
 Also reported per source: site-years, sites, and the typical within-site
 standard deviation of EOS (very large values indicate noise, not biology).
 
-Input : phenology tables of steps 5 / 19 / 20, data/gpp_derived_eos_by_site_year.csv
+Input : phenology tables of steps 23 / 24 / 25, data/gpp_derived_eos_by_site_year.csv
 Output: data/eos_source_summary.csv
         data/eos_source_agreement.csv           (all pairs x EOS90/50/10 x leaf habit)
         figure/eos_source_agreement/r_within_<level>.png
@@ -54,7 +54,7 @@ if os.path.exists(GPP_EOS_CSV):
     pheno = pd.concat([pheno, g.reindex(columns=['site_id', 'year'] + LEVELS).assign(source='GPP')],
                       ignore_index=True)
 else:
-    print(f"NOTE: '{GPP_EOS_CSV}' not found - run 18_vi_eos_vs_gpp_eos.py to include flux-derived EOS.")
+    print(f"NOTE: '{GPP_EOS_CSV}' not found - run 30_eos_satellite_vs_gpp.py to include flux-derived EOS.")
 
 igbp = pd.read_csv(ec.DATA_DIR / "fluxnet_daily_all_vars.csv", usecols=['site_id', 'igbp']).drop_duplicates('site_id')
 pheno = pheno.merge(igbp, on='site_id', how='left')

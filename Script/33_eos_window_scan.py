@@ -1,5 +1,5 @@
 """
-PIPELINE STEP 13 - Which carbon window links to which EOS, and with what sign?
+PIPELINE STEP 33 - Which carbon window links to which EOS, and with what sign?
 
 Covers Notion sections A (previous analysis) and D.1 (GPP negative
 relationship with EOS, sink activities via NPP):
@@ -18,7 +18,7 @@ relationship with EOS, sink activities via NPP):
 Each cell = site-random-intercept LME of EOS on the z-scored predictor
 (beta = days of EOS shift per +1 SD), plus pooled and within-site Pearson r.
 
-Input : data/eos_window_predictors_{fixed,year}_anchor.csv   (step 12)
+Input : data/eos_window_predictors_{fixed,year}_anchor.csv   (step 27)
 Output: data/eos_window_scan.csv
         figure/eos_window_scan/<anchor>_<vi>_<carbon>.png
 """
@@ -32,7 +32,7 @@ import eos_common as ec
 FIG_DIR = ec.FIGURE_DIR / "eos_window_scan"
 FIG_DIR.mkdir(parents=True, exist_ok=True)
 OUTPUT_CSV = ec.DATA_DIR / "eos_window_scan.csv"
-ec.require(ec.WINDOW_FIXED_CSV, ec.WINDOW_YEAR_CSV, hint="Run 12_build_window_predictors.py first.")
+ec.require(ec.WINDOW_FIXED_CSV, ec.WINDOW_YEAR_CSV, hint="Run 27_window_predictors.py first.")
 
 rows = []
 for mode, path in (('fixed', ec.WINDOW_FIXED_CSV), ('year', ec.WINDOW_YEAR_CSV)):
@@ -56,7 +56,7 @@ scan.to_csv(OUTPUT_CSV, index=False)
 print(f"{len(scan)} window x metric x target cells -> '{OUTPUT_CSV}'")
 if scan.empty:
     raise SystemExit("No cell had enough data (need >= "
-                     f"{ec.MIN_OBS} obs / {ec.MIN_SITES} sites). Check step 12 output.")
+                     f"{ec.MIN_OBS} obs / {ec.MIN_SITES} sites). Check step 27 output.")
 
 # ---- console summary: the "sign shift" of the Notion page, EOS10 & EOS50, GPP
 pd.set_option('display.width', 200)

@@ -1,5 +1,5 @@
 """
-PIPELINE STEP 1 - Download and extract daily FLUXNET data.
+PIPELINE STEP 11 - Download and extract daily FLUXNET data.
 
 Queries the global FLUXNET site catalog, keeps sites > 30 deg N with a
 natural (non-wetland/urban/cropland) land cover, downloads each site's daily
@@ -146,6 +146,19 @@ site_meta = {
     for _, row in target_sites_df.iterrows()
 }
 
+# A download that was cut off leaves an unreadable zip, and a site with a file
+# is never fetched again - so set broken zips aside first; they are then
+# downloaded again below. (repair_fluxnet_downloads.py does the same with retries.)
+CORRUPT_DIR = os.path.join(DOWNLOAD_DIR, "_corrupt")
+for zpath in glob.glob(os.path.join(DOWNLOAD_DIR, "*.zip")):
+    try:
+        with zipfile.ZipFile(zpath) as zf:
+            zf.namelist()
+    except (zipfile.BadZipFile, OSError):
+        os.makedirs(CORRUPT_DIR, exist_ok=True)
+        os.replace(zpath, os.path.join(CORRUPT_DIR, os.path.basename(zpath)))
+        print(f"Unreadable zip set aside, will be downloaded again: {os.path.basename(zpath)}", flush=True)
+
 existing_files = glob.glob(os.path.join(DOWNLOAD_DIR, "*.zip")) + glob.glob(os.path.join(DOWNLOAD_DIR, "*.csv"))
 existing_filenames = [os.path.basename(f) for f in existing_files]
 
@@ -195,8 +208,11 @@ for filepath in zip_files:
             with zipfile.ZipFile(filepath, 'r') as z:
                 dd_files = [f for f in z.namelist() if ('_DD_' in f or '_DD.' in f or 'daily' in f.lower())
                             and f.endswith('.csv')]
+                # an archive also holds daily ERA5 (meteorology only, from 1981) and BIF
+                # metadata files; the flux data are in the FLUXMET / FULLSET file
+                dd_files = [f for f in dd_files if 'ERA5' not in f.upper() and 'BIF' not in f.upper()]
                 if dd_files:
-                    fullset = [f for f in dd_files if 'FULLSET' in f.upper()]
+                    fullset = [f for f in dd_files if 'FULLSET' in f.upper() or 'FLUXMET' in f.upper()]
                     chosen = fullset[0] if fullset else dd_files[0]
                     with z.open(chosen) as csv_file:
                         df_raw = pd.read_csv(csv_file)

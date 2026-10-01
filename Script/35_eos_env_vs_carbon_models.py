@@ -1,9 +1,9 @@
 """
-PIPELINE STEP 15 - How much do carbon source / sink activities explain EOS
+PIPELINE STEP 35 - How much do carbon source / sink activities explain EOS
 beyond environmental drivers? (Notion D.1-3a, Eq.1-3, after Zohner et al.
-2023 Fig. 5). Extends the step 08/09 model comparison to EOS10/EOS50.
+2023 Fig. 5). Extends the legacy step 08/09 model comparison to EOS10/EOS50.
 
-Predictor blocks (fixed-anchor windows from step 12):
+Predictor blocks (fixed-anchor windows from step 27):
   ENV     Eq.1  TA, SW, P before and after the solstice
                 ([SOS,SOL] and [SOL,EOS10-site-mean])
   SOS     leaf-out (SOS10)   <- the open "should SOS be a predictor?" question
@@ -11,8 +11,8 @@ Predictor blocks (fixed-anchor windows from step 12):
   SINK    Eq.3  cumulative NPP  [SOS,SOL] and [SOL,EOS10-site-mean]
                 (only if data/npp_luo2025_daily.csv exists)
 
-NOTE: unlike step 09, ENV deliberately excludes temperature/photoperiod
-"senescence rate" - those (step 07) are computed over EOS90->EOS10 of the
+NOTE: unlike legacy step 09, ENV deliberately excludes temperature/photoperiod
+"senescence rate" - those (legacy step 07) are computed over EOS90->EOS10 of the
 same year, i.e. from the target itself, which is circular for an EOS10 target.
 
 Models (all fit on identical complete-case rows so AIC/LRT are comparable):
@@ -22,7 +22,7 @@ For each: AIC/BIC (ML), marginal & conditional R2 (Nakagawa), delta marginal
 R2 vs ENV, max VIF, leave-one-site-out CV RMSE/R2, nested LRTs, and the
 standardized coefficients of the fullest model.
 
-Input : data/eos_window_predictors_fixed_anchor.csv   (step 12)
+Input : data/eos_window_predictors_fixed_anchor.csv   (step 27)
 Output: data/eos_env_vs_carbon_comparison.csv
         data/eos_env_vs_carbon_lrt.csv
         data/eos_env_vs_carbon_cv.csv
@@ -37,7 +37,7 @@ OUT_CMP = ec.DATA_DIR / "eos_env_vs_carbon_comparison.csv"
 OUT_LRT = ec.DATA_DIR / "eos_env_vs_carbon_lrt.csv"
 OUT_CV = ec.DATA_DIR / "eos_env_vs_carbon_cv.csv"
 OUT_COEF = ec.DATA_DIR / "eos_env_vs_carbon_coefficients.csv"
-ec.require(ec.WINDOW_FIXED_CSV, hint="Run 12_build_window_predictors.py first.")
+ec.require(ec.WINDOW_FIXED_CSV, hint="Run 27_window_predictors.py first.")
 
 w = pd.read_csv(ec.WINDOW_FIXED_CSV)
 PRE, POST = 'SOS_to_SOL', 'SOL_to_EOS10'
@@ -55,7 +55,7 @@ SINK = existing([f'NPP_cum__{PRE}', f'NPP_cum__{POST}'])       # NPP from the an
 SINK_D = existing([f'NPPd_cum__{PRE}', f'NPPd_cum__{POST}'])   # NPP from the seasonal (daily) CUE
 print(f"ENV={ENV}\nSOS={SOS}\nSOURCE={SOURCE}\nSINK={SINK or 'n/a (no NPP file)'}")
 if not ENV or not SOURCE:
-    raise SystemExit("Missing ENV or SOURCE columns - check step 12 / merged flux columns.")
+    raise SystemExit("Missing ENV or SOURCE columns - check step 27 / merged flux columns.")
 
 BLOCKS = {'M0_env': ENV, 'M1_env+SOS': ENV + SOS, 'M2_env+source': ENV + SOURCE}
 if SINK:

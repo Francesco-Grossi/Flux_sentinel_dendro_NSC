@@ -1,12 +1,12 @@
 """
 Shared double-logistic phenology fitting, used by every step that turns a
 greenness time series into leaf-out / EOS dates:
-    step 05  satellite VIs (HLS NDVI / NIRv)
-    step 19  tower broadband NDVI
-    step 20  PhenoCam GCC
+    step 23  satellite VIs (HLS NDVI / NIRv)
+    step 24  tower broadband NDVI
+    step 25  PhenoCam GCC
 NOT a pipeline step itself. Using one fitting routine for all sources keeps
 EOS90 / EOS50 / EOS10 defined identically, so they can be compared directly
-(step 21) and swapped as the outcome in steps 12-17.
+(step 31) and swapped as the outcome in steps 27 and 33-38.
 
 Sparse or noisy series give unstable autumn fits. Four safeguards, in order:
 
@@ -26,11 +26,17 @@ Sparse or noisy series give unstable autumn fits. Four safeguards, in order:
    (DOY 1-366), relative to the fitted amplitude (peak - vmin).
 4. QC flags (qc_pass / qc_reason). Failing site-years keep their fit
    parameters but get NaN phenology dates, so downstream steps drop them:
-     - >= MIN_OBS_AFTER_DOY200 real observations after DOY 200
+     - >= MIN_OBS_AFTER_PEAK real observations after the fitted peak (the
+       senescence part of the curve must be observed, whenever it happens)
      - fit R2 >= MIN_R2 on the real (not pseudo) observations
      - amplitude >= MIN_AMP_TO_RMSE x fit RMSE (seasonal signal above noise)
      - leaf_out_10 < 50 < 90 < peak < EOS90 < EOS50 < EOS10
-     - EOS90 >= MIN_EOS90_DOY
+     - EOS90 within MAX_EOS90_DEV_DAYS of the site's own median EOS90 (sites
+       with >= MIN_YEARS_FOR_SITE_CHECK fitted years). The reference is the
+       site itself, not a calendar date: in dry-summer ecosystems (e.g.
+       Californian grassland and oak savanna, sagebrush steppe) the canopy
+       really does senesce in May-June, and a fixed "EOS90 after DOY 180" rule
+       would discard exactly those sites.
 """
 import numpy as np
 import pandas as pd
@@ -52,14 +58,16 @@ CLIM_FILL_STEP = 10
 W_CLIM = 0.2
 
 # 4. QC
-MIN_OBS_AFTER_DOY200 = 3
+MIN_OBS_AFTER_PEAK = 3
 MIN_R2 = 0.8
 MIN_AMP_TO_RMSE = 2.0
-MIN_EOS90_DOY = 180
+MAX_EOS90_DEV_DAYS = 60     # a year's EOS90 further than this from the site median is a failed fit
+MIN_YEARS_FOR_SITE_CHECK = 3
 
 T_GRID = np.arange(1.0, 366.01, 0.25)
 
-OUTPUT_COLUMNS = ['site_id', 'year', 'vi_index', 'n_obs', 'n_obs_after_doy200', 'n_winter_fill', 'n_clim_fill',
+OUTPUT_COLUMNS = ['site_id', 'year', 'vi_index', 'n_obs', 'n_obs_after_doy200', 'n_obs_after_peak', 'n_winter_fill',
+                  'n_clim_fill',
                   'background', 'method', 'r2', 'rmse', 'corr', 'vmin', 'vmax', 'S', 'greenup_kinetic_i', 'A',
                   'senescence_kinetic_i', 'peak_doy', 'amplitude',
                   'leaf_out_10', 'leaf_out_50', 'leaf_out_90', 'EOS10', 'EOS50', 'EOS90', 'qc_pass', 'qc_reason']
@@ -80,9 +88,9 @@ def fit_double_logistic(doy, vi, weights):
     the first part of the year and A (senescence) after it."""
     vmin_obs, vmax_obs = np.nanpercentile(vi, 2), np.nanpercentile(vi, 98)
     amp = max(vmax_obs - vmin_obs, 1e-6)
-    peak_guess = float(np.clip(doy[np.argmax(vi)], 120, 240))
+    peak_guess = float(np.clip(doy[np.argmax(vi)], 90, 240))
     p0 = [vmin_obs, vmax_obs, peak_guess - 40, 0.1, peak_guess + 60, 0.1]
-    lower = [vmin_obs - amp, vmin_obs, 1, 0.01, 120, 0.01]
+    lower = [vmin_obs - amp, vmin_obs, 1, 0.01, 90, 0.01]
     upper = [vmax_obs, vmax_obs + amp, 240, 1.0, 366, 1.0]
     p0 = list(np.clip(p0, np.array(lower) + 1e-6, np.array(upper) - 1e-6))
     try:
@@ -121,10 +129,10 @@ def fill_points(doy_obs, lo=1, hi=366, gap=GAP_DAYS, step=CLIM_FILL_STEP):
     return np.array(pts, dtype=float)
 
 
-def qc_check(row, n_after_200):
+def qc_check(row, n_after_peak):
     reasons = []
-    if n_after_200 < MIN_OBS_AFTER_DOY200:
-        reasons.append('few_autumn_obs')
+    if n_after_peak < MIN_OBS_AFTER_PEAK:
+        reasons.append('few_obs_after_peak')
     if not (row.get('r2', np.nan) >= MIN_R2):
         reasons.append('low_r2')
     if not (row.get('amplitude', 0) >= MIN_AMP_TO_RMSE * row.get('rmse', np.inf)):
@@ -133,8 +141,6 @@ def qc_check(row, n_after_200):
                                          'EOS90', 'EOS50', 'EOS10']]
     if np.any(np.isnan(seq)) or np.any(np.diff(seq) <= 0):
         reasons.append('dates_missing_or_out_of_order')
-    if not (row.get('EOS90', np.nan) >= MIN_EOS90_DOY):
-        reasons.append('eos90_too_early')
     return len(reasons) == 0, ';'.join(reasons)
 
 
@@ -223,13 +229,23 @@ def fit_site_index(site_id, sdf, value_col, label=None):
             'A': popt[4], 'senescence_kinetic_i': popt[5],
         })
         row.update(transition_dates(popt))
-        ok, reason = qc_check(row, row['n_obs_after_doy200'])
+        row['n_obs_after_peak'] = int((real['doy'] > row['peak_doy']).sum())
+        ok, reason = qc_check(row, row['n_obs_after_peak'])
         row.update({'qc_pass': ok, 'qc_reason': reason})
-        if not ok:
-            for p in PERCENTILES:
-                row[f'leaf_out_{p}'] = np.nan
-                row[f'EOS{p}'] = np.nan
         rows.append(row)
+
+    # a year whose EOS90 is far from the site's own typical EOS90 is a failed fit
+    good = [r['EOS90'] for r in rows if r.get('qc_pass')]
+    if len(good) >= MIN_YEARS_FOR_SITE_CHECK:
+        site_median = float(np.median(good))
+        for r in rows:
+            if r.get('qc_pass') and abs(r['EOS90'] - site_median) > MAX_EOS90_DEV_DAYS:
+                r.update({'qc_pass': False, 'qc_reason': 'eos90_far_from_site_median'})
+    for r in rows:
+        if not r.get('qc_pass'):
+            for p in PERCENTILES:
+                r[f'leaf_out_{p}'] = np.nan
+                r[f'EOS{p}'] = np.nan
     return rows
 
 

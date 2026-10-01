@@ -1,9 +1,9 @@
 """
-PIPELINE STEP 2 - HLS (Landsat 8/9 HLSL30 + Sentinel-2 HLSS30) raw-band
+PIPELINE STEP 12 - HLS (Landsat 8/9 HLSL30 + Sentinel-2 HLSS30) raw-band
 extraction + NDVI/EVI/NIRv.
 
 For each qualifying FLUXNET site (>30N, >=5y span - re-derived from the
-daily file here so this step can run independently of step 1's exact site
+daily file here so this step can run independently of step 11's exact site
 list), pulls cloud/shadow/snow-masked surface reflectance from BOTH HLS
 collections over the site's own flux date range. HLS L30 and S30 are
 already harmonized (common grid, BRDF- and bandpass-adjusted), so the two
@@ -19,7 +19,7 @@ and lc_masked=False is recorded.
 
 Snow: snow pixels are masked out of the reflectance means, but the per-image
 fraction of snow-covered (clear, non-cloud) pixels is kept as snow_frac,
-even for images with no usable reflectance. Step 5 uses these dates as
+even for images with no usable reflectance. Step 23 uses these dates as
 dormant-season (background) observations.
 
 Outputs: data/fluxnet_all_highlat_landsat_raw_bands.csv
@@ -39,7 +39,8 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 RAW_BANDS_CSV = DATA_DIR / "fluxnet_all_highlat_landsat_raw_bands.csv"
 INDICES_CSV = DATA_DIR / "fluxnet_all_highlat_landsat_indices.csv"
 
-PROJECT_ID = 'prova-sentinel'  # replace with your GEE project ID
+# Google Earth Engine cloud project: set GEE_PROJECT in the environment on another machine / account
+PROJECT_ID = os.environ.get('GEE_PROJECT', 'prova-sentinel')
 try:
     ee.Initialize(project=PROJECT_ID)
 except Exception:
@@ -71,7 +72,7 @@ WORLDCOVER = ee.ImageCollection('ESA/WorldCover/v200').first().select('Map')
 
 flux_file = DATA_DIR / "fluxnet_daily_all_vars.csv"
 if not os.path.exists(flux_file):
-    raise FileNotFoundError(f"Missing '{flux_file}'. Run 01_fluxnet_download.py first.")
+    raise FileNotFoundError(f"Missing '{flux_file}'. Run 11_fluxnet_download.py first.")
 
 print("Filtering FLUXNET sites for > 30 deg N and >= 5 years duration...")
 df_flux = pd.read_csv(flux_file, usecols=['site_id', 'lat', 'lon', 'igbp', 'TIMESTAMP'])
@@ -123,7 +124,7 @@ def make_mapper(sensor, band_map, roi, lc_mask):
         refl = img.select(list(band_map.values()), list(band_map.keys())).updateMask(valid.selfMask())
         stats = refl.reduceRegion(reducer=ee.Reducer.mean(), geometry=roi, scale=SCALE_M, maxPixels=1e9)
         valid_frac = valid.rename('v').reduceRegion(ee.Reducer.mean(), roi, SCALE_M, maxPixels=1e9).get('v')
-        # snow share among the clear (non-cloud) pixels: tells step 5 the ground is snow-covered
+        # snow share among the clear (non-cloud) pixels: tells step 23 the ground is snow-covered
         snow_frac = snow.updateMask(cloudy.Not()).rename('s') \
             .reduceRegion(ee.Reducer.mean(), roi, SCALE_M, maxPixels=1e9).get('s')
         return ee.Feature(None, {

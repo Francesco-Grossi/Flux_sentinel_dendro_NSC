@@ -1,5 +1,5 @@
 """
-PIPELINE STEP 14 - Sliding-window scan of carbon flux around the summer
+PIPELINE STEP 34 - Sliding-window scan of carbon flux around the summer
 solstice (Notion D.1 test (b), after Zohner et al. 2023 Fig. S12).
 
 Question: which period of the season has the MOST NEGATIVE relationship
@@ -11,8 +11,8 @@ relative to the solstice, take the mean daily flux over
 (site-random-intercept LME, predictor z-scored; beta = days per +1 SD).
 Windows do not depend on any EOS value, so there is no circularity.
 
-Input : data/phenology_double_logistic_by_site_year_index.csv (step 5)
-        data/fluxnet_landsat_merged.csv                        (step 4)
+Input : data/phenology_double_logistic_by_site_year_index.csv (step 23)
+        data/fluxnet_landsat_merged.csv                        (step 22)
         data/npp_luo2025_daily.csv                             (optional)
 Output: data/eos_solstice_sliding_scan.csv
         data/eos_solstice_sliding_scan_minima.csv   (most-negative window per curve)

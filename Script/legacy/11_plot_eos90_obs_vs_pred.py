@@ -37,8 +37,8 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-DATA_DIR = Path(__file__).resolve().parent.parent / "data"
-FIGURE_DIR = Path(__file__).resolve().parent.parent / "figure" / "eos90_obs_vs_pred"
+DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data"
+FIGURE_DIR = Path(__file__).resolve().parent.parent.parent / "figure" / "eos90_obs_vs_pred"
 FIGURE_DIR.mkdir(parents=True, exist_ok=True)
 
 PREDICTORS_CSV = DATA_DIR / "phenology_flux_predictors_by_site_year_index.csv"  # step 6

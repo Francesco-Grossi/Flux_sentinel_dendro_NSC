@@ -1,5 +1,5 @@
 """
-PIPELINE STEP 3 - Growing-season (Mar 1 - Oct 31) QC filter, per site-year.
+PIPELINE STEP 21 - Growing-season (Mar 1 - Oct 31) QC filter, per site-year.
 
 A site-year is dropped if >=50% of its growing-season days are low-quality
 (QC>1) or NaN for GPP/NEE/RECO, or if any run of >=50 consecutive bad days
@@ -32,7 +32,7 @@ MAX_BAD_FRACTION = 0.5
 MAX_CONSECUTIVE_BAD_DAYS = 50
 
 if not os.path.exists(INPUT_CSV):
-    raise FileNotFoundError(f"Missing '{INPUT_CSV}'. Run 01_fluxnet_download.py first.")
+    raise FileNotFoundError(f"Missing '{INPUT_CSV}'. Run 11_fluxnet_download.py first.")
 
 df = pd.read_csv(INPUT_CSV)
 df['date'] = pd.to_datetime(df['TIMESTAMP'].astype(str), format='%Y%m%d', errors='coerce')

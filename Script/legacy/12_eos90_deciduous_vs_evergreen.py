@@ -34,7 +34,7 @@ import pandas as pd
 import statsmodels.formula.api as smf
 from scipy.stats import chi2
 
-DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 FLUX_CSV = DATA_DIR / "fluxnet_landsat_merged.csv"                              # step 4
 PREDICTORS_CSV = DATA_DIR / "phenology_flux_predictors_by_site_year_index.csv"  # step 6

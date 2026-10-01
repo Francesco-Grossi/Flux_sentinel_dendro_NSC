@@ -1,11 +1,11 @@
 """
-PIPELINE STEP 19 - Tower-based greenness: broadband NDVI from the flux
+PIPELINE STEP 24 - Tower-based greenness: broadband NDVI from the flux
 tower's own radiation sensors, and the phenology (leaf-out / EOS) fitted
 to them. Independent of GPP and of satellites, daily, cloud-free, and from
-the tower footprint itself - a reference for the satellite EOS of step 5.
+the tower footprint itself - a reference for the satellite EOS of step 23.
 
 Source: the half-hourly (HH) or hourly (HR) FLUXMET file inside each site's
-FLUXNET zip in data_raw/ (already downloaded by step 1). No new download.
+FLUXNET zip in data_raw/ (already downloaded by step 11). No new download.
 
 Daily values use midday records only (MIDDAY_HOURS, local standard time),
 where the sun is high and the sensors' cosine response is reliable:
@@ -29,7 +29,7 @@ PPFD_IN and PPFD_OUT (~half of the sites).
 Input : data_raw/*_<site>_FLUXNET_*.zip, data/fluxnet_landsat_merged.csv (TA_F,
         and the QC-passing site-years to fit)
 Output: data/tower_ndvi_daily.csv
-        data/phenology_tower_by_site_year_index.csv   (same columns as step 5)
+        data/phenology_tower_by_site_year_index.csv   (same columns as step 23)
 """
 import glob
 import os
@@ -59,7 +59,7 @@ SMOOTH_DAYS = 5                # centred rolling median on the daily series befo
 RAD_COLS = ['SW_IN_F', 'SW_IN_F_QC', 'SW_OUT', 'PPFD_IN', 'PPFD_OUT']
 
 if not os.path.exists(FLUX_CSV):
-    raise FileNotFoundError(f"Missing '{FLUX_CSV}'. Run steps 1-4 first.")
+    raise FileNotFoundError(f"Missing '{FLUX_CSV}'. Run steps 11-22 first.")
 
 
 def read_subdaily(zip_path):
@@ -127,7 +127,7 @@ for si, site_id in enumerate(sites, start=1):
     try:
         sub = read_subdaily(match[0])
     except zipfile.BadZipFile:
-        skipped[site_id] = 'corrupt zip (re-download with step 1)'
+        skipped[site_id] = 'corrupt zip (re-download with step 11)'
         continue
     if sub is None:
         skipped[site_id] = 'no SW_OUT / PPFD_OUT'

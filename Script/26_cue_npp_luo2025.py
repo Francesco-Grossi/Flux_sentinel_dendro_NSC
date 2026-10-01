@@ -1,7 +1,7 @@
 """
-PIPELINE STEP 22 - Carbon use efficiency (CUE) from eddy-covariance data -
+PIPELINE STEP 26 - Carbon use efficiency (CUE) from eddy-covariance data -
 annual, by temperature, and seasonal / daily - and daily NPP = CUE x GPP for
-the carbon-SINK analyses (steps 12-17).
+the carbon-SINK analyses (steps 27 and 33-38).
 
 Python port of the MATLAB code "CUE_fluxnet" v1 by Xiangzhong (Remi) Luo
 (main_CUE_v1.m, readfluxnet_data.m, estimate_site_CUE.m, est_CUE_ss2.m,
@@ -66,9 +66,9 @@ Output: data/cue_luo2025_site_year.csv          site_id, year, gR, CUE, Ea, tau,
         data/npp_luo2025_daily.csv              site_id, date, CUE_annual, CUE_daily,
                                                 NPP  = CUE_annual x GPP_NT_VUT_REF
                                                 NPPd = CUE_daily  x GPP_NT_VUT_REF
-Usage : python 22_cue_luo2025.py                     all pipeline sites
-        python 22_cue_luo2025.py path/to/FLX_..._DD_....csv [more.csv]   only these files
-        CUE_INDEXING=matlab python 22_cue_luo2025.py      (writes *_matlab.csv)
+Usage : python 26_cue_npp_luo2025.py                     all pipeline sites
+        python 26_cue_npp_luo2025.py path/to/FLX_..._DD_....csv [more.csv]   only these files
+        CUE_INDEXING=matlab python 26_cue_npp_luo2025.py      (writes *_matlab.csv)
 """
 import glob
 import io
@@ -379,7 +379,7 @@ def run_site(args):
     try:
         d, partition = read_fluxnet_dd(source)
     except zipfile.BadZipFile:
-        return site_id, None, 'corrupt zip (re-download with step 1)'
+        return site_id, None, 'corrupt zip (re-download with step 11)'
     if d is None:
         return site_id, None, 'no daily GPP / Reco'
     rng = np.random.default_rng(zlib.crc32(site_id.encode()))        # reproducible per site
@@ -400,7 +400,7 @@ if __name__ == '__main__':
             jobs.append((m.group(0) if m else Path(f).stem, f))
     else:
         if not os.path.exists(FLUX_CSV):
-            raise FileNotFoundError(f"Missing '{FLUX_CSV}'. Run steps 1-4 first.")
+            raise FileNotFoundError(f"Missing '{FLUX_CSV}'. Run steps 11-22 first.")
         sites = sorted(pd.read_csv(FLUX_CSV, usecols=['site_id'])['site_id'].unique())
         zips = glob.glob(str(RAW_DIR / "*.zip"))
         jobs = []

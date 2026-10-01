@@ -1,17 +1,26 @@
 """
-PIPELINE STEP 6 - Build ONE consolidated site-year-index predictor table:
-spring/autumn phenology timing (from step 5), cumulative-GPP windows split
-around the summer solstice, and environmental covariates (radiation, mean
-temperature, respiration) - everything the hypothesis-test scripts (08, 09)
-need, in a single file. Also writes a general exploratory correlation table
-(autumn parameter x predictor, pooled across sites).
+PIPELINE STEP 28 - Build ONE consolidated site-year-index predictor table
+for the satellite EOS (NDVI, NIRv): spring/autumn phenology timing (from
+step 23), cumulative-GPP windows split around the summer solstice, and
+environmental covariates (radiation, mean temperature, respiration). Also
+writes an exploratory correlation table (autumn parameter x predictor, pooled
+across sites). Step 40 plots every pair 1:1; the legacy hypothesis tests
+(Script/legacy/08, 09) read the same table.
 
 GPP windows computed:
     gpp_sos10_to_solstice   - spring green-up onset (SOS10) -> summer solstice
     gpp_solstice_to_eos10   - solstice -> EOS10 (near-dormant; "full autumn decline")
     gpp_solstice_to_eos90   - solstice -> EOS90 (still ~90% green; "early decline only")
-                              This is the window the opposite-effect hypothesis
-                              (script 08/09) is built on.
+                              This is the window the split-GPP (opposite-effect)
+                              hypothesis is built on.
+    gpp_solstice_to_eos10_fixed, gpp_solstice_to_eos90_fixed
+                            - the same two windows, but ending at the SITE'S MEAN
+                              EOS (same end date every year, >= 3 years).
+
+Why both: a window that ends at the same year's EOS gets longer when EOS is
+later, so its cumulative GPP rises with EOS by construction. Comparing the
+1:1 plots of the year-anchored and the fixed window shows how much of the
+positive post-solstice relation is that length effect and how much is real.
 
 Output: data/phenology_flux_predictors_by_site_year_index.csv
         data/autumn_phenology_correlations.csv
@@ -24,8 +33,8 @@ from scipy.stats import pearsonr
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
-PHENOLOGY_CSV = DATA_DIR / "phenology_double_logistic_by_site_year_index.csv"  # step 5 output
-FLUX_CSV = DATA_DIR / "fluxnet_landsat_merged.csv"                            # step 4 output
+PHENOLOGY_CSV = DATA_DIR / "phenology_double_logistic_by_site_year_index.csv"  # step 23 output
+FLUX_CSV = DATA_DIR / "fluxnet_landsat_merged.csv"                            # step 22 output
 
 OUTPUT_SITEYEAR_CSV = DATA_DIR / "phenology_flux_predictors_by_site_year_index.csv"
 OUTPUT_CORR_CSV = DATA_DIR / "autumn_phenology_correlations.csv"
@@ -44,14 +53,20 @@ FLUX_VARS = {
 }
 
 if not os.path.exists(PHENOLOGY_CSV):
-    raise FileNotFoundError(f"Missing '{PHENOLOGY_CSV}'. Run 05_double_logistic_phenology.py first.")
+    raise FileNotFoundError(f"Missing '{PHENOLOGY_CSV}'. Run 23_phenology_satellite.py first.")
 if not os.path.exists(FLUX_CSV):
-    raise FileNotFoundError(f"Missing '{FLUX_CSV}'. Run 04_merge_fluxnet_landsat.py first.")
+    raise FileNotFoundError(f"Missing '{FLUX_CSV}'. Run 22_merge_fluxnet_hls.py first.")
 
 pheno = pd.read_csv(PHENOLOGY_CSV)
 pheno = pheno[pheno['vi_index'].isin(VI_INDICES) & (pheno['method'] == 'double_logistic')
               & (pheno['corr'] >= MIN_FIT_CORR)].copy()
-print(f"Phenology rows available (successful fits, corr >= {MIN_FIT_CORR}): {len(pheno)}")
+if 'qc_pass' in pheno.columns:  # step-23 QC flags (autumn coverage, R2, date order, ...)
+    pheno = pheno[pheno['qc_pass'].astype(bool)].copy()
+print(f"Phenology rows available (successful fits, corr >= {MIN_FIT_CORR}, QC passed): {len(pheno)}")
+MIN_YEARS_ANCHOR = 3
+for lvl in ('EOS90', 'EOS10'):
+    grp = pheno.groupby(['site_id', 'vi_index'])[lvl]
+    pheno[f'{lvl}_site_mean'] = grp.transform('mean').where(grp.transform('count') >= MIN_YEARS_ANCHOR)
 
 flux = pd.read_csv(FLUX_CSV)
 flux['date'] = pd.to_datetime(flux['TIMESTAMP'].astype(str), format='%Y%m%d', errors='coerce')
@@ -122,10 +137,13 @@ for _, row in pheno.iterrows():
         rec[f'{label}_{var_name}_growing_season'] = agg_flux_var(var_name, site_id, year, sos10, eos10)
 
     # Split GPP windows around the summer solstice - the core predictors for
-    # the opposite-effect hypothesis (scripts 08/09).
+    # the split-GPP (opposite-effect) hypothesis.
     rec['gpp_sos10_to_solstice'] = agg_flux_var('gpp', site_id, year, sos10, sol_doy)
     rec['gpp_solstice_to_eos10'] = agg_flux_var('gpp', site_id, year, sol_doy, eos10)
     rec['gpp_solstice_to_eos90'] = agg_flux_var('gpp', site_id, year, sol_doy, eos90)
+    # same windows with a fixed end date (site mean EOS): no window-length effect
+    rec['gpp_solstice_to_eos10_fixed'] = agg_flux_var('gpp', site_id, year, sol_doy, row.get('EOS10_site_mean'))
+    rec['gpp_solstice_to_eos90_fixed'] = agg_flux_var('gpp', site_id, year, sol_doy, row.get('EOS90_site_mean'))
 
     rec['photoperiod_at_EOS90'] = photoperiod_hours(eos90, site_lat.get(site_id))
     records.append(rec)
@@ -135,9 +153,10 @@ analysis_df.to_csv(OUTPUT_SITEYEAR_CSV, index=False)
 print(f"Predictor table -> '{OUTPUT_SITEYEAR_CSV}' ({len(analysis_df)} rows).")
 
 # Exploratory pooled correlations (autumn parameter x predictor) - a first
-# look before the site-controlled models in scripts 08/09.
+# look before the site-controlled models (steps 33-38).
 FLUX_PREDICTORS = ['total_gpp_growing_season', 'gpp_sos10_to_solstice', 'gpp_solstice_to_eos10',
-                    'gpp_solstice_to_eos90', 'total_reco_growing_season', 'mean_radiation_growing_season',
+                    'gpp_solstice_to_eos90', 'gpp_solstice_to_eos10_fixed', 'gpp_solstice_to_eos90_fixed',
+                    'total_reco_growing_season', 'mean_radiation_growing_season',
                     'mean_temperature_growing_season', 'photoperiod_at_EOS90']
 PREDICTORS = SPRING_PARAMS + ['growing_season_length'] + FLUX_PREDICTORS
 

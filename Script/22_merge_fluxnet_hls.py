@@ -1,5 +1,5 @@
 """
-PIPELINE STEP 4 - Merge QC-passing FLUXNET daily data with sparse Landsat VI
+PIPELINE STEP 22 - Merge QC-passing FLUXNET daily data with sparse Landsat VI
 observations on (site_id, date). Both tables are first restricted to
 QC-passing site-years explicitly.
 
@@ -20,7 +20,7 @@ MERGE_HOW = 'left'
 
 for p in (FLUX_CSV, QC_SUMMARY_CSV, LANDSAT_CSV):
     if not os.path.exists(p):
-        raise FileNotFoundError(f"Missing '{p}'. Run steps 1-3 first.")
+        raise FileNotFoundError(f"Missing '{p}'. Run steps 11, 12 and 21 first.")
 
 flux = pd.read_csv(FLUX_CSV)
 flux['date'] = pd.to_datetime(flux['TIMESTAMP'].astype(str), format='%Y%m%d', errors='coerce')
@@ -39,7 +39,7 @@ flux = flux.merge(passing, on=['site_id', 'year'], how='inner')
 landsat = landsat.merge(passing, on=['site_id', 'year'], how='inner')
 
 # L30 and S30 overpasses on the same day are averaged. snow_frac rows can have
-# no VI at all (snow-covered image) - step 5 uses them as dormant-season dates.
+# no VI at all (snow-covered image) - step 23 uses them as dormant-season dates.
 vi_cols = [c for c in ['NDVI', 'NIRv', 'valid_pixel_frac', 'snow_frac'] if c in landsat.columns]
 landsat_agg = landsat.groupby(['site_id', 'date'], as_index=False)[vi_cols].mean()
 

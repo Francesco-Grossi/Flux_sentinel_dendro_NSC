@@ -1,9 +1,9 @@
 """
-Shared helpers for pipeline steps 12-18 (EOS <-> carbon source/sink analysis,
+Shared helpers for pipeline steps 27-39 (EOS <-> carbon source/sink analysis,
 from the Notion page "Ideas in Sep, 2026"). NOT a pipeline step itself -
-run_pipeline.sh does not call it; steps 12-18 import it as `eos_common`.
+run_pipeline.sh does not call it; steps 27-39 import it as `eos_common`.
 
-Conventions kept identical to steps 06-09:
+Conventions kept identical to legacy steps 06-09:
   * site-year-index rows, keyed (site_id, year, vi_index)
   * mixed-effects models with a site random intercept (statsmodels mixedlm)
   * predictors z-scored, so betas are "days of EOS shift per 1 SD"
@@ -11,7 +11,7 @@ Conventions kept identical to steps 06-09:
 
 Test/CI override: set PHENO_DATA_DIR / PHENO_FIGURE_DIR to redirect I/O.
 Set PHENO_VI="NDVI,GCC" to restrict which vi_index values are analysed
-(default: every vi_index present in the phenology tables of steps 5, 19, 20).
+(default: every vi_index present in the phenology tables of steps 23, 24, 25).
 """
 import os
 import warnings
@@ -27,15 +27,15 @@ DATA_DIR = Path(os.environ.get("PHENO_DATA_DIR", ROOT / "data"))
 FIGURE_DIR = Path(os.environ.get("PHENO_FIGURE_DIR", ROOT / "figure"))
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-PHENOLOGY_CSV = DATA_DIR / "phenology_double_logistic_by_site_year_index.csv"   # step 5
-# OPTIONAL extra EOS sources, same columns as the step-5 table; appended when present
-# (vi_index = NDVI_tower / GCC), so steps 12-18 and 21 analyse them too.
-EXTRA_PHENOLOGY_CSVS = [DATA_DIR / "phenology_tower_by_site_year_index.csv",       # step 19
-                        DATA_DIR / "phenology_phenocam_by_site_year_index.csv"]    # step 20
-FLUX_CSV = DATA_DIR / "fluxnet_landsat_merged.csv"                               # step 4
-WINDOW_FIXED_CSV = DATA_DIR / "eos_window_predictors_fixed_anchor.csv"           # step 12
-WINDOW_YEAR_CSV = DATA_DIR / "eos_window_predictors_year_anchor.csv"             # step 12
-# OPTIONAL input from step 22 (Luo et al. 2025 CUE): site_id, date and any of
+PHENOLOGY_CSV = DATA_DIR / "phenology_double_logistic_by_site_year_index.csv"   # step 23
+# OPTIONAL extra EOS sources, same columns as the step-23 table; appended when present
+# (vi_index = NDVI_tower / GCC), so steps 27-39 analyse them too.
+EXTRA_PHENOLOGY_CSVS = [DATA_DIR / "phenology_tower_by_site_year_index.csv",       # step 24
+                        DATA_DIR / "phenology_phenocam_by_site_year_index.csv"]    # step 25
+FLUX_CSV = DATA_DIR / "fluxnet_landsat_merged.csv"                               # step 22
+WINDOW_FIXED_CSV = DATA_DIR / "eos_window_predictors_fixed_anchor.csv"           # step 27
+WINDOW_YEAR_CSV = DATA_DIR / "eos_window_predictors_year_anchor.csv"             # step 27
+# OPTIONAL input from step 26 (Luo et al. 2025 CUE): site_id, date and any of
 #   NPP        = annual CUE x GPP            -> 'NPP'   (gC m-2 d-1)
 #   NPPd       = daily (seasonal) CUE x GPP  -> 'NPPd'  (gC m-2 d-1)
 #   CUE_daily  = daily (seasonal) CUE        -> 'CUEd'  (ratio: only window MEANS are meaningful)
@@ -45,8 +45,8 @@ CARBON_FLUX_VARS = ('GPP', 'NEP', 'NPP', 'NPPd')   # cumulative and mean windows
 RATIO_VARS = ('CUEd',)                             # mean windows only
 NPP_CSV = DATA_DIR / "npp_luo2025_daily.csv"
 
-MIN_FIT_CORR = 0.8           # quality gate on the double-logistic fit (as steps 6-9)
-MIN_OBS, MIN_SITES = 20, 5   # as steps 8/9
+MIN_FIT_CORR = 0.8           # quality gate on the double-logistic fit (as legacy steps 6-9)
+MIN_OBS, MIN_SITES = 20, 5   # as legacy steps 8/9
 MIN_COVERAGE = 0.8           # min fraction of window days with valid flux data
 MIN_WINDOW_DAYS = 5
 MIN_YEARS_ANCHOR = 3         # min years to compute a per-site mean EOS anchor
@@ -72,11 +72,11 @@ def require(*paths, hint=""):
 
 
 def load_phenology():
-    require(PHENOLOGY_CSV, hint="Run 05_double_logistic_phenology.py first.")
+    require(PHENOLOGY_CSV, hint="Run 23_phenology_satellite.py first.")
     pheno = pd.concat([pd.read_csv(p) for p in [PHENOLOGY_CSV] + EXTRA_PHENOLOGY_CSVS if os.path.exists(p)],
                       ignore_index=True)
     pheno = pheno[(pheno['method'] == 'double_logistic') & (pheno['corr'] >= MIN_FIT_CORR)].copy()
-    if 'qc_pass' in pheno.columns:  # step-5 QC flags (autumn coverage, R2, date order, ...)
+    if 'qc_pass' in pheno.columns:  # step-23 QC flags (autumn coverage, R2, date order, ...)
         pheno = pheno[pheno['qc_pass'].astype(bool)].copy()
     only = os.environ.get("PHENO_VI")
     if only:
@@ -97,7 +97,7 @@ def _parse_dates(df, col):
 def load_flux_daily():
     """Daily flux table with short-named columns: GPP, NEP, TA, SW, VPD, P
     (+ NPP, NPPd, CUEd if NPP_CSV exists), plus site_id, year, doy, lat, igbp."""
-    require(FLUX_CSV, hint="Run 04_merge_fluxnet_landsat.py first.")
+    require(FLUX_CSV, hint="Run 22_merge_fluxnet_hls.py first.")
     raw = pd.read_csv(FLUX_CSV, low_memory=False)
     raw['date'] = _parse_dates(raw, 'TIMESTAMP')
     raw = raw.dropna(subset=['date']).copy()
@@ -255,7 +255,7 @@ def max_vif(d, xs):
 
 
 def loso_cv(d, y, xs):
-    """Leave-one-site-out CV, fixed effects only (same protocol as steps 8/9)."""
+    """Leave-one-site-out CV, fixed effects only (same protocol as legacy steps 8/9)."""
     d = d.reset_index(drop=True)
     preds = np.full(len(d), np.nan)
     for site in d['site_id'].unique():

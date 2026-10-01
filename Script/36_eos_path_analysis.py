@@ -1,5 +1,5 @@
 """
-PIPELINE STEP 16 - Pathway (piecewise structural) analysis: how do
+PIPELINE STEP 36 - Pathway (piecewise structural) analysis: how do
 environment -> carbon uptake -> EOS chains work, and is carbon uptake a
 mediator of environmental effects on EOS? (Notion D.1-3b: "construct
 different concept structures ... like Fig. 1 in Zani et al. 2020 or Fig. 4
@@ -21,9 +21,9 @@ Lu Fig.4 (those figures are not available to the script):
     C_pre, C_post, SOS, env -> EOS     direct effects on the target
 
 Run once per carbon variable C in {GPP, NPP (if available)}, per vi_index,
-per target in PRIMARY_TARGETS (fixed-anchor windows from step 12).
+per target in PRIMARY_TARGETS (fixed-anchor windows from step 27).
 
-Input : data/eos_window_predictors_fixed_anchor.csv   (step 12)
+Input : data/eos_window_predictors_fixed_anchor.csv   (step 27)
 Output: data/eos_path_coefficients.csv   (each equation's coefficients)
         data/eos_path_effects.csv        (direct / indirect / total, with CI)
         figure/eos_path_analysis/<vi>_<target>_<carbon>.png
@@ -49,7 +49,7 @@ OUT_COEF = ec.DATA_DIR / "eos_path_coefficients.csv"
 OUT_EFF = ec.DATA_DIR / "eos_path_effects.csv"
 FIG_DIR = ec.FIGURE_DIR / "eos_path_analysis"
 FIG_DIR.mkdir(parents=True, exist_ok=True)
-ec.require(ec.WINDOW_FIXED_CSV, hint="Run 12_build_window_predictors.py first.")
+ec.require(ec.WINDOW_FIXED_CSV, hint="Run 27_window_predictors.py first.")
 
 w = pd.read_csv(ec.WINDOW_FIXED_CSV)
 

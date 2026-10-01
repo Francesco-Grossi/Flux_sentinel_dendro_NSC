@@ -19,7 +19,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import linregress
 
-DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 PHENOLOGY_CSV = DATA_DIR / "phenology_double_logistic_by_site_year_index.csv"  # step 5 output
 FLUX_CSV = DATA_DIR / "fluxnet_landsat_merged.csv"                            # step 4 output
@@ -31,9 +31,9 @@ MIN_POINTS_FOR_RATE = 5
 TEMP_COL, TEMP_RANGE = 'TA_F', (-60, 50)
 
 if not os.path.exists(PHENOLOGY_CSV):
-    raise FileNotFoundError(f"Missing '{PHENOLOGY_CSV}'. Run 05_double_logistic_phenology.py first.")
+    raise FileNotFoundError(f"Missing '{PHENOLOGY_CSV}'. Run 23_phenology_satellite.py first.")
 if not os.path.exists(FLUX_CSV):
-    raise FileNotFoundError(f"Missing '{FLUX_CSV}'. Run 04_merge_fluxnet_landsat.py first.")
+    raise FileNotFoundError(f"Missing '{FLUX_CSV}'. Run 22_merge_fluxnet_hls.py first.")
 
 pheno = pd.read_csv(PHENOLOGY_CSV)
 pheno = pheno[pheno['vi_index'].isin(VI_INDICES) & (pheno['method'] == 'double_logistic')

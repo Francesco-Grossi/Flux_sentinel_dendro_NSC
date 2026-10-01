@@ -1,3 +1,6 @@
 *.zip
 *.png
+*.log
 .venv/
+__pycache__/
+data_raw/

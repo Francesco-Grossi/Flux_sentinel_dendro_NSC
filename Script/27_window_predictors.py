@@ -1,8 +1,8 @@
 """
-PIPELINE STEP 12 - Build carbon and environment WINDOW predictors for the
-EOS <-> carbon source/sink analyses (steps 13-18).
+PIPELINE STEP 27 - Build carbon and environment WINDOW predictors for the
+EOS <-> carbon source/sink analyses (steps 30-39).
 
-For every site-year-index row of the step-5 phenology table, and for each
+For every site-year-index row of the step-23 phenology table, and for each
 window below, compute from the daily FLUXNET data:
     <VAR>_mean__<window>   mean daily value ("rate", e.g. GPPmean / GPPrate)
     <VAR>_cum__<window>    cumulative value = mean x window length (cGPP)
@@ -25,8 +25,8 @@ Notion page - "EOS should be the fixed value in each site"):
           partly a proxy for season length, which is what can make cGPP look
           "positively" related to EOS while GPPrate stays negative.
 
-Input : data/phenology_double_logistic_by_site_year_index.csv   (step 5)
-        data/fluxnet_landsat_merged.csv                          (step 4)
+Input : data/phenology_double_logistic_by_site_year_index.csv   (step 23)
+        data/fluxnet_landsat_merged.csv                          (step 22)
         data/npp_luo2025_daily.csv                               (optional)
 Output: data/eos_window_predictors_fixed_anchor.csv
         data/eos_window_predictors_year_anchor.csv

@@ -1,18 +1,18 @@
 """
-PIPELINE STEP 5 - Fit a double-logistic phenology curve (Zhang/Beck/TIMESAT)
+PIPELINE STEP 23 - Fit a double-logistic phenology curve (Zhang/Beck/TIMESAT)
 to each site-year x VI-index (NDVI, NIRv) series, and extract leaf_out
 (green-up) and EOS (senescence) percentile-crossing DOYs plus the kinetic
 (steepness) parameters for both phases.
 
 The fitting itself (dormant-season background and snow fill, climatology
 gap-fill, full-year transition dates, QC flags) lives in pheno_fit.py and is
-shared with the tower (step 19) and PhenoCam (step 20) phenology - see that
+shared with the tower (step 24) and PhenoCam (step 25) phenology - see that
 module's docstring for the method and its thresholds.
 
 Satellite-specific handling here:
   - observations with valid_pixel_frac < MIN_VALID_FRAC are dropped, and the
     rest are weighted by valid_pixel_frac
-  - image dates with snow_frac >= SNOW_FRAC_MIN (from step 2) count as
+  - image dates with snow_frac >= SNOW_FRAC_MIN (from step 12) count as
     snow-covered and are filled with the dormant background
 
 Output: data/phenology_double_logistic_by_site_year_index.csv
@@ -34,7 +34,7 @@ MIN_VALID_FRAC = 0.5
 SNOW_FRAC_MIN = 0.5
 
 if not os.path.exists(INPUT_CSV):
-    raise FileNotFoundError(f"Missing '{INPUT_CSV}'. Run 04_merge_fluxnet_landsat.py first.")
+    raise FileNotFoundError(f"Missing '{INPUT_CSV}'. Run 22_merge_fluxnet_hls.py first.")
 
 df = pd.read_csv(INPUT_CSV)
 df['date'] = pd.to_datetime(df['TIMESTAMP'].astype(str), format='%Y%m%d', errors='coerce')
@@ -58,7 +58,7 @@ else:
 has_snow_info = 'snow_frac' in df.columns
 df['snowy'] = (df['snow_frac'] >= SNOW_FRAC_MIN) if has_snow_info else False
 if not has_snow_info:
-    print("NOTE: no snow_frac column (old step-2 output) - winter fill uses frozen days only.")
+    print("NOTE: no snow_frac column (old step-12 output) - winter fill uses frozen days only.")
 
 available_vi = [c for c in VI_COLUMNS if c in df.columns]
 print(f"Fitting double-logistic phenology curves for: {available_vi}")

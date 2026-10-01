@@ -1,5 +1,5 @@
 """
-PIPELINE STEP 18 - Which vegetation index gives the best EOS for linking with
+PIPELINE STEP 30 - Which vegetation index gives the best EOS for linking with
 carbon fluxes? (Notion C.3, Wang et al. 2024 hypothesis: NIRv is probably a
 better proxy for EOS10 than NDVI, since NDVI mostly carries canopy structure
 while NIRv also carries physiology.)
@@ -14,15 +14,15 @@ amplitude, i.e. near dormancy):
 Only EOS10 is derived from GPP. GPP-derived EOS90 / EOS50 were dropped: they
 fall in mid-July / early September (end of peak photosynthesis, not leaf
 senescence), 40-60 days before every canopy-based source, and do not track
-PhenoCam or tower NDVI from year to year (within-site r <= 0.15, step 21).
+PhenoCam or tower NDVI from year to year (within-site r <= 0.15, step 31).
 
 For each vi_index the VI-derived EOS10 is compared with the
 GPP-derived EOS10 of the same site-year: r, within-site r, bias (VI - GPP),
 MAE, RMSE, n. Lower RMSE / higher r = the index tracks physiological
 senescence better.
 
-Input : data/phenology_double_logistic_by_site_year_index.csv (step 5)
-        data/fluxnet_landsat_merged.csv                        (step 4)
+Input : data/phenology_double_logistic_by_site_year_index.csv (step 23)
+        data/fluxnet_landsat_merged.csv                        (step 22)
 Output: data/gpp_derived_eos_by_site_year.csv
         data/vi_eos_vs_gpp_eos.csv
         figure/vi_eos_vs_gpp_eos/<level>.png
