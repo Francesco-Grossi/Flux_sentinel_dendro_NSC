@@ -1,0 +1,13 @@
+# Python packages for the FLUXNET / HLS phenology-GPP pipeline (Script/01-18).
+#   python -m venv .venv
+#   .venv\Scripts\activate          (Git Bash: source .venv/Scripts/activate)
+#   pip install -r requirements.txt
+numpy
+pandas
+scipy
+statsmodels
+matplotlib
+earthengine-api   # step 02 (Google Earth Engine)
+fluxnet-shuttle @ git+https://github.com/fluxnet/shuttle.git   # step 01 (FLUXNET download; not on PyPI)
+certifi
+requests          # step 20 (PhenoCam API)

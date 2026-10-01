@@ -1,23 +1,25 @@
 """
 PIPELINE STEP 18 - Which vegetation index gives the best EOS for linking with
-carbon fluxes? (Notion C.3, Wang et al. 2024 hypothesis: "EVI or NIRv are
-probably better proxies for EOS10 than NDVI, since NDVI mostly carries canopy
-structure while EVI/NIRv also carry physiology".)
+carbon fluxes? (Notion C.3, Wang et al. 2024 hypothesis: NIRv is probably a
+better proxy for EOS10 than NDVI, since NDVI mostly carries canopy structure
+while NIRv also carries physiology.)
 
-Objective reference: EOS derived from the flux tower's own GPP curve, with
-the same amplitude convention as the pipeline's EOS90/EOS50/EOS10 (EOSxx = first
-day after the seasonal GPP peak on which the smoothed GPP has fallen to
-xx% of the seasonal amplitude, i.e. EOS90 = early decline, EOS10 = near dormancy):
+Objective reference: EOS10 derived from the flux tower's own GPP curve, with
+the same amplitude convention as the pipeline's EOS10 (first day after the
+seasonal GPP peak on which the smoothed GPP has fallen to 10% of the seasonal
+amplitude, i.e. near dormancy):
     smooth = 15-day centred rolling mean of daily GPP
     base   = 5th percentile of smooth over the year; amp = peak - base
     frac   = (smooth - base) / amp
-For each vi_index and level the VI-derived EOS (step 5) is compared with the
-GPP-derived EOS of the same site-year: r, within-site r, bias (VI - GPP),
+Only EOS10 is derived from GPP. GPP-derived EOS90 / EOS50 were dropped: they
+fall in mid-July / early September (end of peak photosynthesis, not leaf
+senescence), 40-60 days before every canopy-based source, and do not track
+PhenoCam or tower NDVI from year to year (within-site r <= 0.15, step 21).
+
+For each vi_index the VI-derived EOS10 is compared with the
+GPP-derived EOS10 of the same site-year: r, within-site r, bias (VI - GPP),
 MAE, RMSE, n. Lower RMSE / higher r = the index tracks physiological
 senescence better.
-
-If EVI is missing from the output, add 'EVI' to VI_INDICES in steps 5, 6 and 7
-and re-run them (step 4 already carries the EVI column).
 
 Input : data/phenology_double_logistic_by_site_year_index.csv (step 5)
         data/fluxnet_landsat_merged.csv                        (step 4)
@@ -32,7 +34,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import eos_common as ec
 
-LEVELS = (90, 50, 10)
+LEVELS = (10,)
 SMOOTH_DAYS = 15
 MIN_AMPLITUDE = 1.0        # gC m-2 d-1; skip site-years without a real seasonal cycle
 MIN_VALID_DAYS = 240
@@ -45,8 +47,6 @@ pheno = ec.load_phenology()
 flux = ec.load_flux_daily()
 vis = sorted(pheno['vi_index'].unique())
 print(f"vi_index in phenology table: {vis}")
-if 'EVI' not in vis:
-    print("  [note] EVI not in the phenology table - see the docstring to add it.")
 
 recs = []
 for (site, year), g in flux[['site_id', 'year', 'doy', 'GPP']].groupby(['site_id', 'year']):

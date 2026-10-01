@@ -51,11 +51,12 @@ ANCHOR_STAT = 'mean'                              # Notion: "mean EOS10 across y
 print("Loading data ...")
 pheno = ec.load_phenology()
 flux = ec.load_flux_daily()
-carbon_vars = [v for v in ('GPP', 'NEP', 'NPP') if v in flux.columns]
+carbon_vars = [v for v in ec.CARBON_FLUX_VARS if v in flux.columns]
+ratio_vars = [v for v in ec.RATIO_VARS if v in flux.columns]   # window mean only (e.g. seasonal CUE)
 env_vars = [v for v in ENV_HOW if v in flux.columns]
-lk = ec.FluxLookup(flux, carbon_vars + env_vars)
+lk = ec.FluxLookup(flux, carbon_vars + ratio_vars + env_vars)
 print(f"Phenology rows: {len(pheno)} | vi_index: {sorted(pheno['vi_index'].unique())}")
-print(f"Carbon variables: {carbon_vars} | environment: {env_vars}")
+print(f"Carbon variables: {carbon_vars} | ratios: {ratio_vars} | environment: {env_vars}")
 
 meta = flux.groupby('site_id').agg(**{c: (c, 'first') for c in ('lat', 'igbp') if c in flux.columns})
 
@@ -88,6 +89,8 @@ def build(anchor_mode):
                 m = lk.window_mean(site, year, v, s, e)
                 rec[f'{v}_mean__{wname}'] = m
                 rec[f'{v}_cum__{wname}'] = m * n if np.isfinite(m) and np.isfinite(n) else np.nan
+            for v in ratio_vars:
+                rec[f'{v}_mean__{wname}'] = lk.window_mean(site, year, v, s, e)
             if wname in ENV_WINDOWS:
                 for v in env_vars:
                     m = lk.window_mean(site, year, v, s, e)

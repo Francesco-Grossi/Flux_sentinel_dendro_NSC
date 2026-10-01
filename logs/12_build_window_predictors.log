@@ -1,0 +1,22 @@
+Loading data ...
+  [note] ['NPP', 'NPPd', 'CUEd'] loaded from 'npp_luo2025_daily.csv'.
+Phenology rows: 860 | vi_index: ['GCC', 'NDVI', 'NDVI_tower', 'NIRv']
+Carbon variables: ['GPP', 'NEP', 'NPP', 'NPPd'] | ratios: ['CUEd'] | environment: ['TA', 'SW', 'VPD', 'P']
+
+[fixed] -> 'C:\Users\Lenovo\OneDrive - Università degli Studi di Milano\Desktop\WSL\OneDrive - Eidg. Forschungsanstalt WSL\FLUX\Flux_sentinel_dendro_NSC\data\eos_window_predictors_fixed_anchor.csv' (860 rows). Non-null counts:
+   SOS_to_SOL      GPP_cum=664  NEP_cum=699  NPP_cum=719  NPPd_cum=713
+   SOL_to_EOS90    GPP_cum=730  NEP_cum=776  NPP_cum=793  NPPd_cum=783
+   SOL_to_EOS10    GPP_cum=728  NEP_cum=772  NPP_cum=793  NPPd_cum=783
+   SOS_to_EOS90    GPP_cum=725  NEP_cum=768  NPP_cum=792  NPPd_cum=782
+   SOS_to_EOS50    GPP_cum=729  NEP_cum=773  NPP_cum=793  NPPd_cum=783
+   SOS_to_EOS10    GPP_cum=727  NEP_cum=771  NPP_cum=793  NPPd_cum=783
+   EOS90_to_EOS50  GPP_cum=733  NEP_cum=779  NPP_cum=793  NPPd_cum=783
+
+[year] -> 'C:\Users\Lenovo\OneDrive - Università degli Studi di Milano\Desktop\WSL\OneDrive - Eidg. Forschungsanstalt WSL\FLUX\Flux_sentinel_dendro_NSC\data\eos_window_predictors_year_anchor.csv' (860 rows). Non-null counts:
+   SOS_to_SOL      GPP_cum=664  NEP_cum=699  NPP_cum=719  NPPd_cum=713
+   SOL_to_EOS90    GPP_cum=795  NEP_cum=841  NPP_cum=860  NPPd_cum=850
+   SOL_to_EOS10    GPP_cum=792  NEP_cum=835  NPP_cum=860  NPPd_cum=850
+   SOS_to_EOS90    GPP_cum=791  NEP_cum=834  NPP_cum=860  NPPd_cum=850
+   SOS_to_EOS50    GPP_cum=794  NEP_cum=838  NPP_cum=860  NPPd_cum=850
+   SOS_to_EOS10    GPP_cum=793  NEP_cum=835  NPP_cum=860  NPPd_cum=850
+   EOS90_to_EOS50  GPP_cum=788  NEP_cum=832  NPP_cum=846  NPPd_cum=837

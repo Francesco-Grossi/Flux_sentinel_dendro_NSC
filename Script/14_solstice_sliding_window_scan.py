@@ -34,7 +34,7 @@ FIG_DIR.mkdir(parents=True, exist_ok=True)
 
 pheno = ec.load_phenology()
 flux = ec.load_flux_daily()
-carbon_vars = [v for v in ('GPP', 'NPP') if v in flux.columns]
+carbon_vars = [v for v in ('GPP', 'NPP', 'NPPd', 'CUEd') if v in flux.columns]
 lk = ec.FluxLookup(flux, carbon_vars)
 
 sy = pheno[['site_id', 'year']].drop_duplicates().reset_index(drop=True)

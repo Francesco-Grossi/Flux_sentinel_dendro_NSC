@@ -56,7 +56,7 @@ for mode, path in (('fixed', ec.WINDOW_FIXED_CSV), ('year', ec.WINDOW_YEAR_CSV))
         if col in w.columns:
             for g, sub in w.dropna(subset=[col]).groupby(col):
                 group_defs.append((f'{label}:{g}', label, sub))
-    carbon_vars = sorted({c.split('_cum__')[0] for c in w.columns if '_cum__' in c} & {'GPP', 'NPP'})
+    carbon_vars = sorted({c.split('_cum__')[0] for c in w.columns if '_cum__' in c} & {'GPP', 'NPP', 'NPPd'})
 
     for gname, _, wg in group_defs:
         for vi in sorted(wg['vi_index'].unique()):

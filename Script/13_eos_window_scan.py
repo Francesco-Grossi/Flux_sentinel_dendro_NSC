@@ -38,12 +38,13 @@ rows = []
 for mode, path in (('fixed', ec.WINDOW_FIXED_CSV), ('year', ec.WINDOW_YEAR_CSV)):
     w = pd.read_csv(path)
     carbon_vars = sorted({c.split('_cum__')[0] for c in w.columns if '_cum__' in c})
+    ratio_vars = [v for v in ec.RATIO_VARS if any(c.startswith(f'{v}_mean__') for c in w.columns)]
     for vi in sorted(w['vi_index'].unique()):
         wv = w[w['vi_index'] == vi]
         for target in ec.TARGETS:
-            for cv in carbon_vars:
-                windows = [c.split('__')[1] for c in w.columns if c.startswith(f'{cv}_cum__')]
-                for metric in ('cum', 'mean'):
+            for cv in carbon_vars + ratio_vars:
+                windows = [c.split('__')[1] for c in w.columns if c.startswith(f'{cv}_mean__')]
+                for metric in (('mean',) if cv in ratio_vars else ('cum', 'mean')):
                     for win in windows:
                         res = ec.lme_slope(wv, target, f'{cv}_{metric}__{win}')
                         if res:

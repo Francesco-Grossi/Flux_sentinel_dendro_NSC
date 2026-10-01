@@ -1,0 +1,20 @@
+# Conda environment for the FLUXNET / HLS phenology-GPP pipeline (Script/01-18).
+#   create:   conda env create -f environment.yml
+#   activate: conda activate flux_pheno
+#   update:   conda env update -f environment.yml --prune
+name: flux_pheno
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy
+  - pandas
+  - scipy
+  - statsmodels
+  - matplotlib
+  - earthengine-api      # step 02 (Google Earth Engine)
+  - certifi
+  - ca-certificates
+  - pip
+  - pip:
+      - fluxnet-shuttle  # step 01 (FLUXNET download)

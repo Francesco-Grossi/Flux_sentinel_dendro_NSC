@@ -10,9 +10,8 @@ Conventions kept identical to steps 06-09:
   * leave-one-site-out CV predicts with FIXED EFFECTS ONLY
 
 Test/CI override: set PHENO_DATA_DIR / PHENO_FIGURE_DIR to redirect I/O.
-Set PHENO_VI="NDVI,EVI" to restrict which vi_index values are analysed
-(default: every vi_index present in the step-5 phenology table, so adding
-'EVI' to VI_INDICES in steps 5-7 flows through automatically).
+Set PHENO_VI="NDVI,GCC" to restrict which vi_index values are analysed
+(default: every vi_index present in the phenology tables of steps 5, 19, 20).
 """
 import os
 import warnings
@@ -29,11 +28,21 @@ FIGURE_DIR = Path(os.environ.get("PHENO_FIGURE_DIR", ROOT / "figure"))
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 PHENOLOGY_CSV = DATA_DIR / "phenology_double_logistic_by_site_year_index.csv"   # step 5
+# OPTIONAL extra EOS sources, same columns as the step-5 table; appended when present
+# (vi_index = NDVI_tower / GCC), so steps 12-18 and 21 analyse them too.
+EXTRA_PHENOLOGY_CSVS = [DATA_DIR / "phenology_tower_by_site_year_index.csv",       # step 19
+                        DATA_DIR / "phenology_phenocam_by_site_year_index.csv"]    # step 20
 FLUX_CSV = DATA_DIR / "fluxnet_landsat_merged.csv"                               # step 4
 WINDOW_FIXED_CSV = DATA_DIR / "eos_window_predictors_fixed_anchor.csv"           # step 12
 WINDOW_YEAR_CSV = DATA_DIR / "eos_window_predictors_year_anchor.csv"             # step 12
-# OPTIONAL external input: daily NPP (Luo et al. 2025) with columns
-# site_id, date, NPP  (gC m-2 d-1). Coarser cadence is linearly interpolated.
+# OPTIONAL input from step 22 (Luo et al. 2025 CUE): site_id, date and any of
+#   NPP        = annual CUE x GPP            -> 'NPP'   (gC m-2 d-1)
+#   NPPd       = daily (seasonal) CUE x GPP  -> 'NPPd'  (gC m-2 d-1)
+#   CUE_daily  = daily (seasonal) CUE        -> 'CUEd'  (ratio: only window MEANS are meaningful)
+# Coarser cadence is linearly interpolated.
+NPP_COLUMNS = {'NPP': 'NPP', 'NPPd': 'NPPd', 'CUE_daily': 'CUEd'}
+CARBON_FLUX_VARS = ('GPP', 'NEP', 'NPP', 'NPPd')   # cumulative and mean windows
+RATIO_VARS = ('CUEd',)                             # mean windows only
 NPP_CSV = DATA_DIR / "npp_luo2025_daily.csv"
 
 MIN_FIT_CORR = 0.8           # quality gate on the double-logistic fit (as steps 6-9)
@@ -64,8 +73,11 @@ def require(*paths, hint=""):
 
 def load_phenology():
     require(PHENOLOGY_CSV, hint="Run 05_double_logistic_phenology.py first.")
-    pheno = pd.read_csv(PHENOLOGY_CSV)
+    pheno = pd.concat([pd.read_csv(p) for p in [PHENOLOGY_CSV] + EXTRA_PHENOLOGY_CSVS if os.path.exists(p)],
+                      ignore_index=True)
     pheno = pheno[(pheno['method'] == 'double_logistic') & (pheno['corr'] >= MIN_FIT_CORR)].copy()
+    if 'qc_pass' in pheno.columns:  # step-5 QC flags (autumn coverage, R2, date order, ...)
+        pheno = pheno[pheno['qc_pass'].astype(bool)].copy()
     only = os.environ.get("PHENO_VI")
     if only:
         pheno = pheno[pheno['vi_index'].isin([v.strip() for v in only.split(',')])]
@@ -84,7 +96,7 @@ def _parse_dates(df, col):
 
 def load_flux_daily():
     """Daily flux table with short-named columns: GPP, NEP, TA, SW, VPD, P
-    (+ NPP if NPP_CSV exists), plus site_id, year, doy, lat, igbp."""
+    (+ NPP, NPPd, CUEd if NPP_CSV exists), plus site_id, year, doy, lat, igbp."""
     require(FLUX_CSV, hint="Run 04_merge_fluxnet_landsat.py first.")
     raw = pd.read_csv(FLUX_CSV, low_memory=False)
     raw['date'] = _parse_dates(raw, 'TIMESTAMP')
@@ -105,8 +117,10 @@ def load_flux_daily():
 
     if os.path.exists(NPP_CSV):
         npp = pd.read_csv(NPP_CSV)
+        npp = npp.rename(columns=NPP_COLUMNS)
+        vals = [c for c in NPP_COLUMNS.values() if c in npp.columns]
         npp['date'] = pd.to_datetime(npp['date'], errors='coerce')
-        npp = npp.dropna(subset=['date', 'NPP']).copy()
+        npp = npp.dropna(subset=['date']).dropna(subset=vals, how='all').copy()
         npp['year'], npp['doy'] = npp['date'].dt.year, npp['date'].dt.dayofyear
         step = npp.sort_values(['site_id', 'date']).groupby(['site_id', 'year'])['doy'].diff().median()
         if pd.notna(step) and step > 1:
@@ -115,12 +129,15 @@ def load_flux_daily():
             for (s, y), g in npp.groupby(['site_id', 'year']):
                 g = g.sort_values('doy').drop_duplicates('doy')
                 idx = np.arange(int(g['doy'].min()), int(g['doy'].max()) + 1)
-                parts.append(pd.DataFrame({'site_id': s, 'year': y, 'doy': idx,
-                                           'NPP': np.interp(idx, g['doy'], g['NPP'])}))
+                part = {'site_id': s, 'year': y, 'doy': idx}
+                for c in vals:
+                    ok = g[c].notna()
+                    part[c] = np.interp(idx, g.loc[ok, 'doy'], g.loc[ok, c]) if ok.sum() > 1 else np.nan
+                parts.append(pd.DataFrame(part))
             npp = pd.concat(parts, ignore_index=True)
-        out = out.merge(npp[['site_id', 'year', 'doy', 'NPP']].drop_duplicates(['site_id', 'year', 'doy']),
+        out = out.merge(npp[['site_id', 'year', 'doy'] + vals].drop_duplicates(['site_id', 'year', 'doy']),
                         on=['site_id', 'year', 'doy'], how='left')
-        print(f"  [note] NPP loaded from '{NPP_CSV.name}'.")
+        print(f"  [note] {vals} loaded from '{NPP_CSV.name}'.")
     else:
         print(f"  [note] '{NPP_CSV.name}' not found -> NPP (sink) analyses skipped, GPP/NEP only.")
     return out

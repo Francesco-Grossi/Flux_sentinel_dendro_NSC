@@ -88,7 +88,7 @@ def effects_on_eos(B, order):
 
 
 rng = np.random.default_rng(SEED)
-carbon_vars = sorted({c.split('_cum__')[0] for c in w.columns if '_cum__' in c} & {'GPP', 'NPP'})
+carbon_vars = sorted({c.split('_cum__')[0] for c in w.columns if '_cum__' in c} & {'GPP', 'NPP', 'NPPd'})
 coef_rows, eff_rows = [], []
 
 for cv in carbon_vars:

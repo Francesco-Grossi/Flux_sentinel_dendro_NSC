@@ -51,7 +51,8 @@ ENV = existing([f'{v}__{win}' for win in (PRE, POST)
                 for v in ('TA_mean', 'SW_mean', 'P_sum')])
 SOS = existing(['SOS'])
 SOURCE = existing([f'GPP_cum__{PRE}', f'GPP_cum__{POST}'])
-SINK = existing([f'NPP_cum__{PRE}', f'NPP_cum__{POST}'])
+SINK = existing([f'NPP_cum__{PRE}', f'NPP_cum__{POST}'])       # NPP from the annual CUE
+SINK_D = existing([f'NPPd_cum__{PRE}', f'NPPd_cum__{POST}'])   # NPP from the seasonal (daily) CUE
 print(f"ENV={ENV}\nSOS={SOS}\nSOURCE={SOURCE}\nSINK={SINK or 'n/a (no NPP file)'}")
 if not ENV or not SOURCE:
     raise SystemExit("Missing ENV or SOURCE columns - check step 12 / merged flux columns.")
@@ -60,6 +61,9 @@ BLOCKS = {'M0_env': ENV, 'M1_env+SOS': ENV + SOS, 'M2_env+source': ENV + SOURCE}
 if SINK:
     BLOCKS['M3_env+sink'] = ENV + SINK
     BLOCKS['M4_env+source+sink'] = ENV + SOURCE + SINK
+if SINK_D:
+    BLOCKS['M3d_env+sink_daily'] = ENV + SINK_D
+    BLOCKS['M4d_env+source+sink_daily'] = ENV + SOURCE + SINK_D
 BLOCKS['M5_env+SOS+source' + ('+sink' if SINK else '')] = ENV + SOS + SOURCE + SINK
 FULL = list(BLOCKS)[-1]
 

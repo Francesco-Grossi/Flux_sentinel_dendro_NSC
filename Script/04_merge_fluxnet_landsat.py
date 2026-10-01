@@ -38,11 +38,15 @@ passing = qc_summary.loc[qc_summary['passed'], ['site_id', 'year']].drop_duplica
 flux = flux.merge(passing, on=['site_id', 'year'], how='inner')
 landsat = landsat.merge(passing, on=['site_id', 'year'], how='inner')
 
-vi_cols = [c for c in ['NDVI', 'EVI', 'NIRv', 'valid_pixel_frac'] if c in landsat.columns]
+# L30 and S30 overpasses on the same day are averaged. snow_frac rows can have
+# no VI at all (snow-covered image) - step 5 uses them as dormant-season dates.
+vi_cols = [c for c in ['NDVI', 'NIRv', 'valid_pixel_frac', 'snow_frac'] if c in landsat.columns]
 landsat_agg = landsat.groupby(['site_id', 'date'], as_index=False)[vi_cols].mean()
 
 merged = flux.merge(landsat_agg, on=['site_id', 'date'], how=MERGE_HOW)
 merged['has_landsat_obs'] = merged[vi_cols[0]].notna() if vi_cols else False
+if 'snow_frac' in merged.columns:
+    merged['has_landsat_obs'] |= merged['snow_frac'].notna()
 
 n_matched_days = int(merged['has_landsat_obs'].sum())
 print(f"Merged table: {len(merged):,} rows, {n_matched_days:,} "
