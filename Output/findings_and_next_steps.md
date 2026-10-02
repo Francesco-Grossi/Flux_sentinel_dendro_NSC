@@ -115,8 +115,8 @@ The air temperature of the 60 days before the solstice is now in every model of 
 
 \* p < 0.05 (GPP: one-sided in the direction of the hypothesis; temperature: two-sided, from the first model).
 
-- **The pre-solstice GPP effect stays negative in 11 of 12 cells but is smaller**: -1.5 to -2.7 with
-  the sum from leaf-out, -0.6 to -1.8 with calendar windows.
+- **The pre-solstice GPP effect stays negative in 11 of 12 cells but is smaller**: -0.7 to -2.7 with
+  the sum from leaf-out, -0.2 to -1.8 with calendar windows.
 - **It is significant for NIRv in all three versions** (-1.3 to -1.6), for satellite NDVI only with the
   sum from leaf-out, and for tower NDVI only with the rate.
 - **The post-solstice effect loses significance** except for satellite NDVI with the sum (+1.3).
