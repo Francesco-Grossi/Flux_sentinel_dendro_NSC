@@ -23,6 +23,19 @@ B. Does growth predict the onset of senescence (EOS90)? Predictors:
    All EOS sources are also stacked (anomalies relative to each site x source
    mean), because one source alone has few of these site-years.
 
+C. Carbon budget. For the sites where the stand's biomass growth is known in
+   carbon units (US-Ha1, AT-Zoe), the dendrometer curve is scaled to the
+   stand's mean annual growth and combined with the flux-derived respiration:
+       respiration  Ra = (1 - CUE) x GPP        (daily CUE of step 26)
+       total sink   = growth + Ra
+       NPP          = GPP - Ra
+       residual     = GPP - total sink = NPP - growth
+   The residual is carbon that was fixed but neither respired nor put into
+   the measured growth: roots, (at US-Ha1) leaves, and reserves. Each term is
+   summed before and after the solstice and tested against EOS90.
+   Caveats: growth is aboveground only, and Ra rests on the CUE estimate, so
+   the residual carries the errors of both.
+
 This is a case study: a handful of sites, and US-Ha1 supplies most of the
 years. Sites need at least MIN_YEARS years of both growth and EOS90. With
 so few sites the standard errors cannot be clustered by site; they are
@@ -33,7 +46,9 @@ sizes, not the significance.
 Input : data/dendro_growth_by_site_year.csv (step 29), phenology tables, daily flux
 Output: data/growth_vs_gpp.csv
         data/growth_vs_senescence.csv
-        figure/dendro_growth/growth_vs_gpp.png, growth_vs_eos90.png
+        data/carbon_budget_by_site_year.csv
+        data/carbon_budget_vs_senescence.csv
+        figure/dendro_growth/growth_vs_gpp.png, growth_vs_eos90.png, carbon_budget.png
         Output/growth_vs_senescence_summary.md
 """
 import warnings
@@ -185,8 +200,103 @@ if show:
     fig.savefig(FIG_DIR / "growth_vs_eos90.png", dpi=150)
     plt.close(fig)
 
+# ---------------------------------------------------------------- C. carbon budget: total sink and what is left
+def site_growth_scale():
+    """Mean annual growth in gC m-2 for the sites where the stand's biomass growth is known."""
+    out = {}
+    hf = RAW_DENDRO / "harvard_forest" / "hf069-16-ems-annual.csv"
+    if hf.exists():          # aboveground woody increment of surviving trees, MgC ha-1 yr-1 (2023-24 are provisional)
+        a = pd.read_csv(hf)
+        out['US-Ha1'] = (float(a.loc[a['year'].between(1999, 2022), 'agwi'].mean()) * 100.0,
+                         'aboveground woody increment (HF069)')
+    zo = list((RAW_DENDRO / "zoebelboden_lter").glob("LTER_EU_AT_003_ZOEBELBODEN_TREEGROWTH*.txt"))
+    if zo:                   # stem + branch + foliage growth, kg dry mass m-2 per month, per plot and species
+        z = pd.read_csv(zo[0], sep='\t', encoding='latin1', decimal=',')
+        z['year'] = z['TIME'].str[:4].astype(int)
+        per_plot_year = z.groupby(['STATION_CODE', 'year'])['VALUE'].sum()            # all species and organs of a plot
+        out['AT-Zoe'] = (float(per_plot_year.groupby('year').mean().mean()) * 1000.0 * CARBON_FRACTION,
+                         f'stem + branch + foliage growth, dry mass x {CARBON_FRACTION:g} (LTER Zoebelboden)')
+    return out
+
+
+RAW_DENDRO = ec.ROOT / "data_raw" / "dendro"
+DAILY_CSV = ec.DATA_DIR / "dendro_growth_daily.csv"
+OUT_C = ec.DATA_DIR / "carbon_budget_by_site_year.csv"
+OUT_C_TEST = ec.DATA_DIR / "carbon_budget_vs_senescence.csv"
+CARBON_FRACTION = 0.5
+BUDGET_FROM, BUDGET_TO = 90, 305         # the season over which growth is counted in step 29
+TERMS = {'gpp': 'GPP', 'ra': 'autotrophic respiration', 'growth': 'growth', 'sink_total': 'total sink (growth + respiration)',
+         'npp': 'NPP (GPP - respiration)', 'residual': 'GPP - total sink'}
+
+scale = site_growth_scale()
+flux['Ra'] = flux['GPP'] - flux['NPPd'].fillna(flux['NPP']) if 'NPPd' in flux.columns else np.nan   # (1 - CUE) x GPP
+lkb = ec.FluxLookup(flux, ['GPP', 'Ra'])
+gd = pd.read_csv(DAILY_CSV) if DAILY_CSV.exists() else pd.DataFrame()
+c_rows = []
+for (site, year), g in (gd[gd['site_id'].isin(scale)].groupby(['site_id', 'year']) if len(gd) else []):
+    cum = g.sort_values('doy')['growth'].to_numpy(float) * scale[site][0]        # gC m-2, cumulative
+    so = ec.solstice_doy(year)
+    r = {'site_id': site, 'year': int(year)}
+    for w, (a, b) in {'pre': (BUDGET_FROM, so - 1), 'post': (so, BUDGET_TO), 'season': (BUDGET_FROM, BUDGET_TO)}.items():
+        n = b - a + 1
+        gpp, ra = lkb.window_mean(site, year, 'GPP', a, b) * n, lkb.window_mean(site, year, 'Ra', a, b) * n
+        gr = float(cum[b - 1] - cum[a - 2]) if a > 1 else float(cum[b - 1])
+        r.update({f'gpp_{w}': gpp, f'ra_{w}': ra, f'growth_{w}': gr, f'sink_total_{w}': gr + ra, f'npp_{w}': gpp - ra,
+                  f'residual_{w}': gpp - ra - gr})
+    c_rows.append(r)
+C = pd.DataFrame(c_rows)
+if len(C):
+    C = C.dropna(subset=['gpp_season', 'ra_season'])
+    C['growth_share_of_npp'] = C['growth_season'] / C['npp_season']
+C.to_csv(OUT_C, index=False)
+ct_rows = []
+if len(C):
+    print(f"\nC. Carbon budget, DOY {BUDGET_FROM}-{BUDGET_TO} (gC m-2) -> '{OUT_C}'")
+    print(C.groupby('site_id')[[f'{t}_season' for t in TERMS] + ['growth_share_of_npp']].mean().round(1).to_string())
+    print("   mean before / after the solstice:")
+    print(C.groupby('site_id')[[f'{t}_{w}' for w in ('pre', 'post') for t in TERMS]].mean().round(0).to_string())
+    mc = pheno.merge(C, on=['site_id', 'year'])
+    mc['unit'] = mc['site_id'] + '|' + mc['vi_index']
+    for src in sources + ['stacked']:
+        d, unit = (mc, 'unit') if src == 'stacked' else (mc[mc['vi_index'] == src], 'site_id')
+        for w in ('pre', 'post'):
+            for t, lab in TERMS.items():
+                r = wfit(d, TARGET, f'{t}_{w}', unit)
+                if r:
+                    ct_rows.append({'eos_source': src, 'window': w, 'term': t, 'label': lab, **r})
+CT = pd.DataFrame(ct_rows)
+CT.to_csv(OUT_C_TEST, index=False)
+if len(CT):
+    print(f"\n   {TARGET} against the budget terms (days per +1 within-site SD) -> '{OUT_C_TEST}'")
+    print(CT[CT['eos_source'].isin(['stacked', 'GCC'])].drop(columns=['label', 'sites']).round(2).to_string(index=False))
+
+if len(C) and len(gd):                    # mean seasonal course of the budget per site
+    sites_c = sorted(C['site_id'].unique())
+    fig, axes = plt.subplots(1, len(sites_c), figsize=(6 * len(sites_c), 4.3), squeeze=False)
+    for ax, site in zip(axes[0], sites_c):
+        yrs = C.loc[C['site_id'] == site, 'year']
+        f = flux[(flux['site_id'] == site) & flux['year'].isin(yrs)].groupby('doy')[['GPP', 'Ra']].mean()
+        gg = gd[(gd['site_id'] == site) & gd['year'].isin(yrs)].sort_values(['year', 'doy'])
+        gg = gg.assign(rate=gg.groupby('year')['growth'].diff().fillna(0) * scale[site][0]).groupby('doy')['rate'].mean()
+        sm_ = lambda s: s.reindex(range(1, 366)).rolling(21, center=True, min_periods=7).mean()
+        gpp, ra, gr = sm_(f['GPP']), sm_(f['Ra']), sm_(gg)
+        ax.plot(gpp.index, gpp, color='#2f855a', label='GPP')
+        ax.plot(ra.index, ra, color='#c05621', label='autotrophic respiration')
+        ax.plot(gr.index, gr, color='#2b6cb0', label='growth')
+        ax.plot(gr.index, ra + gr, color='k', lw=1.4, label='total sink (growth + respiration)')
+        ax.fill_between(gpp.index, ra + gr, gpp, color='0.85', label='GPP - total sink')
+        ax.axvline(172, color='gray', ls='--', lw=0.8)
+        ax.set_title(f"{site}: mean of {len(yrs)} years", fontsize=9)
+        ax.set_xlabel('day of year (dashed: summer solstice)')
+        ax.legend(fontsize=7)
+    axes[0][0].set_ylabel('gC m-2 d-1 (21-day mean)')
+    fig.suptitle("Carbon budget through the season: source, total sink and what is left", fontsize=10)
+    fig.tight_layout()
+    fig.savefig(FIG_DIR / "carbon_budget.png", dpi=150)
+    plt.close(fig)
+
 # ---------------------------------------------------------------- written summary
-cov = growth.groupby('site_id').agg(dataset=('dataset', 'first'), years=('year', 'size'), first=('year', 'min'),
+cov =growth.groupby('site_id').agg(dataset=('dataset', 'first'), years=('year', 'size'), first=('year', 'min'),
                                     last=('year', 'max'), units=('n_units', 'median'), timing=('timing_ok', 'sum'),
                                     with_flux=('gpp_pre', 'count'), frac_pre=('frac_pre', 'mean'))
 lines = ["# Stem growth against GPP and against the onset of senescence", "",
@@ -207,5 +317,27 @@ lines += ["", f"## B. Does growth predict {TARGET}? (days per +1 within-site SD)
 for _, r in B.iterrows():
     lines.append(f"| {NAME[r['eos_source']]} | {r['label']} | {r['beta']:+.1f} [{r['beta'] - 1.96 * r['se']:+.1f}, "
                  f"{r['beta'] + 1.96 * r['se']:+.1f}] | {r['p']:.3f} | {int(r['n_obs'])} | {r['sites']} |")
+if len(C):
+    lines += ["", f"## C. Carbon budget: total sink, NPP and what is left (DOY {BUDGET_FROM}-{BUDGET_TO}, gC m-2)", "",
+              "- respiration = autotrophic respiration = (1 - CUE) x GPP, with the daily CUE of step 26",
+              "- growth = measured biomass growth, the dendrometer curve scaled to the stand's mean annual growth: "
+              + "; ".join(f"{s}: {v:.0f} gC m-2 per year, {src}" for s, (v, src) in scale.items()),
+              "- **total sink = growth + respiration**",
+              "- **NPP = GPP - respiration**",
+              "- **GPP - total sink = NPP - growth**: carbon fixed but used neither for respiration nor for the measured "
+              "growth. It goes to what the dendrometers do not see (roots; at US-Ha1 also leaves) and to reserves.", "",
+              "| site | years | window | GPP | respiration | growth | total sink | NPP | GPP - total sink |", "|---|---|---|---|---|---|---|---|---|"]
+    for site, g in C.groupby('site_id'):
+        for w, wl in (('season', 'whole season'), ('pre', 'before the solstice'), ('post', 'after the solstice')):
+            v = g[[f'{t}_{w}' for t in TERMS]].mean()
+            lines.append(f"| {site} | {len(g)} | {wl} | " + " | ".join(f"{x:.0f}" for x in v) + " |")
+    lines += ["", "Growth as a share of NPP over the season: "
+              + ", ".join(f"{s} {100 * v:.0f}%" for s, v in C.groupby('site_id')['growth_share_of_npp'].mean().items()) + ".", ""]
+if len(CT):
+    lines += [f"**{TARGET} against the budget terms** (days per +1 within-site SD)", "",
+              "| EOS source | window | term | slope [95% CI] | p | site-years | sites (years) |", "|---|---|---|---|---|---|---|"]
+    for _, r in CT.iterrows():
+        lines.append(f"| {NAME[r['eos_source']]} | {r['window']}-solstice | {r['label']} | {r['beta']:+.1f} "
+                     f"[{r['beta'] - 1.96 * r['se']:+.1f}, {r['beta'] + 1.96 * r['se']:+.1f}] | {r['p']:.3f} | {int(r['n_obs'])} | {r['sites']} |")
 OUT_MD.write_text("\n".join(lines) + "\n", encoding='utf-8')
 print(f"\nSummary -> '{OUT_MD}'\nFigures -> '{FIG_DIR}'")

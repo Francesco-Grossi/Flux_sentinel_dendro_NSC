@@ -535,6 +535,7 @@ for site in ['US-Ha1', 'AT-Zoe', 'CH-Dav']:
     figure(f"dendro_growth/{site}.png", f"{site}: cumulative stem growth, one line per year (step 29)")
 figure("dendro_growth/growth_vs_gpp.png", "Stem growth against GPP, within sites (step 45)")
 figure("dendro_growth/growth_vs_eos90.png", "Onset of senescence against stem growth, within sites (step 45)")
+figure("dendro_growth/carbon_budget.png", "Carbon budget through the season: GPP, respiration, growth, total sink and the residual (step 45)")
 
 add("---", "", "Per-step logs are in `logs/`. Method notes are in `README.md` and in the docstring of each script.", "")
 OUT_MD.write_text("\n".join(lines) + "\n", encoding='utf-8')
