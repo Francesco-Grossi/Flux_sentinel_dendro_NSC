@@ -419,6 +419,7 @@ include("mechanism_summary.md")
 figure("mechanism/leafout_vs_gpp.png", "Deciduous forests: leaf-out date against early GPP (step 44)")
 figure("mechanism/water.png", "Pre-solstice GPP against the spring water balance, by season type (step 44)")
 figure("mechanism/sink.png", "GPP and sink variables in the same two-window model (step 44)")
+figure("mechanism/temperature.png", "Spring temperature against pre-solstice GPP, and the years in which they diverge (step 44)")
 
 add("---", "", "Per-step logs are in `logs/`. Method notes are in `README.md` and in the docstring of each script.", "")
 OUT_MD.write_text("\n".join(lines) + "\n", encoding='utf-8')

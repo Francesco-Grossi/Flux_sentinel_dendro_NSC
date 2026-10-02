@@ -17,8 +17,9 @@ season the effect of GPP on EOS90 is close to zero. That is the pattern "Zani an
 predicts. The opposite, positive effect of post-solstice GPP is small (+1 day) and appears only in the
 satellite indices, so the data show a fading of the early effect more than a clean cancellation.
 Nothing of this holds for the **end** of senescence (EOS10). Three things limit the claim: in
-deciduous forests leaf-out date explains EOS90 and early GPP adds nothing; spring temperature predicts
-EOS90 at least as well as GPP does; and only the satellite samples are large enough to detect an
+deciduous forests leaf-out date explains EOS90 and early GPP adds nothing; about half of the effect is
+a spring-temperature effect (with temperature, radiation and water held fixed, GPP keeps about -1.2
+days per SD, mostly at evergreen sites); and only the satellite samples are large enough to detect an
 effect of this size.
 
 ## 1. One-to-one correlations (steps 28, 40)
@@ -160,8 +161,33 @@ days per SD) and the sign agrees in 87% of cells. Steps 33-38 now use the within
   before the solstice) gives -1.3 to -2.9 days per SD in all four sources (p <= 0.04), and keeps its
   effect next to GPP for NIRv (-1.8) and tower NDVI (-2.8). For NIRv both stay significant together.
 - The water part of the index has no consistent effect.
-- So a warm spring advances EOS90 partly independently of GPP. Whether that is a sink effect (earlier
-  growth, earlier completion) or development rate cannot be told from these data.
+
+**Spring temperature against GPP** (60 days before the solstice; all sources stacked, 1,680 site-years)
+
+| Sites | GPP alone | T alone | GPP, T fixed | T, GPP fixed | GPP, all weather fixed |
+|---|---|---|---|---|---|
+| All | -1.6* | -2.2* | -1.2* | -2.0* | -1.2* |
+| Summer-green | -1.7* | -2.3* | -1.3* | -2.0* | -1.3* |
+| Evergreen | -2.0* | -2.6* | -1.7* | -2.3* | -1.5* |
+| Deciduous | -0.7 | -1.3* | -0.3 | -1.2* | -0.2 |
+
+\* two-sided p < 0.05. "All weather" = temperature, radiation and water balance of the same window.
+
+- **Both act, and temperature is the stronger one.** GPP and temperature are only weakly correlated
+  within sites (r = 0.19), so they can be told apart. With both in the model, temperature gives -2.0 and
+  GPP -1.2; temperature alone explains about three times more variance than GPP alone adds.
+- **A GPP effect of about -1.2 days per SD remains after temperature, radiation and water are held
+  fixed.** Per source it is significant only for NIRv (-1.2, p = 0.005); NDVI -0.8, tower NDVI -1.3 and
+  PhenoCam -0.9 have the same sign.
+- **It comes from evergreen sites** (-1.5 to -1.9). In deciduous forests GPP has no effect once
+  temperature or leaf-out is in the model.
+- **Years in which the two diverge do not decide it.** EOS90 is early when spring is warm and GPP high
+  (-2.6 days, p < 0.001) and late when it is cool and GPP low (+1.7). In warm, low-GPP years it is
+  unchanged (0.0) and in cool, high-GPP years slightly late (+1.1, n.s.). If GPP alone drove the effect,
+  cool high-GPP years would be early; they are not. If temperature alone did, warm low-GPP years would
+  be early; they are not either.
+- **Reading:** the "pre-solstice GPP" effect is about half a spring-temperature effect. The remaining
+  half is a GPP effect that the weather does not explain, and it is carried by evergreen conifers.
 
 ## 5. When in the season? (step 34)
 
@@ -219,8 +245,8 @@ The scan now starts 120 days before the solstice and is fitted within sites.
 ## What should be done next
 
 **To strengthen the main result**
-1. Separate spring temperature from pre-solstice GPP. They explain EOS90 about equally; years where
-   they diverge (cool, bright springs; warm, dry springs) are the test.
+1. Put spring temperature into the main test (step 41) as a standing covariate, and report the GPP
+   effect net of it (about -1.2) as the headline number.
 2. More ground-based site-years. PhenoCam and tower NDVI have about a fifth of the power needed. Adding
    PhenoCam sites beyond the flux network would not help (no GPP); longer tower records would.
 3. Deciduous forests: the result there is "leaf-out date, not GPP". Test whether leaf-out acts through

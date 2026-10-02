@@ -908,6 +908,113 @@ Tables: `data/mechanism_leafout_vs_gpp.csv`, `data/mechanism_water.csv`, `data/m
 | evergreen | satellite NIRv | fT | 217 (27) | -1.1 | -0.9 | 0.019 | 0.034 | +0.11 | -1.1 | -1.9** |
 | evergreen | satellite NIRv | fW | 217 (27) | -0.2 | +0.7 | 0.003 | 0.034 | +0.19 | +0.5 | -2.1** |
 
+### D. Spring temperature against GPP (60 days before the solstice)
+
+'all weather' = temperature, radiation and water balance of the same window.
+
+| sites | EOS source | n (sites) | r(GPP, T) | GPP alone | T alone | GPP, T fixed | T, GPP fixed | GPP, all weather fixed | T, all else fixed | R2 only GPP | R2 only T |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| all | PhenoCam | 186 (25) | +0.12 | -1.3 | -2.5* | -1.0 | -2.3* | -0.9 | -2.2 | 0.005 | 0.028 |
+| all | tower NDVI | 357 (41) | +0.35 | -2.5* | -3.0** | -1.6 | -2.5** | -1.3 | -2.2** | 0.009 | 0.022 |
+| all | satellite NDVI | 456 (69) | +0.20 | -1.1* | -1.5* | -0.8 | -1.4* | -0.8 | -1.6* | 0.005 | 0.013 |
+| all | satellite NIRv | 681 (88) | +0.13 | -1.5*** | -2.1*** | -1.2** | -1.9** | -1.2** | -2.2*** | 0.010 | 0.025 |
+| all | all sources stacked | 1680 (94) | +0.19 | -1.6*** | -2.2*** | -1.2** | -2.0*** | -1.2** | -2.0*** | 0.008 | 0.022 |
+| summer-green | PhenoCam | 156 (20) | +0.18 | -1.9 | -2.7* | -1.5 | -2.5 | -1.4 | -2.3 | 0.010 | 0.028 |
+| summer-green | tower NDVI | 342 (38) | +0.36 | -2.8* | -3.0** | -2.0 | -2.3* | -1.6 | -2.1** | 0.014 | 0.019 |
+| summer-green | satellite NDVI | 436 (65) | +0.22 | -1.1* | -1.6* | -0.8 | -1.4* | -0.7 | -1.7* | 0.004 | 0.013 |
+| summer-green | satellite NIRv | 611 (79) | +0.17 | -1.6*** | -2.3*** | -1.2** | -2.1** | -1.2** | -2.4*** | 0.010 | 0.027 |
+| summer-green | all sources stacked | 1545 (85) | +0.22 | -1.7*** | -2.3*** | -1.3** | -2.0*** | -1.3** | -2.1*** | 0.009 | 0.022 |
+| deciduous | PhenoCam | 81 (9) | +0.38 | -0.7 | +1.5 | -1.5 | +2.1 | -1.4 | +1.6 | 0.011 | 0.021 |
+| deciduous | tower NDVI | 174 (17) | +0.38 | -0.4 | -2.4*** | +0.6 | -2.7* | +1.0 | -2.3* | 0.002 | 0.040 |
+| deciduous | satellite NDVI | 172 (23) | +0.28 | -0.6 | -0.2 | -0.6 | -0.0 | -0.4 | -1.0 | 0.004 | 0.000 |
+| deciduous | satellite NIRv | 197 (25) | +0.31 | -1.0 | -2.4** | -0.3 | -2.3** | -0.4 | -2.4** | 0.001 | 0.042 |
+| deciduous | all sources stacked | 624 (29) | +0.33 | -0.7 | -1.3** | -0.3 | -1.2* | -0.2 | -1.7*** | 0.001 | 0.010 |
+| evergreen | tower NDVI | 87 (12) | +0.53 | -4.6** | -4.7** | -2.8 | -3.2 | -1.9 | -3.1* | 0.018 | 0.023 |
+| evergreen | satellite NDVI | 88 (17) | +0.18 | -1.4 | -2.0 | -1.0 | -1.8 | -1.1 | -1.3 | 0.005 | 0.015 |
+| evergreen | satellite NIRv | 213 (27) | +0.11 | -2.0*** | -1.7* | -1.8** | -1.5 | -1.9** | -1.2 | 0.027 | 0.018 |
+| evergreen | all sources stacked | 396 (28) | +0.17 | -2.0*** | -2.6*** | -1.7** | -2.3** | -1.5* | -1.6* | 0.014 | 0.026 |
+
+**Mean EOS90 anomaly (days) by class of year** - the last two classes are the test
+
+| sites | EOS source | years | reading | n (sites) | share of years | mean EOS90 anomaly [95% CI] |
+|---|---|---|---|---|---|---|
+| all | PhenoCam | warm + high GPP | both say earlier | 51 (20) | 27% | -1.2 [-6.4, +4.0] |
+| all | PhenoCam | cool + low GPP | both say later | 53 (19) | 28% | +0.8 [-4.2, +5.8] |
+| all | PhenoCam | warm + low GPP | earlier if temperature drives it | 41 (20) | 22% | -0.1 [-2.0, +1.8] |
+| all | PhenoCam | cool + high GPP | earlier if GPP drives it | 41 (20) | 22% | +0.5 [-5.1, +6.1] |
+| all | tower NDVI | warm + high GPP | both say earlier | 112 (39) | 31% | -3.9** [-6.4, -1.5] |
+| all | tower NDVI | cool + low GPP | both say later | 110 (39) | 31% | +2.3 [-0.2, +4.8] |
+| all | tower NDVI | warm + low GPP | earlier if temperature drives it | 71 (36) | 20% | +1.8 [-1.0, +4.5] |
+| all | tower NDVI | cool + high GPP | earlier if GPP drives it | 64 (33) | 18% | +0.9 [-2.7, +4.6] |
+| all | satellite NDVI | warm + high GPP | both say earlier | 119 (63) | 26% | -1.6 [-3.9, +0.7] |
+| all | satellite NDVI | cool + low GPP | both say later | 129 (64) | 28% | +0.9 [-0.9, +2.7] |
+| all | satellite NDVI | warm + low GPP | earlier if temperature drives it | 100 (53) | 22% | -0.8 [-2.9, +1.2] |
+| all | satellite NDVI | cool + high GPP | earlier if GPP drives it | 108 (60) | 24% | +1.6 [-0.2, +3.3] |
+| all | satellite NIRv | warm + high GPP | both say earlier | 183 (82) | 27% | -2.9*** [-4.6, -1.2] |
+| all | satellite NIRv | cool + low GPP | both say later | 192 (84) | 28% | +2.2** [+0.9, +3.6] |
+| all | satellite NIRv | warm + low GPP | earlier if temperature drives it | 152 (72) | 22% | -0.4 [-2.1, +1.4] |
+| all | satellite NIRv | cool + high GPP | earlier if GPP drives it | 154 (81) | 23% | +1.0 [-0.8, +2.8] |
+| all | all sources stacked | warm + high GPP | both say earlier | 465 (89) | 28% | -2.6*** [-4.1, -1.1] |
+| all | all sources stacked | cool + low GPP | both say later | 484 (91) | 29% | +1.7** [+0.5, +3.0] |
+| all | all sources stacked | warm + low GPP | earlier if temperature drives it | 364 (85) | 22% | -0.0 [-1.4, +1.3] |
+| all | all sources stacked | cool + high GPP | earlier if GPP drives it | 367 (88) | 22% | +1.1 [-0.5, +2.6] |
+| summer-green | PhenoCam | warm + high GPP | both say earlier | 44 (18) | 28% | -1.6 [-7.6, +4.3] |
+| summer-green | PhenoCam | cool + low GPP | both say later | 48 (17) | 31% | +1.6 [-3.5, +6.8] |
+| summer-green | PhenoCam | warm + low GPP | earlier if temperature drives it | 33 (16) | 21% | +0.3 [-1.9, +2.5] |
+| summer-green | PhenoCam | cool + high GPP | earlier if GPP drives it | 31 (16) | 20% | -0.6 [-7.8, +6.6] |
+| summer-green | tower NDVI | warm + high GPP | both say earlier | 108 (36) | 32% | -4.0** [-6.6, -1.5] |
+| summer-green | tower NDVI | cool + low GPP | both say later | 108 (37) | 32% | +2.6* [+0.1, +5.1] |
+| summer-green | tower NDVI | warm + low GPP | earlier if temperature drives it | 67 (33) | 20% | +2.1 [-0.7, +5.0] |
+| summer-green | tower NDVI | cool + high GPP | earlier if GPP drives it | 59 (31) | 17% | +0.2 [-3.6, +4.1] |
+| summer-green | satellite NDVI | warm + high GPP | both say earlier | 116 (60) | 27% | -1.5 [-3.9, +0.8] |
+| summer-green | satellite NDVI | cool + low GPP | both say later | 126 (61) | 29% | +1.0 [-0.8, +2.8] |
+| summer-green | satellite NDVI | warm + low GPP | earlier if temperature drives it | 95 (50) | 22% | -0.9 [-3.1, +1.2] |
+| summer-green | satellite NDVI | cool + high GPP | earlier if GPP drives it | 99 (56) | 23% | +1.4 [-0.4, +3.2] |
+| summer-green | satellite NIRv | warm + high GPP | both say earlier | 171 (75) | 28% | -3.0*** [-4.7, -1.3] |
+| summer-green | satellite NIRv | cool + low GPP | both say later | 177 (76) | 29% | +2.5*** [+1.1, +3.9] |
+| summer-green | satellite NIRv | warm + low GPP | earlier if temperature drives it | 132 (64) | 22% | -0.5 [-2.4, +1.5] |
+| summer-green | satellite NIRv | cool + high GPP | earlier if GPP drives it | 131 (72) | 21% | +1.0 [-1.0, +3.0] |
+| summer-green | all sources stacked | warm + high GPP | both say earlier | 439 (81) | 28% | -2.7*** [-4.3, -1.2] |
+| summer-green | all sources stacked | cool + low GPP | both say later | 459 (83) | 30% | +2.0** [+0.7, +3.3] |
+| summer-green | all sources stacked | warm + low GPP | earlier if temperature drives it | 327 (77) | 21% | +0.0 [-1.4, +1.5] |
+| summer-green | all sources stacked | cool + high GPP | earlier if GPP drives it | 320 (79) | 21% | +0.8 [-0.9, +2.5] |
+| deciduous | PhenoCam | warm + high GPP | both say earlier | 25 (9) | 31% | +4.4 [-2.9, +11.7] |
+| deciduous | PhenoCam | cool + low GPP | both say later | 29 (9) | 36% | -1.4 [-8.2, +5.5] |
+| deciduous | PhenoCam | warm + low GPP | earlier if temperature drives it | 12 (6) | 15% | +0.1 [-3.7, +3.8] |
+| deciduous | PhenoCam | cool + high GPP | earlier if GPP drives it | 15 (7) | 19% | -4.8 [-14.6, +5.0] |
+| deciduous | tower NDVI | warm + high GPP | both say earlier | 59 (17) | 34% | -1.9* [-3.7, -0.0] |
+| deciduous | tower NDVI | cool + low GPP | both say later | 55 (17) | 32% | +1.0 [-1.2, +3.1] |
+| deciduous | tower NDVI | warm + low GPP | earlier if temperature drives it | 29 (15) | 17% | +0.9 [-4.0, +5.7] |
+| deciduous | tower NDVI | cool + high GPP | earlier if GPP drives it | 31 (15) | 18% | +1.0 [-4.3, +6.3] |
+| deciduous | satellite NDVI | warm + high GPP | both say earlier | 46 (21) | 27% | -0.3 [-2.8, +2.2] |
+| deciduous | satellite NDVI | cool + low GPP | both say later | 55 (23) | 32% | -0.2 [-2.6, +2.1] |
+| deciduous | satellite NDVI | warm + low GPP | earlier if temperature drives it | 33 (18) | 19% | -0.4 [-3.4, +2.7] |
+| deciduous | satellite NDVI | cool + high GPP | earlier if GPP drives it | 38 (21) | 22% | +1.0 [-1.3, +3.4] |
+| deciduous | satellite NIRv | warm + high GPP | both say earlier | 58 (23) | 29% | -1.7 [-4.1, +0.8] |
+| deciduous | satellite NIRv | cool + low GPP | both say later | 63 (25) | 32% | +3.0* [+0.7, +5.3] |
+| deciduous | satellite NIRv | warm + low GPP | earlier if temperature drives it | 38 (21) | 19% | -2.3 [-5.1, +0.4] |
+| deciduous | satellite NIRv | cool + high GPP | earlier if GPP drives it | 38 (22) | 19% | -0.1 [-3.1, +3.0] |
+| deciduous | all sources stacked | warm + high GPP | both say earlier | 188 (27) | 30% | -0.6 [-2.5, +1.3] |
+| deciduous | all sources stacked | cool + low GPP | both say later | 202 (29) | 32% | +0.9 [-0.7, +2.6] |
+| deciduous | all sources stacked | warm + low GPP | earlier if temperature drives it | 112 (27) | 18% | -0.7 [-3.0, +1.6] |
+| deciduous | all sources stacked | cool + high GPP | earlier if GPP drives it | 122 (27) | 20% | -0.0 [-2.3, +2.2] |
+| evergreen | tower NDVI | warm + high GPP | both say earlier | 28 (12) | 32% | -9.7*** [-13.3, -6.0] |
+| evergreen | tower NDVI | cool + low GPP | both say later | 33 (12) | 38% | +6.5** [+2.6, +10.5] |
+| evergreen | tower NDVI | warm + low GPP | earlier if temperature drives it | 14 (9) | 16% | +5.1 [-0.4, +10.6] |
+| evergreen | tower NDVI | cool + high GPP | earlier if GPP drives it | 12 (7) | 14% | -1.4 [-10.6, +7.8] |
+| evergreen | satellite NDVI | warm + high GPP | both say earlier | 27 (17) | 31% | -0.8 [-7.9, +6.2] |
+| evergreen | satellite NDVI | cool + low GPP | both say later | 26 (15) | 30% | +0.1 [-4.8, +4.9] |
+| evergreen | satellite NDVI | warm + low GPP | earlier if temperature drives it | 14 (9) | 16% | -1.8 [-12.0, +8.4] |
+| evergreen | satellite NDVI | cool + high GPP | earlier if GPP drives it | 21 (14) | 24% | +2.2 [-1.5, +5.8] |
+| evergreen | satellite NIRv | warm + high GPP | both say earlier | 61 (26) | 29% | -1.9 [-5.0, +1.1] |
+| evergreen | satellite NIRv | cool + low GPP | both say later | 63 (27) | 30% | +2.1 [-0.3, +4.5] |
+| evergreen | satellite NIRv | warm + low GPP | earlier if temperature drives it | 40 (20) | 19% | -0.6 [-4.7, +3.4] |
+| evergreen | satellite NIRv | cool + high GPP | earlier if GPP drives it | 49 (25) | 23% | +0.3 [-2.5, +3.0] |
+| evergreen | all sources stacked | warm + high GPP | both say earlier | 118 (27) | 30% | -3.9* [-7.5, -0.3] |
+| evergreen | all sources stacked | cool + low GPP | both say later | 122 (27) | 31% | +2.9* [+0.6, +5.1] |
+| evergreen | all sources stacked | warm + low GPP | earlier if temperature drives it | 71 (23) | 18% | +0.3 [-3.8, +4.3] |
+| evergreen | all sources stacked | cool + high GPP | earlier if GPP drives it | 85 (27) | 21% | +1.2 [-1.6, +3.9] |
+
 ![Deciduous forests: leaf-out date against early GPP (step 44)](../figure/mechanism/leafout_vs_gpp.png)
 
 *Deciduous forests: leaf-out date against early GPP (step 44)*
@@ -919,6 +1026,10 @@ Tables: `data/mechanism_leafout_vs_gpp.csv`, `data/mechanism_water.csv`, `data/m
 ![GPP and sink variables in the same two-window model (step 44)](../figure/mechanism/sink.png)
 
 *GPP and sink variables in the same two-window model (step 44)*
+
+![Spring temperature against pre-solstice GPP, and the years in which they diverge (step 44)](../figure/mechanism/temperature.png)
+
+*Spring temperature against pre-solstice GPP, and the years in which they diverge (step 44)*
 
 ---
 

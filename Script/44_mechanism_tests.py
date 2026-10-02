@@ -44,7 +44,19 @@ C. Sink instead of source. If senescence responds to how much the plant
    Each variable replaces GPP in the calendar-window model of step 41:
        dEOS90 ~ dpre + dpost     (CAL_PRE days before / CAL_POST days from the solstice)
 
-For A and B the model is also fitted on all EOS sources stacked (anomalies
+D. Spring temperature instead of GPP. A warm spring raises GPP and could
+   advance senescence by itself (faster development). Air temperature and
+   GPP of the CAL_PRE days before the solstice are put in the same model,
+   then with radiation and water balance added: the GPP slope of that last
+   model is the effect of the GPP that the weather does not explain.
+   The direct test uses the years in which the two DIVERGE. Each year is
+   classed by the sign of its within-site temperature and GPP anomaly:
+       warm + high GPP, cool + low GPP    both explanations agree
+       warm + low GPP                     early EOS90 if temperature drives it
+       cool + high GPP                    early EOS90 if GPP drives it
+   and the mean EOS90 anomaly of each class is reported.
+
+For A, B and D the model is also fitted on all EOS sources stacked (anomalies
 relative to each site x source mean, SE clustered by site), which uses every
 site-year once per source: more power, same question.
 
@@ -53,7 +65,9 @@ Input : phenology tables (steps 23, 24, 25), daily flux, data/cue_luo2025_site_y
 Output: data/mechanism_leafout_vs_gpp.csv
         data/mechanism_water.csv
         data/mechanism_sink.csv
-        figure/mechanism/leafout_vs_gpp.png, water.png, sink.png
+        data/mechanism_temperature.csv
+        data/mechanism_temperature_quadrants.csv
+        figure/mechanism/leafout_vs_gpp.png, water.png, sink.png, temperature.png
         Output/mechanism_summary.md
 """
 import os
@@ -70,6 +84,8 @@ import eos_common as ec
 OUT_A = ec.DATA_DIR / "mechanism_leafout_vs_gpp.csv"
 OUT_B = ec.DATA_DIR / "mechanism_water.csv"
 OUT_C = ec.DATA_DIR / "mechanism_sink.csv"
+OUT_D = ec.DATA_DIR / "mechanism_temperature.csv"
+OUT_DQ = ec.DATA_DIR / "mechanism_temperature_quadrants.csv"
 OUT_MD = ec.ROOT / "Output" / "mechanism_summary.md"
 SEASON_CSV = ec.DATA_DIR / "site_season_type.csv"
 CUE_CSV = ec.DATA_DIR / "cue_luo2025_site_year.csv"
@@ -119,7 +135,7 @@ flux['fW'] = pd.concat([bucket(g) for _, g in flux.groupby('site_id', sort=False
 flux['fT'] = ((flux['TA'] - SINK_T_MIN) / (SINK_T_OPT - SINK_T_MIN)).clip(0, 1)
 flux['SI'] = flux['fT'] * flux['fW']
 sink_vars += ['SI', 'fT', 'fW']
-lk = ec.FluxLookup(flux, sink_vars + ['WB', 'TA'])
+lk = ec.FluxLookup(flux, sink_vars + ['WB', 'TA', 'SW'])
 
 pheno = ec.load_phenology()
 habit = flux.drop_duplicates('site_id').set_index('site_id')['igbp'].map(LEAF_HABIT).fillna('grass/shrub')
@@ -145,6 +161,8 @@ pheno['gpp_sos'] = pheno['gpp_rate'] * [ec.FluxLookup.n_days(a, so) for (_, _, s
 pheno['wb_pre'] = win('WB', -WB_PRE, -1, total=True)
 pheno['wb_post'] = win('WB', 0, CAL_POST - 1, total=True)
 pheno['ta_pre'] = win('TA', -CAL_PRE, -1)
+pheno['sw_pre'] = win('SW', -CAL_PRE, -1)
+pheno['wb_cal'] = win('WB', -CAL_PRE, -1, total=True)
 for v in sink_vars:
     pheno[f'{v}_pre'] = win(v, -CAL_PRE, -1)
     pheno[f'{v}_post'] = win(v, 0, CAL_POST - 1)
@@ -274,6 +292,59 @@ show = [c for c in ['eos_source', 'variable', 'n_obs', 'n_sites', 'pre_b', 'pre_
                     'gpp_pre_next_to_it_p'] if c in C.columns]
 print(C[C['group'] == 'all'][show].round(3).to_string(index=False))
 
+# ---------------------------------------------------------------- D. spring temperature vs GPP
+QUADRANTS = [('warm + high GPP', 1, 1, 'both say earlier'), ('cool + low GPP', -1, -1, 'both say later'),
+             ('warm + low GPP', 1, -1, 'earlier if temperature drives it'),
+             ('cool + high GPP', -1, 1, 'earlier if GPP drives it')]
+d_rows, q_rows = [], []
+for group in ('all', 'summer-green', 'deciduous', 'evergreen'):
+    col = 'season_type' if group == 'summer-green' else 'leaf_habit'
+    for src, d, unit in samples(col, group):
+        keep = list(dict.fromkeys(['site_id', unit, TARGET, 'gpp_cal', 'ta_pre', 'sw_pre', 'wb_cal']))
+        dd = d[keep].dropna()
+        fg, ft = wfit(dd, ['gpp_cal'], unit), wfit(dd, ['ta_pre'], unit)
+        fj, fa = wfit(dd, ['gpp_cal', 'ta_pre'], unit), wfit(dd, ['gpp_cal', 'ta_pre', 'sw_pre', 'wb_cal'], unit)
+        if fg is None or ft is None or fj is None or fa is None:
+            continue
+        r = {'group': group, 'eos_source': src, 'n_obs': fj['n_obs'], 'n_sites': fj['n_sites'],
+             'r_gpp_temperature_within': float(fj['corr'].iloc[0, 1]), 'r2_gpp': fg['r2'], 'r2_temperature': ft['r2'],
+             'r2_both': fj['r2'], 'r2_unique_gpp': fj['r2'] - ft['r2'], 'r2_unique_temperature': fj['r2'] - fg['r2']}
+        put(r, 'gpp_alone', fg, 'gpp_cal')
+        put(r, 'T_alone', ft, 'ta_pre')
+        put(r, 'gpp_with_T', fj, 'gpp_cal')
+        put(r, 'T_with_gpp', fj, 'ta_pre')
+        put(r, 'gpp_with_weather', fa, 'gpp_cal')
+        put(r, 'T_with_all', fa, 'ta_pre')
+        put(r, 'SW_with_all', fa, 'sw_pre')
+        put(r, 'water_with_all', fa, 'wb_cal')
+        d_rows.append(r)
+
+        # years in which temperature and GPP diverge
+        dq = dd[dd.groupby(unit)[unit].transform('size') >= MIN_YEARS]
+        an = dq[[TARGET, 'gpp_cal', 'ta_pre']] - dq.groupby(unit)[[TARGET, 'gpp_cal', 'ta_pre']].transform('mean')
+        an['site_id'] = dq['site_id'].to_numpy()
+        for name, st, sg, reading in QUADRANTS:
+            q = an[(np.sign(an['ta_pre']) == st) & (np.sign(an['gpp_cal']) == sg)]
+            if len(q) < 10 or q['site_id'].nunique() < MIN_SITES:
+                continue
+            with warnings.catch_warnings():
+                warnings.simplefilter('ignore')
+                f = sm.OLS(q[TARGET].to_numpy(float), np.ones(len(q))).fit(
+                    cov_type='cluster', cov_kwds={'groups': pd.factorize(q['site_id'])[0]})
+            q_rows.append({'group': group, 'eos_source': src, 'years': name, 'reading': reading, 'n_obs': len(q),
+                           'n_sites': q['site_id'].nunique(), 'share_of_years': len(q) / len(an),
+                           'mean_eos_anomaly_days': float(f.params[0]), 'se': float(f.bse[0]), 'p': float(f.pvalues[0])})
+Dt, Dq = pd.DataFrame(d_rows), pd.DataFrame(q_rows)
+Dt.to_csv(OUT_D, index=False)
+Dq.to_csv(OUT_DQ, index=False)
+print(f"\nD. Spring temperature vs GPP ({CAL_PRE} days before the solstice) -> '{OUT_D}'")
+show = ['group', 'eos_source', 'n_obs', 'n_sites', 'r_gpp_temperature_within', 'gpp_alone_b', 'gpp_alone_p', 'T_alone_b',
+        'T_alone_p', 'gpp_with_T_b', 'gpp_with_T_p', 'T_with_gpp_b', 'T_with_gpp_p', 'gpp_with_weather_b',
+        'gpp_with_weather_p', 'r2_unique_gpp', 'r2_unique_temperature']
+print(Dt[show].round(3).to_string(index=False))
+print(f"\n   Years in which they diverge -> '{OUT_DQ}'")
+print(Dq[Dq['group'] == 'all'].round(2).to_string(index=False))
+
 
 # ---------------------------------------------------------------- figures
 def forest(ax, d, specs, title):
@@ -337,6 +408,30 @@ if len(C):
     fig.tight_layout()
     fig.savefig(FIG_DIR / "sink.png", dpi=150)
     plt.close(fig)
+if len(Dt) and len(Dq):
+    fig, axes = plt.subplots(1, 2, figsize=(13, 4.6))
+    forest(axes[0], Dt[Dt['group'] == 'all'],
+           [('gpp_alone', 'GPP alone'), ('T_alone', 'temperature alone'), ('gpp_with_T', 'GPP, temperature held fixed'),
+            ('T_with_gpp', 'temperature, GPP held fixed'), ('gpp_with_weather', 'GPP, all weather held fixed')],
+           f'all sites: slopes ({CAL_PRE} days before the solstice)')
+    ax, qa = axes[1], Dq[Dq['group'] == 'all']
+    srcs = [s for s in sources + ['stacked'] if s in set(qa['eos_source'])]
+    names = [q[0] for q in QUADRANTS]
+    for si, src in enumerate(srcs):
+        s = qa[qa['eos_source'] == src].set_index('years').reindex(names)
+        y = np.arange(len(names)) + (si - (len(srcs) - 1) / 2) * 0.15
+        ax.errorbar(s['mean_eos_anomaly_days'], y, xerr=1.96 * s['se'], fmt='o', ms=4, lw=1, capsize=2,
+                    color=COLORS.get(src, 'gray'), label=NAME[src])
+    ax.axvline(0, color='k', lw=0.7)
+    ax.set_yticks(range(len(names)), [f"{n}\n({r})" for n, _, _, r in QUADRANTS], fontsize=8)
+    ax.invert_yaxis()
+    ax.set_xlabel(f'mean {TARGET} anomaly (days; negative = earlier)')
+    ax.set_title('all sites: years classed by spring temperature and GPP anomaly', fontsize=9)
+    ax.legend(fontsize=6.5)
+    fig.suptitle("Spring temperature against pre-solstice GPP (bars: 95% CI)", fontsize=10)
+    fig.tight_layout()
+    fig.savefig(FIG_DIR / "temperature.png", dpi=150)
+    plt.close(fig)
 
 
 # ---------------------------------------------------------------- written summary
@@ -370,5 +465,21 @@ for _, r in C.iterrows():
                  f"{c(r, 'post')} | {r['r2']:.3f} | " + (f"{r['r2_gpp_same_rows']:.3f}" if pd.notna(r.get('r2_gpp_same_rows', np.nan)) else '-')
                  + " | " + (f"{r['r_with_gpp_pre_within']:+.2f}" if pd.notna(r.get('r_with_gpp_pre_within', np.nan)) else '-')
                  + f" | {c(r, 'pre_next_to_gpp')} | {c(r, 'gpp_pre_next_to_it')} |")
+lines += ["", f"## D. Spring temperature against GPP ({CAL_PRE} days before the solstice)", "",
+          "'all weather' = temperature, radiation and water balance of the same window.", "",
+          "| sites | EOS source | n (sites) | r(GPP, T) | GPP alone | T alone | GPP, T fixed | T, GPP fixed | GPP, all weather fixed | T, all else fixed | R2 only GPP | R2 only T |",
+          "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+for _, r in Dt.iterrows():
+    lines.append(f"| {r['group']} | {NAME[r['eos_source']]} | {int(r['n_obs'])} ({int(r['n_sites'])}) | "
+                 f"{r['r_gpp_temperature_within']:+.2f} | {c(r, 'gpp_alone')} | {c(r, 'T_alone')} | {c(r, 'gpp_with_T')} | "
+                 f"{c(r, 'T_with_gpp')} | {c(r, 'gpp_with_weather')} | {c(r, 'T_with_all')} | {r['r2_unique_gpp']:.3f} | "
+                 f"{r['r2_unique_temperature']:.3f} |")
+lines += ["", "**Mean EOS90 anomaly (days) by class of year** - the last two classes are the test", "",
+          "| sites | EOS source | years | reading | n (sites) | share of years | mean EOS90 anomaly [95% CI] |",
+          "|---|---|---|---|---|---|---|"]
+for _, r in Dq.iterrows():
+    m, se = r['mean_eos_anomaly_days'], r['se']
+    lines.append(f"| {r['group']} | {NAME[r['eos_source']]} | {r['years']} | {r['reading']} | {int(r['n_obs'])} ({int(r['n_sites'])}) | "
+                 f"{100 * r['share_of_years']:.0f}% | {m:+.1f}{ec.stars(r['p'])} [{m - 1.96 * se:+.1f}, {m + 1.96 * se:+.1f}] |")
 OUT_MD.write_text("\n".join(lines) + "\n", encoding='utf-8')
 print(f"\nSummary -> '{OUT_MD}'\nFigures -> '{FIG_DIR}'")
