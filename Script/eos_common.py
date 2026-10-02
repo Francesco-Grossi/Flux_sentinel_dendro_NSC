@@ -70,6 +70,7 @@ FLUX_VARS = {
     'SW':  ('SW_IN_F', (0, 500), 1),
     'VPD': ('VPD_F', (0, 100), 1),
     'P':   ('P_F', (0, 300), 1),
+    'SWC': ('SWC_F_MDS_1', (0, 100), 1),        # soil water content, %, shallowest sensor
 }
 
 

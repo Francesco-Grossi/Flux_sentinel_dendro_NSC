@@ -3,16 +3,21 @@ AT-Neu,2017,GCC,grass/shrub,False,121.0,-0.0751244766073152,late spring (May - s
 AT-Neu,2018,GCC,grass/shrub,False,241.0,-1.6763782125802897,late summer / autumn,True,4.5,-1.0
 AT-Neu,2019,GCC,grass/shrub,True,181.0,-1.1126257574893264,early summer (solstice - mid Aug),False,-3.25,2.25
 AT-Neu,2020,GCC,grass/shrub,False,196.0,-1.6237456473980494,early summer (solstice - mid Aug),True,3.5,1.75
-CA-Gro,2009,GCC,deciduous,False,151.0,-1.131291550917991,late spring (May - solstice),False,2.5833333333333144,5.166666666666686
-CA-Gro,2010,GCC,deciduous,False,241.0,-1.1383945003612976,late summer / autumn,False,-6.666666666666686,-1.8333333333333144
-CA-Gro,2011,GCC,deciduous,False,121.0,-0.9745783434237749,late spring (May - solstice),False,4.083333333333314,-3.3333333333333144
-CA-TPD,2012,GCC,deciduous,False,166.0,-0.9629231763528152,late spring (May - solstice),False,-5.321428571428555,-1.8928571428571672
-CA-TPD,2013,GCC,deciduous,False,91.0,-0.39710639692764516,early spring (Mar-Apr),False,-1.0714285714285552,-0.14285714285716722
-CA-TPD,2014,GCC,deciduous,False,151.0,-1.6760628426675408,late spring (May - solstice),True,-0.3214285714285552,-1.6428571428571672
-CA-TPD,2015,GCC,deciduous,False,76.0,-0.48612317384736814,early spring (Mar-Apr),False,-8.821428571428555,0.3571428571428328
-CA-TPD,2016,GCC,deciduous,True,226.0,-0.8245355419153774,early summer (solstice - mid Aug),False,5.678571428571445,2.357142857142833
-CA-TPD,2017,GCC,deciduous,True,211.0,-0.6312854844013851,early summer (solstice - mid Aug),False,10.178571428571445,-4.642857142857167
-CA-TPD,2018,GCC,deciduous,False,106.0,-1.5894435656553552,early spring (Mar-Apr),True,-0.3214285714285552,5.607142857142833
+CA-Gro,2009,GCC,deciduous,False,151.0,-1.131291550917991,late spring (May - solstice),False,3.3500000000000227,7.25
+CA-Gro,2010,GCC,deciduous,False,241.0,-1.1383945003612976,late summer / autumn,False,-5.899999999999977,0.25
+CA-Gro,2011,GCC,deciduous,False,121.0,-0.9745783434237749,late spring (May - solstice),False,4.600000000000023,-1.25
+CA-Gro,2012,GCC,deciduous,False,226.0,-1.069649775340037,early summer (solstice - mid Aug),False,-8.649999999999977,1.75
+CA-Gro,2013,GCC,deciduous,False,181.0,-1.8415768154904177,early summer (solstice - mid Aug),True,6.600000000000023,-8.0
+CA-TPD,2012,GCC,deciduous,False,166.0,-0.9629231763528152,late spring (May - solstice),False,-7.050000000000011,-3.1750000000000114
+CA-TPD,2013,GCC,deciduous,False,91.0,-0.39710639692764516,early spring (Mar-Apr),False,-2.8000000000000114,-1.4250000000000114
+CA-TPD,2014,GCC,deciduous,False,151.0,-1.6760628426675408,late spring (May - solstice),True,-1.8000000000000114,-2.9250000000000114
+CA-TPD,2015,GCC,deciduous,False,76.0,-0.48612317384736814,early spring (Mar-Apr),False,-10.550000000000011,-0.9250000000000114
+CA-TPD,2016,GCC,deciduous,True,226.0,-0.8245355419153774,early summer (solstice - mid Aug),False,3.9499999999999886,1.0749999999999886
+CA-TPD,2017,GCC,deciduous,True,211.0,-0.6312854844013851,early summer (solstice - mid Aug),False,8.449999999999989,-5.675000000000011
+CA-TPD,2018,GCC,deciduous,False,106.0,-1.5894435656553552,early spring (Mar-Apr),True,-2.0500000000000114,4.324999999999989
+CA-TPD,2020,GCC,deciduous,False,121.0,-1.421538042835805,late spring (May - solstice),False,4.199999999999989,-4.175000000000011
+CA-TPD,2021,GCC,deciduous,False,181.0,-2.3468085612155827,early summer (solstice - mid Aug),True,12.449999999999989,10.074999999999989
+CA-TPD,2022,GCC,deciduous,False,91.0,-1.2489559229017484,early spring (Mar-Apr),False,-4.800000000000011,2.8249999999999886
 IT-MBo,2016,GCC,grass/shrub,False,76.0,-0.5235673161328774,early spring (Mar-Apr),False,-1.46875,-2.4375
 IT-MBo,2017,GCC,grass/shrub,False,181.0,-0.11264139985546599,early summer (solstice - mid Aug),False,-6.71875,-8.1875
 IT-MBo,2018,GCC,grass/shrub,False,196.0,-0.39802776449365107,early summer (solstice - mid Aug),False,-19.71875,-12.1875
@@ -32,14 +37,29 @@ IT-Tor,2021,GCC,grass/shrub,False,181.0,-1.2259074222571713,early summer (solsti
 IT-Tor,2022,GCC,grass/shrub,True,181.0,-0.8712518314449192,early summer (solstice - mid Aug),False,4.520833333333314,-9.1875
 IT-Tor,2023,GCC,grass/shrub,False,91.0,-0.8350429706339225,early spring (Mar-Apr),False,-5.229166666666686,-11.6875
 IT-Tor,2024,GCC,grass/shrub,False,166.0,-1.5974545435705862,late spring (May - solstice),True,-5.729166666666686,4.3125
-US-Bar,2016,GCC,deciduous,True,121.0,-0.9311214357504803,late spring (May - solstice),False,-2.8125,0.78125
-US-Bar,2017,GCC,deciduous,False,76.0,-0.9412865168127299,early spring (Mar-Apr),False,3.6875,-6.71875
-US-Bar,2018,GCC,deciduous,True,211.0,-2.024483384194319,early summer (solstice - mid Aug),True,4.6875,4.28125
-US-Bar,2019,GCC,deciduous,False,136.0,-2.0613323467434657,late spring (May - solstice),True,-0.0625,8.03125
-US-Bar,2020,GCC,deciduous,True,181.0,-1.21418291447085,early summer (solstice - mid Aug),False,-1.3125,-4.21875
-US-Bar,2021,GCC,deciduous,False,211.0,-1.1362192800273887,early summer (solstice - mid Aug),False,-1.5625,-3.46875
-US-Bar,2022,GCC,deciduous,False,121.0,-1.131136303305884,late spring (May - solstice),False,-7.3125,2.03125
-US-Bar,2023,GCC,deciduous,False,166.0,-1.1539200832341088,late spring (May - solstice),False,4.6875,-0.71875
+SE-Svb,2017,GCC,evergreen,False,241.0,-2.280206251787479,late summer / autumn,True,2.75,1.1999999999999886
+SE-Svb,2019,GCC,evergreen,False,151.0,-1.6874205095496104,late spring (May - solstice),True,-1.75,1.6999999999999886
+SE-Svb,2020,GCC,evergreen,False,151.0,-1.108918157426532,late spring (May - solstice),False,2.75,0.44999999999998863
+SE-Svb,2021,GCC,evergreen,False,136.0,-0.9965914987557407,late spring (May - solstice),False,3.25,0.9499999999999886
+SE-Svb,2022,GCC,evergreen,False,166.0,-0.7636028644644253,late spring (May - solstice),False,-7.0,-4.300000000000011
+US-Bar,2006,GCC,deciduous,False,121.0,-1.3093635179074326,late spring (May - solstice),False,-9.930555555555543,-2.680555555555543
+US-Bar,2007,GCC,deciduous,False,106.0,-0.9237545246032967,early spring (Mar-Apr),False,-2.680555555555543,-2.180555555555543
+US-Bar,2008,GCC,deciduous,False,166.0,-1.2191165426853776,late spring (May - solstice),False,-6.930555555555543,-1.430555555555543
+US-Bar,2009,GCC,deciduous,False,151.0,-0.9393112436374926,late spring (May - solstice),False,-7.680555555555543,-3.180555555555543
+US-Bar,2010,GCC,deciduous,False,166.0,-0.8570640884257629,late spring (May - solstice),False,1.069444444444457,1.569444444444457
+US-Bar,2011,GCC,deciduous,False,151.0,-1.2849611271703798,late spring (May - solstice),False,4.069444444444457,2.319444444444457
+US-Bar,2012,GCC,deciduous,False,211.0,-1.1890252475706156,early summer (solstice - mid Aug),False,-7.680555555555543,-0.6805555555555429
+US-Bar,2013,GCC,deciduous,False,106.0,-0.4979676341318148,early spring (Mar-Apr),False,-5.930555555555543,-1.430555555555543
+US-Bar,2014,GCC,deciduous,False,76.0,-1.1665137192556172,early spring (Mar-Apr),False,-3.680555555555543,-3.680555555555543
+US-Bar,2015,GCC,deciduous,False,166.0,-1.8087953885214771,late spring (May - solstice),True,1.319444444444457,1.319444444444457
+US-Bar,2016,GCC,deciduous,True,121.0,-0.9311214357504803,late spring (May - solstice),False,3.069444444444457,2.069444444444457
+US-Bar,2017,GCC,deciduous,False,76.0,-0.9412865168127299,early spring (Mar-Apr),False,9.069444444444457,-5.430555555555543
+US-Bar,2018,GCC,deciduous,True,211.0,-2.024483384194319,early summer (solstice - mid Aug),True,1.819444444444457,4.569444444444457
+US-Bar,2019,GCC,deciduous,False,136.0,-2.0613323467434657,late spring (May - solstice),True,6.069444444444457,9.569444444444457
+US-Bar,2020,GCC,deciduous,True,181.0,-1.21418291447085,early summer (solstice - mid Aug),False,4.569444444444457,-2.930555555555543
+US-Bar,2021,GCC,deciduous,False,226.0,-1.5780539741168627,early summer (solstice - mid Aug),True,4.069444444444457,-2.180555555555543
+US-Bar,2022,GCC,deciduous,False,121.0,-1.131136303305884,late spring (May - solstice),False,-1.430555555555543,3.569444444444457
+US-Bar,2023,GCC,deciduous,False,166.0,-1.1539200832341088,late spring (May - solstice),False,10.819444444444457,0.8194444444444571
 US-ChR,2008,GCC,deciduous,False,76.0,-1.0896408675845752,early spring (Mar-Apr),False,-109.67857142857144,-72.75
 US-ChR,2010,GCC,deciduous,False,136.0,-0.23206848835854374,late spring (May - solstice),False,26.571428571428555,28.0
 US-ChR,2012,GCC,deciduous,False,151.0,-0.8699339538063822,late spring (May - solstice),False,25.071428571428555,9.75
@@ -47,24 +67,34 @@ US-ChR,2013,GCC,deciduous,False,121.0,0.08007813233326415,late spring (May - sol
 US-ChR,2014,GCC,deciduous,False,106.0,-0.03006296539326043,early spring (Mar-Apr),False,7.571428571428555,39.25
 US-ChR,2015,GCC,deciduous,False,121.0,-0.6861780045217083,late spring (May - solstice),False,22.571428571428555,19.5
 US-ChR,2016,GCC,deciduous,False,151.0,-1.7954022841481894,late spring (May - solstice),True,0.3214285714285552,-29.75
-US-Ha1,2008,GCC,deciduous,False,166.0,-1.6870175658461422,late spring (May - solstice),True,-7.2222222222222285,-0.5
-US-Ha1,2009,GCC,deciduous,False,136.0,-0.2191499566598729,late spring (May - solstice),False,10.027777777777771,-9.25
-US-Ha1,2010,GCC,deciduous,False,226.0,-0.48748198242386054,early summer (solstice - mid Aug),False,-6.7222222222222285,-10.5
-US-Ha1,2011,GCC,deciduous,False,76.0,-2.3321391477305604,early spring (Mar-Apr),True,7.2777777777777715,-0.5
-US-Ha1,2012,GCC,deciduous,False,121.0,0.3740898633216259,late spring (May - solstice),False,2.5277777777777715,-11.25
-US-Ha1,2013,GCC,deciduous,False,226.0,-0.5542879134055703,early summer (solstice - mid Aug),False,-1.7222222222222285,-11.25
-US-Ha1,2014,GCC,deciduous,True,76.0,-1.497779096202966,early spring (Mar-Apr),False,-8.222222222222229,-2.25
-US-Ha1,2015,GCC,deciduous,False,76.0,-1.935740485040572,early spring (Mar-Apr),True,0.5277777777777715,4.0
-US-Ha1,2016,GCC,deciduous,True,196.0,-0.4165142112508318,early summer (solstice - mid Aug),False,1.2777777777777715,2.75
-US-Ha1,2017,GCC,deciduous,False,181.0,-1.2464103706951586,early summer (solstice - mid Aug),False,8.277777777777771,10.75
-US-Ha1,2018,GCC,deciduous,False,211.0,-0.42884525766928633,early summer (solstice - mid Aug),False,10.777777777777771,8.75
-US-Ha1,2019,GCC,deciduous,False,241.0,-0.6341933417218174,late summer / autumn,False,-7.7222222222222285,0.5
-US-Ha1,2020,GCC,deciduous,True,241.0,-1.0593805198785913,late summer / autumn,False,-5.9722222222222285,1.5
-US-Ha1,2021,GCC,deciduous,False,181.0,-2.8108769256904345,early summer (solstice - mid Aug),True,10.777777777777771,10.75
-US-Ha1,2022,GCC,deciduous,False,181.0,-1.156891411199385,early summer (solstice - mid Aug),False,-8.972222222222229,-3.0
-US-Ha1,2023,GCC,deciduous,False,121.0,-0.7330841032576734,late spring (May - solstice),False,1.5277777777777715,8.0
-US-Ha1,2024,GCC,deciduous,False,121.0,-1.091344431803379,late spring (May - solstice),False,-5.7222222222222285,3.25
-US-Ha1,2025,GCC,deciduous,False,181.0,-0.7823897949838619,early summer (solstice - mid Aug),False,-0.7222222222222285,-1.75
+US-Ha1,2008,GCC,deciduous,False,166.0,-1.6870175658461422,late spring (May - solstice),True,-7.611111111111086,0.6944444444444571
+US-Ha1,2009,GCC,deciduous,False,136.0,-0.2191499566598729,late spring (May - solstice),False,9.138888888888914,-7.555555555555543
+US-Ha1,2010,GCC,deciduous,False,226.0,-0.48748198242386054,early summer (solstice - mid Aug),False,-7.361111111111086,-9.055555555555543
+US-Ha1,2011,GCC,deciduous,False,76.0,-2.3321391477305604,early spring (Mar-Apr),True,7.388888888888914,0.6944444444444571
+US-Ha1,2012,GCC,deciduous,False,121.0,0.3740898633216259,late spring (May - solstice),False,2.388888888888914,-10.055555555555543
+US-Ha1,2013,GCC,deciduous,False,226.0,-0.5542879134055703,early summer (solstice - mid Aug),False,-2.361111111111086,-10.055555555555543
+US-Ha1,2014,GCC,deciduous,True,76.0,-1.497779096202966,early spring (Mar-Apr),False,-9.111111111111086,-1.305555555555543
+US-Ha1,2015,GCC,deciduous,False,76.0,-1.935740485040572,early spring (Mar-Apr),True,-0.11111111111108585,5.194444444444457
+US-Ha1,2016,GCC,deciduous,True,196.0,-0.4165142112508318,early summer (solstice - mid Aug),False,0.6388888888889142,3.944444444444457
+US-Ha1,2017,GCC,deciduous,False,181.0,-1.2464103706951586,early summer (solstice - mid Aug),False,7.388888888888914,11.694444444444457
+US-Ha1,2018,GCC,deciduous,False,211.0,-0.42884525766928633,early summer (solstice - mid Aug),False,8.388888888888914,6.944444444444457
+US-Ha1,2019,GCC,deciduous,False,241.0,-0.6341933417218174,late summer / autumn,False,-8.611111111111086,1.444444444444457
+US-Ha1,2020,GCC,deciduous,True,241.0,-1.0593805198785913,late summer / autumn,False,-2.361111111111086,-1.805555555555543
+US-Ha1,2021,GCC,deciduous,False,181.0,-2.8108769256904345,early summer (solstice - mid Aug),True,9.888888888888914,11.694444444444457
+US-Ha1,2022,GCC,deciduous,False,181.0,-1.156891411199385,early summer (solstice - mid Aug),False,-9.861111111111086,-2.055555555555543
+US-Ha1,2023,GCC,deciduous,False,121.0,-0.7330841032576734,late spring (May - solstice),False,0.38888888888891415,9.194444444444457
+US-Ha1,2024,GCC,deciduous,False,121.0,-1.091344431803379,late spring (May - solstice),False,-6.611111111111086,4.194444444444457
+US-Ha1,2025,GCC,deciduous,False,181.0,-0.7823897949838619,early summer (solstice - mid Aug),False,8.388888888888914,-13.805555555555543
+US-ICh,2014,GCC,grass/shrub,False,151.0,-0.7091749463580242,late spring (May - solstice),False,1.4583333333333428,-0.04166666666665719
+US-ICh,2015,GCC,grass/shrub,False,121.0,-0.7366825594824153,late spring (May - solstice),False,-7.541666666666657,-5.541666666666657
+US-ICh,2016,GCC,grass/shrub,False,166.0,-1.0331118045477525,late spring (May - solstice),False,0.2083333333333428,-0.2916666666666572
+US-ICh,2017,GCC,grass/shrub,False,181.0,-0.9888365398815089,early summer (solstice - mid Aug),False,-1.2916666666666572,0.2083333333333428
+US-ICh,2018,GCC,grass/shrub,False,166.0,-1.6494750735264285,late spring (May - solstice),True,10.958333333333343,3.958333333333343
+US-ICh,2023,GCC,grass/shrub,False,106.0,-0.0016968048486057932,early spring (Mar-Apr),False,-3.791666666666657,1.7083333333333428
+US-ICt,2014,GCC,grass/shrub,False,76.0,-1.1029932012098116,early spring (Mar-Apr),False,-2.6875,-3.0625
+US-ICt,2023,GCC,grass/shrub,False,91.0,-1.5300876541656305,early spring (Mar-Apr),True,3.3125,2.1875
+US-ICt,2024,GCC,grass/shrub,False,76.0,-0.8800789301078927,early spring (Mar-Apr),False,-2.6875,-3.0625
+US-ICt,2025,GCC,grass/shrub,False,106.0,-2.240850308077022,early spring (Mar-Apr),True,2.0625,3.9375
 US-Jo1,2014,GCC,grass/shrub,False,196.0,-0.8937492804142292,early summer (solstice - mid Aug),False,26.333333333333314,24.083333333333314
 US-Jo1,2017,GCC,grass/shrub,False,76.0,-0.1302192840113077,early spring (Mar-Apr),False,-25.166666666666686,-14.166666666666686
 US-Jo1,2021,GCC,grass/shrub,False,106.0,-1.6316560352634955,early spring (Mar-Apr),True,-1.1666666666666856,-9.916666666666686
@@ -83,37 +113,36 @@ US-Kon,2016,GCC,grass/shrub,True,136.0,-1.9405842581628994,late spring (May - so
 US-Kon,2017,GCC,grass/shrub,False,181.0,0.198596530249147,early summer (solstice - mid Aug),False,2.65625,2.5
 US-Kon,2018,GCC,grass/shrub,False,181.0,-1.7151760786883292,early summer (solstice - mid Aug),True,5.40625,-3.75
 US-Kon,2019,GCC,grass/shrub,False,136.0,-0.19023790144216737,late spring (May - solstice),False,-2.34375,2.5
-US-MMS,2008,GCC,deciduous,False,151.0,-2.028354934273883,late spring (May - solstice),True,3.5,7.0625
-US-MMS,2009,GCC,deciduous,False,91.0,-1.203795240243295,early spring (Mar-Apr),False,-6.5,-3.9375
-US-MMS,2010,GCC,deciduous,True,241.0,-2.017751170159259,late summer / autumn,True,-7.5,-8.1875
-US-MMS,2011,GCC,deciduous,False,256.0,-1.9095938532086594,late summer / autumn,True,2.25,-0.1875
-US-MMS,2012,GCC,deciduous,True,211.0,-2.9925610264591,early summer (solstice - mid Aug),True,-14.0,-8.4375
-US-MMS,2013,GCC,deciduous,False,166.0,-1.2800409869538054,late spring (May - solstice),False,8.75,6.5625
-US-MMS,2014,GCC,deciduous,False,121.0,-1.2970199991039653,late spring (May - solstice),False,-5.5,-1.4375
-US-MMS,2015,GCC,deciduous,False,166.0,-1.3881878179830456,late spring (May - solstice),False,-8.25,-2.4375
-US-MMS,2016,GCC,deciduous,False,181.0,-0.9613022446776864,early summer (solstice - mid Aug),False,3.0,2.3125
-US-MMS,2017,GCC,deciduous,False,166.0,-1.3300178961993114,late spring (May - solstice),False,9.25,6.8125
-US-MMS,2018,GCC,deciduous,False,151.0,-0.9852305251450081,late spring (May - solstice),False,3.0,1.3125
-US-MMS,2019,GCC,deciduous,False,76.0,-1.0442438663629907,early spring (Mar-Apr),False,5.25,0.3125
-US-MMS,2020,GCC,deciduous,False,136.0,-1.4666506228451286,late spring (May - solstice),False,-4.25,-6.4375
-US-MMS,2021,GCC,deciduous,False,76.0,-2.1284330711394297,early spring (Mar-Apr),True,16.25,9.5625
-US-MMS,2022,GCC,deciduous,False,121.0,-0.9915240893044749,late spring (May - solstice),False,-8.25,-4.1875
-US-MMS,2023,GCC,deciduous,True,121.0,0.1304077247873097,late spring (May - solstice),False,3.0,1.3125
-US-MOz,2012,GCC,deciduous,True,241.0,-2.5525109221909603,late summer / autumn,True,-15.399999999999977,-4.449999999999989
-US-MOz,2013,GCC,deciduous,False,121.0,-1.1502418001372932,late spring (May - solstice),False,-1.3999999999999773,7.050000000000011
-US-MOz,2014,GCC,deciduous,False,76.0,-1.015283567527646,early spring (Mar-Apr),False,-4.649999999999977,-1.6999999999999886
-US-MOz,2015,GCC,deciduous,False,151.0,-3.3997245754035883,late spring (May - solstice),True,-4.649999999999977,-7.449999999999989
-US-MOz,2016,GCC,deciduous,False,106.0,-0.060267515522387696,early spring (Mar-Apr),False,4.850000000000023,-0.6999999999999886
-US-MOz,2017,GCC,deciduous,False,76.0,-0.09196172086544828,early spring (Mar-Apr),False,8.350000000000023,4.800000000000011
-US-MOz,2018,GCC,deciduous,True,91.0,-1.0179579859365717,early spring (Mar-Apr),False,-1.1499999999999773,3.8000000000000114
-US-MOz,2019,GCC,deciduous,False,91.0,-0.6521514230964844,early spring (Mar-Apr),False,8.100000000000023,-4.199999999999989
-US-MOz,2020,GCC,deciduous,False,91.0,-0.6163173621247204,early spring (Mar-Apr),False,-3.3999999999999773,-6.699999999999989
-US-MOz,2021,GCC,deciduous,False,136.0,-0.392759120792693,late spring (May - solstice),False,9.350000000000023,9.550000000000011
-US-Me6,2018,GCC,evergreen,True,166.0,-3.4901078342176484,late spring (May - solstice),True,-21.850000000000023,-10.699999999999989
-US-Me6,2019,GCC,evergreen,False,76.0,-1.26392556708561,early spring (Mar-Apr),False,9.399999999999977,-5.699999999999989
-US-Me6,2020,GCC,evergreen,False,91.0,-0.14422028041362983,early spring (Mar-Apr),False,12.649999999999977,39.05000000000001
-US-Me6,2022,GCC,evergreen,False,106.0,-0.06486467689459793,early spring (Mar-Apr),False,2.6499999999999773,7.550000000000011
-US-Me6,2025,GCC,evergreen,True,196.0,-0.10861658182921068,early summer (solstice - mid Aug),False,-2.8500000000000227,-30.19999999999999
+US-MMS,2008,GCC,deciduous,False,151.0,-2.028354934273883,late spring (May - solstice),True,3.484375,9.046875
+US-MMS,2009,GCC,deciduous,False,91.0,-1.203795240243295,early spring (Mar-Apr),False,-6.015625,-1.953125
+US-MMS,2010,GCC,deciduous,True,241.0,-2.017751170159259,late summer / autumn,True,-6.765625,-6.203125
+US-MMS,2011,GCC,deciduous,False,256.0,-1.9095938532086594,late summer / autumn,True,2.984375,1.796875
+US-MMS,2012,GCC,deciduous,True,211.0,-2.9925610264591,early summer (solstice - mid Aug),True,-14.015625,-6.703125
+US-MMS,2013,GCC,deciduous,False,166.0,-1.2800409869538054,late spring (May - solstice),False,8.734375,8.296875
+US-MMS,2014,GCC,deciduous,False,121.0,-1.2970199991039653,late spring (May - solstice),False,-5.515625,0.296875
+US-MMS,2015,GCC,deciduous,False,166.0,-1.3881878179830456,late spring (May - solstice),False,-8.515625,-0.703125
+US-MMS,2016,GCC,deciduous,False,181.0,-0.9613022446776864,early summer (solstice - mid Aug),False,2.984375,3.796875
+US-MMS,2017,GCC,deciduous,False,166.0,-1.3300178961993114,late spring (May - solstice),False,8.984375,8.546875
+US-MMS,2018,GCC,deciduous,False,151.0,-0.9852305251450081,late spring (May - solstice),False,25.484375,7.296875
+US-MMS,2019,GCC,deciduous,False,76.0,-1.0442438663629907,early spring (Mar-Apr),False,3.484375,-2.453125
+US-MMS,2020,GCC,deciduous,False,136.0,-1.4666506228451286,late spring (May - solstice),False,-12.265625,-11.953125
+US-MMS,2021,GCC,deciduous,False,76.0,-2.1284330711394297,early spring (Mar-Apr),True,11.484375,4.046875
+US-MMS,2022,GCC,deciduous,False,121.0,-0.9915240893044749,late spring (May - solstice),False,-12.765625,-8.453125
+US-MMS,2023,GCC,deciduous,True,121.0,0.1304077247873097,late spring (May - solstice),False,-1.765625,-4.703125
+US-MOz,2012,GCC,deciduous,True,241.0,-2.5525109221909603,late summer / autumn,True,-15.425000000000011,-4.425000000000011
+US-MOz,2013,GCC,deciduous,False,121.0,-1.1502418001372932,late spring (May - solstice),False,-1.4250000000000114,6.824999999999989
+US-MOz,2014,GCC,deciduous,False,76.0,-1.015283567527646,early spring (Mar-Apr),False,-4.675000000000011,-1.6750000000000114
+US-MOz,2015,GCC,deciduous,False,151.0,-3.3997245754035883,late spring (May - solstice),True,-4.675000000000011,-7.425000000000011
+US-MOz,2016,GCC,deciduous,False,106.0,-0.060267515522387696,early spring (Mar-Apr),False,4.824999999999989,-0.6750000000000114
+US-MOz,2017,GCC,deciduous,False,76.0,-0.09196172086544828,early spring (Mar-Apr),False,8.324999999999989,4.824999999999989
+US-MOz,2018,GCC,deciduous,True,91.0,-1.0179579859365717,early spring (Mar-Apr),False,-0.9250000000000114,3.8249999999999886
+US-MOz,2019,GCC,deciduous,False,91.0,-0.6521514230964844,early spring (Mar-Apr),False,8.074999999999989,-4.175000000000011
+US-MOz,2020,GCC,deciduous,False,91.0,-0.6163173621247204,early spring (Mar-Apr),False,-3.4250000000000114,-6.675000000000011
+US-MOz,2021,GCC,deciduous,False,136.0,-0.392759120792693,late spring (May - solstice),False,9.324999999999989,9.574999999999989
+US-Me6,2013,GCC,evergreen,False,211.0,-0.7262211101372031,early summer (solstice - mid Aug),False,20.125,32.375
+US-Me6,2018,GCC,evergreen,True,166.0,-3.4901078342176484,late spring (May - solstice),True,-24.125,-17.875
+US-Me6,2019,GCC,evergreen,False,76.0,-1.26392556708561,early spring (Mar-Apr),False,2.375,-14.625
+US-Me6,2022,GCC,evergreen,False,106.0,-0.06486467689459793,early spring (Mar-Apr),False,1.625,0.125
 US-Mpj,2013,GCC,grass/shrub,False,196.0,-0.7821398846480557,early summer (solstice - mid Aug),False,-5.1875,-3.84375
 US-Mpj,2014,GCC,grass/shrub,False,151.0,-0.444010091266267,late spring (May - solstice),False,-1.4375,-0.34375
 US-Mpj,2017,GCC,grass/shrub,False,181.0,0.01808463290833081,early summer (solstice - mid Aug),False,12.5625,12.15625
@@ -122,18 +151,29 @@ US-Mpj,2019,GCC,grass/shrub,False,241.0,-1.580915890643612,late summer / autumn,
 US-Mpj,2020,GCC,grass/shrub,True,241.0,-1.2535496357279814,late summer / autumn,False,23.8125,13.40625
 US-Mpj,2021,GCC,grass/shrub,False,76.0,-1.225071624606633,early spring (Mar-Apr),False,-10.6875,-9.09375
 US-Mpj,2023,GCC,grass/shrub,True,241.0,-1.8407501441563088,late summer / autumn,True,-1.6875,-6.34375
-US-Rws,2017,GCC,grass/shrub,False,76.0,0.5259295231405109,early spring (Mar-Apr),False,15.25,12.5
-US-Rws,2018,GCC,grass/shrub,False,136.0,-1.2836720778257986,late spring (May - solstice),False,-43.5,-14.0
-US-Rws,2019,GCC,grass/shrub,False,76.0,-1.7617216193628733,early spring (Mar-Apr),True,10.0,-0.75
-US-Rws,2020,GCC,grass/shrub,False,76.0,-0.27389548019300264,early spring (Mar-Apr),False,17.5,11.0
-US-Rws,2021,GCC,grass/shrub,False,121.0,-0.7415155163746163,late spring (May - solstice),False,0.75,-8.75
+US-Rls,2021,GCC,grass/shrub,False,151.0,0.5655370251398276,late spring (May - solstice),False,-47.333333333333314,-16.333333333333343
+US-Rls,2022,GCC,grass/shrub,False,121.0,-1.015617695375631,late spring (May - solstice),False,24.166666666666686,7.666666666666657
+US-Rls,2023,GCC,grass/shrub,False,76.0,-1.0177292482219922,early spring (Mar-Apr),False,23.166666666666686,8.666666666666657
+US-Rms,2019,GCC,grass/shrub,False,91.0,-1.7570684979605553,early spring (Mar-Apr),True,8.850000000000023,-2.5
+US-Rms,2020,GCC,grass/shrub,False,151.0,-0.31679276654045,late spring (May - solstice),False,0.8500000000000227,0.75
+US-Rms,2021,GCC,grass/shrub,False,166.0,-0.9270551185329037,late spring (May - solstice),False,-1.6499999999999773,-9.0
+US-Rms,2022,GCC,grass/shrub,False,121.0,-0.971841702000184,late spring (May - solstice),False,-5.149999999999977,12.25
+US-Rms,2023,GCC,grass/shrub,False,121.0,-1.6688341882784323,late spring (May - solstice),True,-2.8999999999999773,-1.5
+US-Rws,2017,GCC,grass/shrub,False,76.0,0.5259295231405109,early spring (Mar-Apr),False,18.083333333333314,13.416666666666657
+US-Rws,2018,GCC,grass/shrub,False,136.0,-1.2836720778257986,late spring (May - solstice),False,-44.416666666666686,-14.083333333333343
+US-Rws,2019,GCC,grass/shrub,False,76.0,-1.7617216193628733,early spring (Mar-Apr),True,12.333333333333314,-0.08333333333334281
+US-Rws,2020,GCC,grass/shrub,False,76.0,-0.27389548019300264,early spring (Mar-Apr),False,19.083333333333314,11.166666666666657
+US-Rws,2021,GCC,grass/shrub,False,121.0,-0.7415155163746163,late spring (May - solstice),False,-0.4166666666666856,-9.083333333333343
+US-Rws,2023,GCC,grass/shrub,False,76.0,-0.9395757941605262,early spring (Mar-Apr),False,-4.666666666666686,-1.3333333333333428
 US-SRG,2021,GCC,grass/shrub,False,76.0,-1.349493487773085,early spring (Mar-Apr),False,-6.583333333333314,-7.916666666666657
 US-SRG,2022,GCC,grass/shrub,False,76.0,-0.620872872659244,early spring (Mar-Apr),False,13.166666666666686,6.583333333333343
 US-SRG,2023,GCC,grass/shrub,True,76.0,-0.2594428342196527,early spring (Mar-Apr),False,-6.583333333333314,1.3333333333333428
-US-SRM,2018,GCC,grass/shrub,False,76.0,-0.764852341170593,early spring (Mar-Apr),False,15.75,-2.125
-US-SRM,2021,GCC,grass/shrub,False,181.0,-1.4677842920132516,early summer (solstice - mid Aug),False,-6.75,1.875
-US-SRM,2022,GCC,grass/shrub,False,76.0,-0.6306302725141787,early spring (Mar-Apr),False,8.0,1.875
-US-SRM,2023,GCC,grass/shrub,False,181.0,-0.6205024558904786,early summer (solstice - mid Aug),False,-17.0,-1.625
+US-SRM,2016,GCC,grass/shrub,False,166.0,-0.022517134377601222,late spring (May - solstice),False,35.291666666666686,16.791666666666657
+US-SRM,2017,GCC,grass/shrub,False,181.0,-1.3595096276739327,early summer (solstice - mid Aug),False,-48.708333333333314,-28.958333333333343
+US-SRM,2018,GCC,grass/shrub,False,76.0,-0.764852341170593,early spring (Mar-Apr),False,14.041666666666686,3.541666666666657
+US-SRM,2021,GCC,grass/shrub,False,181.0,-1.4677842920132516,early summer (solstice - mid Aug),False,-1.7083333333333144,4.041666666666657
+US-SRM,2022,GCC,grass/shrub,False,76.0,-0.6306302725141787,early spring (Mar-Apr),False,13.041666666666686,4.041666666666657
+US-SRM,2023,GCC,grass/shrub,False,181.0,-0.6205024558904786,early summer (solstice - mid Aug),False,-11.958333333333314,0.5416666666666572
 US-Seg,2016,GCC,grass/shrub,False,211.0,-0.6591911503869561,early summer (solstice - mid Aug),False,-7.5,-0.3571428571428612
 US-Seg,2018,GCC,grass/shrub,False,151.0,-0.6721429067225887,late spring (May - solstice),False,20.5,0.1428571428571388
 US-Seg,2020,GCC,grass/shrub,False,196.0,-1.2512005461211257,early summer (solstice - mid Aug),False,-26.25,-20.85714285714286
@@ -149,29 +189,37 @@ US-Slt,2013,GCC,deciduous,False,106.0,-0.5007590379258198,early spring (Mar-Apr)
 US-Slt,2015,GCC,deciduous,False,76.0,0.07268430034747166,early spring (Mar-Apr),False,-0.75,14.5
 US-Slt,2016,GCC,deciduous,False,136.0,-0.724559763319047,late spring (May - solstice),False,-18.75,-12.5
 US-Slt,2017,GCC,deciduous,False,76.0,0.05890123679035748,early spring (Mar-Apr),False,14.75,2.5
-US-Ton,2012,GCC,grass/shrub,False,91.0,-2.172503481426034,early spring (Mar-Apr),True,19.910714285714278,14.107142857142861
-US-Ton,2013,GCC,grass/shrub,False,76.0,0.35628785707892596,early spring (Mar-Apr),False,35.41071428571428,21.10714285714286
-US-Ton,2014,GCC,grass/shrub,False,76.0,0.19131982257765676,early spring (Mar-Apr),False,-1.8392857142857224,-14.642857142857139
-US-Ton,2015,GCC,grass/shrub,False,91.0,1.5461909582957634,early spring (Mar-Apr),False,-13.089285714285722,-14.392857142857139
-US-Ton,2016,GCC,grass/shrub,False,76.0,-0.12190642488621146,early spring (Mar-Apr),False,-29.839285714285722,-16.89285714285714
-US-Ton,2017,GCC,grass/shrub,False,91.0,0.6742485558160239,early spring (Mar-Apr),False,-4.339285714285722,0.8571428571428612
-US-Ton,2018,GCC,grass/shrub,False,91.0,-0.159324050254082,early spring (Mar-Apr),False,-21.339285714285722,-6.142857142857139
-US-Ton,2019,GCC,grass/shrub,False,91.0,-0.4623802361161131,early spring (Mar-Apr),False,22.410714285714278,15.357142857142861
-US-Ton,2020,GCC,grass/shrub,False,91.0,-0.6040136944539066,early spring (Mar-Apr),False,19.160714285714278,15.107142857142861
-US-Ton,2021,GCC,grass/shrub,True,76.0,-1.7989250933415717,early spring (Mar-Apr),True,-6.589285714285722,-4.642857142857139
-US-Ton,2022,GCC,grass/shrub,False,91.0,-0.2781611355079822,early spring (Mar-Apr),False,6.660714285714278,0.6071428571428612
-US-Ton,2023,GCC,grass/shrub,False,76.0,-1.9513367498042828,early spring (Mar-Apr),True,9.910714285714278,6.107142857142861
-US-Ton,2024,GCC,grass/shrub,False,91.0,0.5897217608014701,early spring (Mar-Apr),False,-13.839285714285722,-2.892857142857139
-US-Ton,2025,GCC,grass/shrub,True,76.0,-0.31966892517186096,early spring (Mar-Apr),False,-22.589285714285722,-13.642857142857139
-US-UMd,2014,GCC,deciduous,False,136.0,-1.1476488656246806,late spring (May - solstice),False,-3.805555555555543,-6.7777777777777715
-US-UMd,2015,GCC,deciduous,False,91.0,-0.6378587662197154,early spring (Mar-Apr),False,-5.305555555555543,0.47222222222222854
-US-UMd,2016,GCC,deciduous,True,226.0,-0.5534977721346872,early summer (solstice - mid Aug),False,-0.5555555555555429,3.9722222222222285
-US-UMd,2017,GCC,deciduous,False,136.0,-0.34724573561752287,late spring (May - solstice),False,0.19444444444445708,2.2222222222222285
-US-UMd,2018,GCC,deciduous,False,106.0,-1.0654090990069827,early spring (Mar-Apr),False,-3.055555555555543,-1.2777777777777715
-US-UMd,2019,GCC,deciduous,False,151.0,-1.0147342672357929,late spring (May - solstice),False,-3.305555555555543,1.7222222222222285
-US-UMd,2020,GCC,deciduous,False,121.0,-0.9649351306872883,late spring (May - solstice),False,-6.805555555555543,-6.2777777777777715
-US-UMd,2021,GCC,deciduous,False,181.0,0.015421803530150942,early summer (solstice - mid Aug),False,4.944444444444457,3.4722222222222285
-US-UMd,2022,GCC,deciduous,False,91.0,-0.3415244203302104,early spring (Mar-Apr),False,17.694444444444457,2.4722222222222285
+US-Ton,2012,GCC,grass/shrub,False,91.0,-2.172503481426034,early spring (Mar-Apr),True,19.910714285714278,14.125
+US-Ton,2013,GCC,grass/shrub,False,76.0,0.35628785707892596,early spring (Mar-Apr),False,35.41071428571428,21.125
+US-Ton,2014,GCC,grass/shrub,False,76.0,0.19131982257765676,early spring (Mar-Apr),False,-1.8392857142857224,-14.625
+US-Ton,2015,GCC,grass/shrub,False,91.0,1.5461909582957634,early spring (Mar-Apr),False,-13.089285714285722,-14.375
+US-Ton,2016,GCC,grass/shrub,False,76.0,-0.12190642488621146,early spring (Mar-Apr),False,-29.839285714285722,-16.875
+US-Ton,2017,GCC,grass/shrub,False,91.0,0.6742485558160239,early spring (Mar-Apr),False,-4.339285714285722,0.875
+US-Ton,2018,GCC,grass/shrub,False,91.0,-0.159324050254082,early spring (Mar-Apr),False,-21.339285714285722,-6.125
+US-Ton,2019,GCC,grass/shrub,False,91.0,-0.4623802361161131,early spring (Mar-Apr),False,22.410714285714278,15.125
+US-Ton,2020,GCC,grass/shrub,False,91.0,-0.6040136944539066,early spring (Mar-Apr),False,19.160714285714278,15.125
+US-Ton,2021,GCC,grass/shrub,True,76.0,-1.7989250933415717,early spring (Mar-Apr),True,-6.589285714285722,-4.625
+US-Ton,2022,GCC,grass/shrub,False,91.0,-0.2781611355079822,early spring (Mar-Apr),False,6.660714285714278,0.625
+US-Ton,2023,GCC,grass/shrub,False,76.0,-1.9513367498042828,early spring (Mar-Apr),True,9.910714285714278,6.125
+US-Ton,2024,GCC,grass/shrub,False,91.0,0.5897217608014701,early spring (Mar-Apr),False,-13.839285714285722,-2.875
+US-Ton,2025,GCC,grass/shrub,True,76.0,-0.31966892517186096,early spring (Mar-Apr),False,-22.589285714285722,-13.625
+US-UMd,2009,GCC,deciduous,False,151.0,-0.9829342910668151,late spring (May - solstice),False,-5.367647058823536,4.823529411764696
+US-UMd,2010,GCC,deciduous,False,181.0,-0.40840480554838776,early summer (solstice - mid Aug),False,-11.867647058823536,-21.676470588235304
+US-UMd,2011,GCC,deciduous,False,121.0,-1.016885819199253,late spring (May - solstice),False,-4.117647058823536,-7.926470588235304
+US-UMd,2012,GCC,deciduous,True,196.0,0.418280778090268,early summer (solstice - mid Aug),False,-19.867647058823536,-3.676470588235304
+US-UMd,2013,GCC,deciduous,False,106.0,-1.1055539526884413,early spring (Mar-Apr),False,-4.117647058823536,4.073529411764696
+US-UMd,2014,GCC,deciduous,False,136.0,-1.1476488656246806,late spring (May - solstice),False,0.6323529411764639,-4.176470588235304
+US-UMd,2015,GCC,deciduous,False,91.0,-0.6378587662197154,early spring (Mar-Apr),False,-0.6176470588235361,3.323529411764696
+US-UMd,2016,GCC,deciduous,True,226.0,-0.5534977721346872,early summer (solstice - mid Aug),False,4.882352941176464,6.823529411764696
+US-UMd,2017,GCC,deciduous,False,136.0,-0.34724573561752287,late spring (May - solstice),False,5.632352941176464,5.073529411764696
+US-UMd,2018,GCC,deciduous,False,106.0,-1.0654090990069827,early spring (Mar-Apr),False,2.132352941176464,1.5735294117646959
+US-UMd,2019,GCC,deciduous,False,151.0,-1.0147342672357929,late spring (May - solstice),False,1.882352941176464,4.573529411764696
+US-UMd,2020,GCC,deciduous,False,121.0,-0.9649351306872883,late spring (May - solstice),False,-1.367647058823536,-3.426470588235304
+US-UMd,2021,GCC,deciduous,False,181.0,0.015421803530150942,early summer (solstice - mid Aug),False,10.382352941176464,6.323529411764696
+US-UMd,2022,GCC,deciduous,False,91.0,-0.3415244203302104,early spring (Mar-Apr),False,20.382352941176464,4.573529411764696
+US-UMd,2023,GCC,deciduous,True,181.0,-0.2629842842528626,early summer (solstice - mid Aug),False,0.8823529411764639,-3.426470588235304
+US-UMd,2024,GCC,deciduous,False,226.0,-1.569001425572051,early summer (solstice - mid Aug),True,-1.367647058823536,-2.176470588235304
+US-UMd,2025,GCC,deciduous,False,181.0,-3.4932151586947193,early summer (solstice - mid Aug),True,1.882352941176464,5.323529411764696
 US-Var,2012,GCC,grass/shrub,True,76.0,-2.2040066560447595,early spring (Mar-Apr),True,6.25,8.75
 US-Var,2014,GCC,grass/shrub,False,76.0,0.31151557315814526,early spring (Mar-Apr),False,-5.0,-4.5
 US-Var,2020,GCC,grass/shrub,False,76.0,-0.3253229274669482,early spring (Mar-Apr),False,1.75,-2.0

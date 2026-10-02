@@ -23,6 +23,36 @@ a spring-temperature effect (with temperature, radiation and water held fixed, G
 days per SD, mostly at evergreen sites); and only the satellite samples are large enough to detect an
 effect of this size.
 
+## Update: more PhenoCam data and measured soil water
+
+Added after the sections below were written. PhenoCam numbers in sections 1, 3 and 8 are from the
+smaller PhenoCam sample; the current ones are in [results_report.md](results_report.md).
+
+**PhenoCam**
+- PhenoCam starts a new ROI file each time a camera's field of view shifts, and the pipeline used only
+  one file per site. It now uses all of them, year by year (142 files instead of 58), and also accepts
+  cameras 1-2 km away that look at the site's own vegetation type (3 more sites: 61 matched).
+- Site-years passing QC: **266, up from 223**; sites with at least 3 years: 30, up from 25.
+- **The PhenoCam pre-solstice effect is weaker on the larger sample.** Without the temperature
+  covariate: -1.2 (sum from leaf-out) and -0.7 (calendar), against -2.0 and -1.3 before. With spring
+  temperature held fixed: -0.7 / -0.2 / -0.5 (sum / calendar / rate), none significant. Spring
+  temperature itself: -2.4 to -2.6 (p <= 0.01).
+- The sign is still negative with every site left out, but PhenoCam now supports the temperature
+  effect more clearly than the GPP effect. Power is still low (25-28%).
+- The counts of the formal test did not change (EOS90: all three parts in 3 of 20 tests with the sum,
+  0 with calendar windows or the rate).
+
+**Soil water**
+- Soil water content (shallowest sensor) is now extracted for 128 of 151 sites; 96 sites and 827
+  site-years have it for the 90 days before the solstice. It is used as plant-available water: relative
+  to each site's own dry and wet ends.
+- **Soil water does not explain EOS90 and does not change the GPP effect.** At summer-green sites
+  (1,274 site-years stacked): soil water +0.3 (n.s.); GPP -1.8 with or without it, -1.2 with temperature
+  also fixed (p = 0.03). The same holds for soil water after the solstice.
+- **Dry-summer sites:** only 6 have soil water (81 site-years stacked) and nothing is significant there.
+  The climatic water balance still predicts EOS90 (+1.8, p < 0.01, 9 sites). So the water effect at
+  dry-summer sites rests on rainfall minus evaporative demand, not yet on measured soil water.
+
 ## 1. One-to-one correlations (steps 28, 40)
 
 Each pair is drawn for all four EOS sources, pooled (`figure/predictor_correlations/`) and as
@@ -78,7 +108,7 @@ The air temperature of the 60 days before the solstice is now in every model of 
 
 | EOS source | Sum, from leaf-out | Calendar windows | Rate | Spring temperature itself |
 |---|---|---|---|---|
-| PhenoCam | -1.9 / -2.3 / -3.1 | -0.8 / -0.8 / -1.3 | -1.2 / -1.0 / -2.3 | -2.6* |
+| PhenoCam | -0.7 / -1.8 / -2.0 | -0.2 / -0.5 / -0.6 | -0.5 / -0.9 / -1.5 | -2.6* |
 | Tower NDVI | -1.5 / 0.0 / -1.3 | -1.8 / +0.3 / -1.1 | -1.5* / +0.4 / -1.4 | -2.2 |
 | Satellite NDVI | -2.7* / +1.3* / -1.0 | -0.6 / -0.6 / -1.1 | +0.3 / -0.2 / -0.3 | +0.4 |
 | Satellite NIRv | -1.6* / +0.7 / -0.8 | -1.5* / +0.6 / -0.8 | -1.3* / +0.6 / -0.7 | -1.7* |
@@ -275,8 +305,8 @@ The scan now starts 120 days before the solstice and is fitted within sites.
    PhenoCam sites beyond the flux network would not help (no GPP); longer tower records would.
 3. Deciduous forests: the result there is "leaf-out date, not GPP". Test whether leaf-out acts through
    leaf age (a fixed leaf life span) with the PhenoCam leaf-out dates, which are more precise.
-4. Extract soil water content from the FLUXNET archives (step 11) for the dry-summer sites, and add the
-   Mediterranean sites that currently fail the phenology QC.
+4. Dry-summer sites: only 6 have both soil water and enough EOS90 years. Add the Mediterranean sites
+   that currently fail the phenology QC before drawing a conclusion about water there.
 
 **To test the sink mechanism directly**
 5. Dendrometer growth at CH-Dav, CZ-BK1, CZ-Stn and CZ-RAJ (DenDrought2018), CH-Lae (TreeNet) and

@@ -19,11 +19,16 @@ A. Leaf-out (deciduous forests). An early spring both raises pre-solstice
 B. Water (dry-summer sites). Where the canopy dries out in early summer, a
    wet spring could raise GPP and move senescence at the same time. Climatic
    water balance (P - PET, PET after Makkink) before the solstice is added
-   to the model, with pre-solstice air temperature. There is no soil-moisture
-   variable in the extracted FLUXNET table, so the water balance stands in
-   for it.
-       wb_pre   P - PET summed over the WB_PRE days before the solstice
-       wb_post  P - PET summed over the CAL_POST days from the solstice
+   to the model, with pre-solstice air temperature. Two measures of water:
+       wb_pre   climatic water balance, P - PET summed over the WB_PRE days
+                before the solstice (every site)
+       rew_pre  plant-available soil water: measured soil water content of
+                the shallowest sensor (SWC_F_MDS_1, step 11), expressed as
+                relative extractable water REW = (SWC - dry) / (wet - dry)
+                with the site's own REW_LOW / REW_HIGH quantiles as dry and
+                wet end; mean over the same WB_PRE days. Only sites that
+                measure soil water.
+       rew_post the same over the CAL_POST days from the solstice
 
 C. Sink instead of source. If senescence responds to how much the plant
    could GROW rather than to how much it photosynthesised, sink variables
@@ -95,6 +100,7 @@ OUT_MD.parent.mkdir(parents=True, exist_ok=True)
 
 TARGET = 'EOS90'
 CAL_PRE, CAL_POST, WB_PRE = 60, 45, 90
+REW_LOW, REW_HIGH = 0.02, 0.98          # site quantiles of soil water content taken as dry and wet end
 SINK_T_MIN, SINK_T_OPT, BUCKET_MM = 5.0, 18.0, 150.0
 MIN_YEARS, MIN_OBS, MIN_SITES = 3, 25, 5
 LEAF_HABIT = {'DBF': 'deciduous', 'DNF': 'deciduous', 'MF': 'deciduous', 'ENF': 'evergreen', 'EBF': 'evergreen'}
@@ -135,7 +141,12 @@ flux['fW'] = pd.concat([bucket(g) for _, g in flux.groupby('site_id', sort=False
 flux['fT'] = ((flux['TA'] - SINK_T_MIN) / (SINK_T_OPT - SINK_T_MIN)).clip(0, 1)
 flux['SI'] = flux['fT'] * flux['fW']
 sink_vars += ['SI', 'fT', 'fW']
-lk = ec.FluxLookup(flux, sink_vars + ['WB', 'TA', 'SW'])
+if 'SWC' in flux.columns and flux['SWC'].notna().any():
+    # plant-available water: soil water content relative to the site's own dry and wet ends
+    q = flux.groupby('site_id')['SWC'].quantile([REW_LOW, REW_HIGH]).unstack()
+    lo, hi = flux['site_id'].map(q[REW_LOW]), flux['site_id'].map(q[REW_HIGH])
+    flux['REW'] = ((flux['SWC'] - lo) / (hi - lo).where(hi > lo)).clip(0, 1)
+lk = ec.FluxLookup(flux, sink_vars + ['WB', 'TA', 'SW', 'REW'])
 
 pheno = ec.load_phenology()
 habit = flux.drop_duplicates('site_id').set_index('site_id')['igbp'].map(LEAF_HABIT).fillna('grass/shrub')
@@ -160,6 +171,14 @@ pheno['gpp_rate'] = [lk.window_mean(s, y, 'GPP', a, so) for (s, y, so), a in zip
 pheno['gpp_sos'] = pheno['gpp_rate'] * [ec.FluxLookup.n_days(a, so) for (_, _, so), a in zip(rows, pheno['SOS'])]
 pheno['wb_pre'] = win('WB', -WB_PRE, -1, total=True)
 pheno['wb_post'] = win('WB', 0, CAL_POST - 1, total=True)
+WATER_VARS = {'wb_pre': 'water balance (P - PET)'}
+if 'REW' in flux.columns:
+    pheno['rew_pre'] = win('REW', -WB_PRE, -1)
+    pheno['rew_post'] = win('REW', 0, CAL_POST - 1)
+    WATER_VARS['rew_pre'] = 'plant-available soil water'
+    WATER_VARS['rew_post'] = 'plant-available soil water, after the solstice'
+    print(f"Soil water: {int(pheno.drop_duplicates(['site_id', 'year'])['rew_pre'].notna().sum())} site-years at "
+          f"{pheno.loc[pheno['rew_pre'].notna(), 'site_id'].nunique()} sites have measured soil water before the solstice.")
 pheno['ta_pre'] = win('TA', -CAL_PRE, -1)
 pheno['sw_pre'] = win('SW', -CAL_PRE, -1)
 pheno['wb_cal'] = win('WB', -CAL_PRE, -1, total=True)
@@ -235,28 +254,29 @@ print(A[A['group'].isin(['deciduous', 'all'])][show].round(3).to_string(index=Fa
 b_rows = []
 for group in ('dry-summer', 'summer-green', 'all'):
     for src, d, unit in samples('season_type', group):
-        for gv in ('gpp_sos', 'gpp_cal'):
-            dd = d[['site_id', unit, TARGET, gv, 'wb_pre', 'ta_pre']].loc[:, lambda f: ~f.columns.duplicated()].dropna()
-            fg, fw = wfit(dd, [gv], unit), wfit(dd, ['wb_pre'], unit)
-            fj, ft = wfit(dd, [gv, 'wb_pre'], unit), wfit(dd, [gv, 'wb_pre', 'ta_pre'], unit)
-            if fg is None or fw is None or fj is None or ft is None:
-                continue
-            r = {'group': group, 'eos_source': src, 'gpp_version': gv.replace('gpp_', ''), 'n_obs': fj['n_obs'],
-                 'n_sites': fj['n_sites'], 'r_gpp_water_within': float(fj['corr'].iloc[0, 1]),
-                 'r2_gpp': fg['r2'], 'r2_water': fw['r2'], 'r2_both': fj['r2'],
-                 'r2_unique_gpp': fj['r2'] - fw['r2'], 'r2_unique_water': fj['r2'] - fg['r2']}
-            put(r, 'gpp_alone', fg, gv)
-            put(r, 'water_alone', fw, 'wb_pre')
-            put(r, 'gpp_with_water', fj, gv)
-            put(r, 'water_with_gpp', fj, 'wb_pre')
-            put(r, 'gpp_with_water_T', ft, gv)
-            put(r, 'water_with_gpp_T', ft, 'wb_pre')
-            put(r, 'T_with_gpp_water', ft, 'ta_pre')
-            b_rows.append(r)
+        for wv in WATER_VARS:
+            for gv in ('gpp_sos', 'gpp_cal'):
+                dd = d[['site_id', unit, TARGET, gv, wv, 'ta_pre']].loc[:, lambda f: ~f.columns.duplicated()].dropna()
+                fg, fw = wfit(dd, [gv], unit), wfit(dd, [wv], unit)
+                fj, ft = wfit(dd, [gv, wv], unit), wfit(dd, [gv, wv, 'ta_pre'], unit)
+                if fg is None or fw is None or fj is None or ft is None:
+                    continue
+                r = {'group': group, 'eos_source': src, 'water': WATER_VARS[wv], 'gpp_version': gv.replace('gpp_', ''),
+                     'n_obs': fj['n_obs'], 'n_sites': fj['n_sites'], 'r_gpp_water_within': float(fj['corr'].iloc[0, 1]),
+                     'r2_gpp': fg['r2'], 'r2_water': fw['r2'], 'r2_both': fj['r2'],
+                     'r2_unique_gpp': fj['r2'] - fw['r2'], 'r2_unique_water': fj['r2'] - fg['r2']}
+                put(r, 'gpp_alone', fg, gv)
+                put(r, 'water_alone', fw, wv)
+                put(r, 'gpp_with_water', fj, gv)
+                put(r, 'water_with_gpp', fj, wv)
+                put(r, 'gpp_with_water_T', ft, gv)
+                put(r, 'water_with_gpp_T', ft, wv)
+                put(r, 'T_with_gpp_water', ft, 'ta_pre')
+                b_rows.append(r)
 B = pd.DataFrame(b_rows)
 B.to_csv(OUT_B, index=False)
-print(f"\nB. Water balance vs pre-solstice GPP -> '{OUT_B}'")
-show = ['group', 'eos_source', 'gpp_version', 'n_obs', 'n_sites', 'r_gpp_water_within', 'gpp_alone_b', 'gpp_alone_p',
+print(f"\nB. Water vs pre-solstice GPP -> '{OUT_B}'")
+show = ['group', 'eos_source', 'water', 'gpp_version', 'n_obs', 'n_sites', 'r_gpp_water_within', 'gpp_alone_b', 'gpp_alone_p',
         'water_alone_b', 'water_alone_p', 'gpp_with_water_b', 'gpp_with_water_p', 'water_with_gpp_b', 'water_with_gpp_p',
         'gpp_with_water_T_b', 'gpp_with_water_T_p']
 print(B[show].round(3).to_string(index=False))
@@ -379,13 +399,16 @@ if len(A):
     fig.savefig(FIG_DIR / "leafout_vs_gpp.png", dpi=150)
     plt.close(fig)
 if len(B):
-    fig, axes = plt.subplots(1, 2, figsize=(12, 4.4), sharex=True)
-    for ax, group in zip(axes, ('dry-summer', 'summer-green')):
-        forest(ax, B[(B['group'] == group) & (B['gpp_version'] == 'sos')],
-               [('gpp_alone', 'pre-solstice GPP alone'), ('water_alone', 'water balance alone'),
-                ('gpp_with_water', 'GPP, water held fixed'), ('water_with_gpp', 'water balance, GPP held fixed'),
-                ('gpp_with_water_T', 'GPP, water and temperature held fixed')], f'{group} sites')
-    fig.suptitle(f"Pre-solstice GPP (leaf-out -> solstice) against the water balance of the {WB_PRE} days before the solstice", fontsize=10)
+    waters = [w for w in ('wb_pre', 'rew_pre') if WATER_VARS.get(w) in set(B['water'])]
+    fig, axes = plt.subplots(len(waters), 2, figsize=(12, 4.4 * len(waters)), sharex=True, squeeze=False)
+    for row, wv in zip(axes, waters):
+        for ax, group in zip(row, ('dry-summer', 'summer-green')):
+            forest(ax, B[(B['group'] == group) & (B['gpp_version'] == 'sos') & (B['water'] == WATER_VARS[wv])],
+                   [('gpp_alone', 'pre-solstice GPP alone'), ('water_alone', 'water alone'),
+                    ('gpp_with_water', 'GPP, water held fixed'), ('water_with_gpp', 'water, GPP held fixed'),
+                    ('gpp_with_water_T', 'GPP, water and temperature held fixed')],
+                   f'{group} sites - {WATER_VARS[wv]}')
+    fig.suptitle(f"Pre-solstice GPP (leaf-out -> solstice) against water in the {WB_PRE} days before the solstice", fontsize=10)
     fig.tight_layout()
     fig.savefig(FIG_DIR / "water.png", dpi=150)
     plt.close(fig)
@@ -450,11 +473,12 @@ for _, r in A.iterrows():
     lines.append(f"| {r['group']} | {NAME[r['eos_source']]} | {r['gpp_version']} | {int(r['n_obs'])} ({int(r['n_sites'])}) | "
                  f"{r['r_gpp_leafout_within']:+.2f} | {c(r, 'gpp_alone')} | {c(r, 'leafout_alone')} | {c(r, 'gpp_joint')} | "
                  f"{c(r, 'leafout_joint')} | {r['r2_unique_gpp']:.3f} | {r['r2_unique_leafout']:.3f} |")
-lines += ["", f"## B. Water balance ({WB_PRE} days before the solstice) against pre-solstice GPP", "",
-          "| sites | EOS source | GPP | n (sites) | r(GPP, water) | GPP alone | water alone | GPP, water fixed | water, GPP fixed | GPP, water + T fixed | R2 only GPP | R2 only water |",
-          "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+lines += ["", f"## B. Water ({WB_PRE} days before the solstice) against pre-solstice GPP", "",
+          "Plant-available soil water = measured soil water content relative to the site's own dry and wet ends.", "",
+          "| sites | EOS source | water measure | GPP | n (sites) | r(GPP, water) | GPP alone | water alone | GPP, water fixed | water, GPP fixed | GPP, water + T fixed | R2 only GPP | R2 only water |",
+          "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
 for _, r in B.iterrows():
-    lines.append(f"| {r['group']} | {NAME[r['eos_source']]} | {r['gpp_version']} | {int(r['n_obs'])} ({int(r['n_sites'])}) | "
+    lines.append(f"| {r['group']} | {NAME[r['eos_source']]} | {r['water']} | {r['gpp_version']} | {int(r['n_obs'])} ({int(r['n_sites'])}) | "
                  f"{r['r_gpp_water_within']:+.2f} | {c(r, 'gpp_alone')} | {c(r, 'water_alone')} | {c(r, 'gpp_with_water')} | "
                  f"{c(r, 'water_with_gpp')} | {c(r, 'gpp_with_water_T')} | {r['r2_unique_gpp']:.3f} | {r['r2_unique_water']:.3f} |")
 lines += ["", f"## C. Sink variables in place of GPP ({CAL_PRE} days before / {CAL_POST} days from the solstice)", "",

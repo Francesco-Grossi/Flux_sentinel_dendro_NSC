@@ -4,8 +4,9 @@ PIPELINE STEP 11 - Download and extract daily FLUXNET data.
 Queries the global FLUXNET site catalog, keeps sites > 30 deg N with a
 natural (non-wetland/urban/cropland) land cover, downloads each site's daily
 archive, and keeps only the longest gap-free >= 10-year run per site.
-Writes a single combined CSV with GPP/NEE/RECO/LE/TA/SW_IN/VPD/P and their
-QC flags.
+Writes a single combined CSV with GPP/NEE/RECO/LE/TA/SW_IN/VPD/P, the soil
+water content of the shallowest sensor (SWC_F_MDS_1, where measured) and
+their QC flags.
 
 Output: data/fluxnet_daily_all_vars.csv
 """
@@ -46,6 +47,9 @@ TARGET_MAPPING = {
     'VPD_F_QC': ['vpd_f_qc'],
     'P_F': ['p_f', 'precip', 'precipitation', 'p'],
     'P_F_QC': ['p_f_qc', 'precip_qc'],
+    # soil water content (%), shallowest sensor; not every site measures it
+    'SWC_F_MDS_1': ['swc_f_mds_1'],
+    'SWC_F_MDS_1_QC': ['swc_f_mds_1_qc'],
 }
 QC_PAIRS = {
     'NEE_VUT_REF': 'NEE_VUT_REF_QC',
@@ -53,6 +57,7 @@ QC_PAIRS = {
     'RECO_NT_VUT_REF': 'NEE_VUT_REF_QC',
     'LE_F_MDS': 'LE_F_MDS_QC', 'TA_F': 'TA_F_QC',
     'SW_IN_F': 'SW_IN_F_QC', 'VPD_F': 'VPD_F_QC', 'P_F': 'P_F_QC',
+    'SWC_F_MDS_1': 'SWC_F_MDS_1_QC',
 }
 QC_THRESHOLD = 2
 FINAL_COLUMNS = [
@@ -60,6 +65,7 @@ FINAL_COLUMNS = [
     'GPP_NT_VUT_REF', 'GPP_NT_VUT_REF_QC', 'NEE_VUT_REF', 'NEE_VUT_REF_QC',
     'RECO_NT_VUT_REF', 'RECO_NT_VUT_REF_QC', 'LE_F_MDS', 'LE_F_MDS_QC',
     'TA_F', 'TA_F_QC', 'SW_IN_F', 'SW_IN_F_QC', 'VPD_F', 'VPD_F_QC', 'P_F', 'P_F_QC',
+    'SWC_F_MDS_1', 'SWC_F_MDS_1_QC',
 ]
 
 MIN_LAT = 30.0
