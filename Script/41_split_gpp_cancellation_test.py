@@ -12,12 +12,18 @@ Formal test of the split-GPP cancellation hypothesis, for EOS90 and EOS10:
 HEADLINE MODEL - strictly within sites. Every variable is the year's value
 minus the site's own mean (sites with >= MIN_YEARS_WITHIN years), predictors
 are scaled to their within-site SD, and standard errors are clustered by site:
-    joint     dEOS ~ dpre + dpost         -> b_pre, b_post          (H1, H2)
-    total     dEOS ~ dtotal               -> b_total                (H3)
-    controls  the same two models with the year's leaf-out date (SOS10) and
-              the mean air temperature before and after the solstice added
-              (ctrl_ columns): a warm, early spring raises pre-solstice GPP
-              and could advance senescence by itself.
+    joint     dEOS ~ dpre + dpost + dT_spring    -> b_pre, b_post   (H1, H2)
+    total     dEOS ~ dtotal + dT_spring          -> b_total         (H3)
+T_spring, the mean air temperature of the CAL_PRE days before the solstice,
+is a STANDING COVARIATE: a warm spring raises pre-solstice GPP and advances
+EOS90 by itself (step 44: about half of the uncorrected GPP effect is this
+temperature effect). The headline GPP slopes are therefore net of spring
+temperature; its own slope is reported as b_T_spring.
+    raw       the same two models without T_spring (raw_ columns), i.e. the
+              headline of earlier versions - kept to show what the covariate
+              changes.
+    controls  the headline models with the year's leaf-out date (SOS10) and
+              the air temperature after the solstice added (ctrl_ columns).
 Slopes are days of EOS shift per +1 within-site SD of GPP. The hypothesis is
 about year-to-year changes at a site, and only this model isolates them: a
 pooled scatter plot, and to a lesser degree a random-intercept mixed model
@@ -100,7 +106,8 @@ SESOI_DAYS_PER_SD = 2.0         # smallest effect of interest for "no effect" (H
 ALPHA = 0.05
 MIN_OBS, MIN_SITES = 30, 5
 MIN_YEARS_WITHIN = 3
-COVARS = ['SOS', 'TA_pre', 'TA_post']     # leaf-out date, air temperature before / after the solstice
+STANDING = ['T_spring']         # in every headline model: air temperature, CAL_PRE days before the solstice
+COVARS = ['SOS', 'TA_post']     # extra controls: leaf-out date, air temperature after the solstice
 CAL_PRE, CAL_POST = 60, 45      # calendar windows: days before / from the solstice
 SPRING_PEAK_DOY = 152           # seasonal GPP peak before 1 June -> dry-summer site
 GROUPS = ['all', 'summer-green', 'dry-summer', 'deciduous', 'evergreen', 'grass/shrub']
@@ -198,7 +205,7 @@ def in_group(w, group):
     return w[w[col] == group]
 
 
-lk = ec.FluxLookup(flux, ['GPP'])
+lk = ec.FluxLookup(flux, ['GPP', 'TA'])
 csv_cache, tables, anchors = {}, {}, {}
 for target in TARGETS:
     for anchor, desc, path, pre_col, post_col, total_col in variants(target):
@@ -209,12 +216,14 @@ for target in TARGETS:
             c['GPP_cal__post'] = [lk.window_mean(s, y, 'GPP', so, so + CAL_POST - 1) * CAL_POST
                                   for s, y, so in zip(c['site_id'], c['year'], c['SOL'])]
             c['GPP_cal__total'] = c['GPP_cal__pre'] + c['GPP_cal__post']
+            c['T_spring'] = [lk.window_mean(s, y, 'TA', so - CAL_PRE, so - 1)
+                             for s, y, so in zip(c['site_id'], c['year'], c['SOL'])]
             csv_cache[path] = c
         w = csv_cache[path].copy()
         w['leaf_habit'] = w['igbp'].map(LEAF_HABIT).fillna('grass/shrub')
         w['season_type'] = w['site_id'].map(season_type)
         w['pre'], w['post'], w['total'] = w[pre_col] / UNIT, w[post_col] / UNIT, w[total_col] / UNIT
-        w['TA_pre'], w['TA_post'] = w.get('TA_mean__SOS_to_SOL', np.nan), w.get('TA_mean__SOL_to_EOS10', np.nan)
+        w['TA_post'] = w.get('TA_mean__SOL_to_EOS10', np.nan)
         if anchor == 'year':
             w['post_len'] = [clim_sum(s, a, b) / UNIT for s, a, b in zip(w['site_id'], w['SOL'], w[f'{target}_anchor'])]
             w['pre_len'] = [clim_sum(s, a, b) / UNIT for s, a, b in zip(w['site_id'], w['SOS'], w['SOL'])]
@@ -239,7 +248,7 @@ for (target, anchor), w in tables.items():
             base.update({'n_obs': len(d), 'n_sites': d['site_id'].nunique(),
                          'n_obs_pre_only': int(ws[[target, 'pre']].dropna().shape[0])})
             if len(d) < MIN_OBS or d['site_id'].nunique() < MIN_SITES:
-                wf = within_fit(ws, target, ['pre'])         # e.g. dry-summer: EOS before the solstice, no post window
+                wf = within_fit(ws, target, ['pre'] + STANDING)   # e.g. dry-summer: EOS before the solstice, no post window
                 if wf is not None:
                     (b, se, _), n_w, ns_w = wf[0]['pre'], wf[1], wf[2]
                     base.update({'model': 'pre only (no post window)', 'n_within': n_w, 'n_sites_within': ns_w,
@@ -268,11 +277,19 @@ for (target, anchor), w in tables.items():
                  'lme_p_total_equivalent_to_zero': float(p_tost),
                  'lme_b_pre_days_per_sd': b_pre * d['pre'].std(), 'lme_b_post_days_per_sd': b_post * d['post'].std()}
 
-            # headline: strictly within sites
-            wj, wt = within_fit(ws, target, ['pre', 'post']), within_fit(ws, target, ['total'])
+            # headline: strictly within sites, spring temperature held fixed
+            wj, wt = within_fit(ws, target, ['pre', 'post'] + STANDING), within_fit(ws, target, ['total'] + STANDING)
             if wj is None or wt is None:
                 continue
             (bp, sp, _), (bq, sq, _), (bt, st, pt) = wj[0]['pre'], wj[0]['post'], wt[0]['total']
+            r['b_T_spring_days_per_sd'], r['se_T_spring_days_per_sd'], r['p_T_spring'] = wj[0]['T_spring']
+            rj, rt = within_fit(ws, target, ['pre', 'post']), within_fit(ws, target, ['total'])   # without the covariate
+            if rj is not None and rt is not None:
+                r.update({'raw_n': rj[1], 'raw_b_pre_days_per_sd': rj[0]['pre'][0],
+                          'raw_p_pre_negative': one_sided(*rj[0]['pre'][:2], True),
+                          'raw_b_post_days_per_sd': rj[0]['post'][0],
+                          'raw_p_post_positive': one_sided(*rj[0]['post'][:2], False),
+                          'raw_b_total_days_per_sd': rt[0]['total'][0], 'raw_se_total_days_per_sd': rt[0]['total'][1]})
             wd = ws[['site_id', 'pre', 'post']].dropna()
             wdm = wd[['pre', 'post']] - wd.groupby('site_id')[['pre', 'post']].transform('mean')
             r.update({'n_within': wj[1], 'n_sites_within': wj[2],
@@ -283,8 +300,8 @@ for (target, anchor), w in tables.items():
                       'p_total_equivalent_to_zero': float(max(norm.sf((bt + SESOI_DAYS_PER_SD) / st),
                                                                norm.cdf((bt - SESOI_DAYS_PER_SD) / st))),
                       'r_pre_post_within': float(np.corrcoef(wdm['pre'], wdm['post'])[0, 1])})
-            # with leaf-out date and air temperature controlled
-            covars = [c for c in COVARS if ws[c].notna().any()]
+            # with leaf-out date and post-solstice air temperature controlled as well
+            covars = STANDING + [c for c in COVARS if ws[c].notna().any()]
             cj, ct = within_fit(ws, target, ['pre', 'post'] + covars), within_fit(ws, target, ['total'] + covars)
             if cj is not None and ct is not None:
                 (cbp, csp, _), (cbq, csq, _), (cbt, cst, cpt) = cj[0]['pre'], cj[0]['post'], ct[0]['total']
@@ -357,7 +374,7 @@ for target in TARGETS:
             ax.set_title(anchors[(target, anchor)], fontsize=8)
             ax.legend(fontsize=7)
         axes[0][0].set_ylabel(f'{target} shift (days per +1 within-site SD of GPP)')
-        fig.suptitle(f"Split-GPP cancellation, within sites, {target} - {group} sites "
+        fig.suptitle(f"Split-GPP cancellation, within sites, spring temperature held fixed, {target} - {group} sites "
                      f"(bars: 95% CI; grey band: +/- {SESOI_DAYS_PER_SD:g} d = 'no effect')", fontsize=10)
         fig.tight_layout()
         fig.savefig(FIG_DIR / f"coefficients_{target}_{group.replace('/', '_')}.png", dpi=150)
@@ -414,17 +431,22 @@ lines = ["# Split-GPP cancellation hypothesis (Zani and Lu both right?) - test r
          "- H2: cumulative GPP solstice -> EOS shifts EOS later (b_post > 0)",
          f"- H3: total GPP SOS10 -> EOS has no effect (b_total significantly inside +/- {SESOI_DAYS_PER_SD:g} days per SD)", "",
          "All slopes are WITHIN-SITE: days of EOS shift per +1 within-site SD of cumulative GPP (year minus site "
-         "mean, SE clustered by site). 'controlled' adds the year's leaf-out date and the air temperature before "
-         "and after the solstice.", ""]
+         f"mean, SE clustered by site), with the air temperature of the {CAL_PRE} days before the solstice held "
+         "fixed in every model. 'without T' is the same model without that covariate. 'controlled' also adds the "
+         "year's leaf-out date and the air temperature after the solstice.", ""]
 for (target, anchor), desc in anchors.items():
     a = joint_res[(joint_res['target'] == target) & (joint_res['anchor'] == anchor)]
     if a.empty:
         continue
     lines += [f"## {target} - {anchor}: {desc}", "",
-              "| group | EOS source | n (sites) | pre | H1 | post | H2 | total [95% CI] | H3 | all three | controlled: pre / post / total |"
+              "| group | EOS source | n (sites) | pre | H1 | post | H2 | total [95% CI] | H3 | all three | spring T | without T: pre / post / total | controlled: pre / post / total |"
               + (" post from window length alone |" if anchor == 'year' else ""),
-              "|---|---|---|---|---|---|---|---|---|---|---|" + ("---|" if anchor == 'year' else "")]
+              "|---|---|---|---|---|---|---|---|---|---|---|---|---|" + ("---|" if anchor == 'year' else "")]
     for _, r in a.iterrows():
+        raw = "-"
+        if pd.notna(r.get('raw_b_pre_days_per_sd', np.nan)):
+            raw = (f"{r['raw_b_pre_days_per_sd']:+.1f} (p={r['raw_p_pre_negative']:.3f}) / "
+                   f"{r['raw_b_post_days_per_sd']:+.1f} (p={r['raw_p_post_positive']:.3f}) / {r['raw_b_total_days_per_sd']:+.1f}")
         ctrl = "-"
         if pd.notna(r.get('ctrl_b_pre_days_per_sd', np.nan)):
             ctrl = (f"{r['ctrl_b_pre_days_per_sd']:+.1f} (p={r['ctrl_p_pre_negative']:.3f}) / "
@@ -434,7 +456,8 @@ for (target, anchor), desc in anchors.items():
                 f"{r['b_pre_days_per_sd']:+.1f} | {yes[bool(r['H1_pre_negative'])]} (p={r['p_pre_negative']:.3f}) | "
                 f"{r['b_post_days_per_sd']:+.1f} | {yes[bool(r['H2_post_positive'])]} (p={r['p_post_positive']:.3f}) | "
                 f"{r['b_total_days_per_sd']:+.1f} [{r['total_ci_lo']:+.1f}, {r['total_ci_hi']:+.1f}] | "
-                f"{yes[bool(r['H3_total_no_effect'])]} | **{yes[bool(r['hypothesis_supported'])]}** | {ctrl} |")
+                f"{yes[bool(r['H3_total_no_effect'])]} | **{yes[bool(r['hypothesis_supported'])]}** | "
+                f"{r['b_T_spring_days_per_sd']:+.1f}{ec.stars(r['p_T_spring'])} | {raw} | {ctrl} |")
         if anchor == 'year':
             line += f" {num(r.get('b_post_length_only_days_per_sd', np.nan))} |"
         lines.append(line)

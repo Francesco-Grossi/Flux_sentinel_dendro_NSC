@@ -14,8 +14,9 @@ More GPP before the summer solstice goes with an earlier **onset** of senescence
 1-2.5 days per SD, in every EOS source. The result survives leaving any single site out, every
 phenology QC threshold tried, and predictors that do not depend on leaf-out. Summed over the whole
 season the effect of GPP on EOS90 is close to zero. That is the pattern "Zani and Lu are both right"
-predicts. The opposite, positive effect of post-solstice GPP is small (+1 day) and appears only in the
-satellite indices, so the data show a fading of the early effect more than a clean cancellation.
+predicts. The opposite, positive effect of post-solstice GPP is small (+1 day), appears only in the
+satellite indices and mostly disappears once spring temperature is held fixed, so the data show a
+fading of the early effect and not a cancellation by a late one.
 Nothing of this holds for the **end** of senescence (EOS10). Three things limit the claim: in
 deciduous forests leaf-out date explains EOS90 and early GPP adds nothing; about half of the effect is
 a spring-temperature effect (with temperature, radiation and water held fixed, GPP keeps about -1.2
@@ -71,7 +72,33 @@ the same-year EOS10 are given in brackets.
 
 ## 2. The split-GPP test (step 41)
 
-**EOS90, all sites. Pre / post / whole season, for three versions of the predictor**
+**Headline: EOS90, all sites, spring temperature held fixed. Pre / post / whole season**
+
+The air temperature of the 60 days before the solstice is now in every model of step 41.
+
+| EOS source | Sum, from leaf-out | Calendar windows | Rate | Spring temperature itself |
+|---|---|---|---|---|
+| PhenoCam | -1.9 / -2.3 / -3.1 | -0.8 / -0.8 / -1.3 | -1.2 / -1.0 / -2.3 | -2.6* |
+| Tower NDVI | -1.5 / 0.0 / -1.3 | -1.8 / +0.3 / -1.1 | -1.5* / +0.4 / -1.4 | -2.2 |
+| Satellite NDVI | -2.7* / +1.3* / -1.0 | -0.6 / -0.6 / -1.1 | +0.3 / -0.2 / -0.3 | +0.4 |
+| Satellite NIRv | -1.6* / +0.7 / -0.8 | -1.5* / +0.6 / -0.8 | -1.3* / +0.6 / -0.7 | -1.7* |
+
+\* p < 0.05 (GPP: one-sided in the direction of the hypothesis; temperature: two-sided, from the first model).
+
+- **The pre-solstice GPP effect stays negative in 11 of 12 cells but is smaller**: -1.5 to -2.7 with
+  the sum from leaf-out, -0.6 to -1.8 with calendar windows.
+- **It is significant for NIRv in all three versions** (-1.3 to -1.6), for satellite NDVI only with the
+  sum from leaf-out, and for tower NDVI only with the rate.
+- **The post-solstice effect loses significance** except for satellite NDVI with the sum (+1.3).
+- **Formal verdict (all three parts hold):** 3 of 20 tests with the sum (satellite NDVI: all,
+  summer-green, deciduous sites), 0 of 21 with calendar windows, 0 of 20 with the rate. H1 alone holds
+  in 12, 4 and 4 tests.
+- **Whole-season GPP is unchanged**: -0.8 to -1.1 for the satellite indices.
+- So with spring temperature accounted for, the data support "early GPP advances the onset of
+  senescence, weakly" and "whole-season GPP has little effect", but not a positive post-solstice effect
+  that cancels the early one.
+
+**The same without the temperature covariate** (the version reported before)
 
 | EOS source | Sum, from leaf-out | Calendar windows (60 d before, 45 d after) | Rate (mean daily GPP) |
 |---|---|---|---|
@@ -88,12 +115,8 @@ the same-year EOS10 are given in brackets.
 - **With the GPP rate it disappears for satellite NDVI (0.0)** and stays for the other three.
 - **The post-solstice effect is about +1 day and present only in the satellite indices.**
 - **Whole-season GPP: -0.7 to -1.0 for the satellite indices**, with intervals inside about +/-2 days.
-- **Formal verdict (all three parts hold):** 6 of 20 tests with the sum (NDVI and NIRv; all,
-  summer-green and deciduous sites), 3 of 21 with calendar windows (NIRv only), 2 of 20 with the rate
-  (NIRv only). H1 alone holds in 16, 9 and 7 tests.
-- **With leaf-out date and temperature controlled**, the pre-solstice effect stays for all sites
-  (calendar windows: NDVI -1.1, NIRv -2.0, tower NDVI -2.8, PhenoCam -1.8) and is not significant in
-  deciduous forests.
+- **Without the covariate, all three parts hold** in 6 of 20 tests with the sum, 3 of 21 with calendar
+  windows and 2 of 20 with the rate. H1 alone holds in 16, 9 and 7 tests.
 - **Same-year windows** give a post-solstice slope of +5 to +10, but window length alone produces
   slopes of that size.
 - **EOS10:** no part of the hypothesis holds with the sum or calendar windows (H1 in 0 tests).
@@ -245,8 +268,9 @@ The scan now starts 120 days before the solstice and is fitted within sites.
 ## What should be done next
 
 **To strengthen the main result**
-1. Put spring temperature into the main test (step 41) as a standing covariate, and report the GPP
-   effect net of it (about -1.2) as the headline number.
+1. Decide how to word the claim. With spring temperature held fixed the early-GPP effect remains but
+   the cancelling post-solstice effect does not; "Zani and Lu are both right" then rests on a weak early
+   effect that is diluted over the season, not on two opposite effects.
 2. More ground-based site-years. PhenoCam and tower NDVI have about a fifth of the power needed. Adding
    PhenoCam sites beyond the flux network would not help (no GPP); longer tower records would.
 3. Deciduous forests: the result there is "leaf-out date, not GPP". Test whether leaf-out acts through

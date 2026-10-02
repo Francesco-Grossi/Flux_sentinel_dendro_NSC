@@ -16,6 +16,7 @@ from datetime import date
 import numpy as np
 import pandas as pd
 import eos_common as ec
+import pheno_fit as pf
 
 OUT_MD = ec.ROOT / "Output" / "results_report.md"
 OUT_MD.parent.mkdir(parents=True, exist_ok=True)
@@ -80,6 +81,101 @@ add("# Phenology - carbon pipeline: results", "",
     "negative = earlier senescence. EOS90 / EOS50 / EOS10 = day of year when greenness has fallen to 90 / 50 / 10 % "
     "of its seasonal amplitude (onset, middle, end of senescence).", "")
 
+# =============================================================== methods
+add("## Methods: what was done, why, and what makes it reliable", "",
+    "### M1. The question", "",
+    "Zani et al. (2020) found that more photosynthesis early in the season brings senescence forward. Lu et al. "
+    "(2022) found that productivity over the growing season does not. The hypothesis tested here is that both are "
+    "right: GPP before the summer solstice advances senescence (H1), GPP after it delays senescence (H2), and the "
+    "two cancel so that whole-season GPP shows no effect (H3).", "",
+    "### M2. Flux data (steps 11, 21, 22)", "",
+    "- **What:** daily FLUXNET data (GPP and Reco from night-time partitioning, NEE, air temperature, shortwave "
+    "radiation, VPD, precipitation) for sites north of 30 N with natural vegetation and a long gap-free record.",
+    f"- **Quality control:** a site-year is dropped when {int(100 * 0.5)}% or more of its growing-season days "
+    "(1 March - 31 October) are low quality or missing for GPP, NEE or Reco, or when 50 or more bad days follow "
+    "each other.",
+    "- **Why:** GPP is measured at the site, every day, independently of any greenness index. Earlier studies of "
+    "this question mostly used modelled or satellite-derived productivity, which shares its input with the "
+    "satellite phenology it is compared to.", "",
+    "### M3. End-of-season dates from four sources (steps 12, 13, 23-25)", "",
+    "- **Satellite NDVI and NIRv:** Harmonized Landsat Sentinel-2 (HLS L30 + S30, 30 m), averaged over a "
+    "1 km radius around the tower. Only pixels whose ESA WorldCover class matches the site's vegetation type are "
+    "used, so roads, fields and water inside the radius do not enter. Cloud, shadow and snow pixels are masked; "
+    "the snow fraction of each image is kept.",
+    "- **Tower NDVI:** broadband NDVI from the tower's own incoming and reflected shortwave and PAR sensors, midday "
+    "records only, measured (not gap-filled) radiation only.",
+    "- **PhenoCam:** canopy greenness (GCC, 90th percentile of the day) from the camera at the tower, for the "
+    "region of interest that matches the site's vegetation type.",
+    "- **One fitting routine for all four** (`pheno_fit.py`): a double-logistic curve per site-year. "
+    f"A year needs at least {pf.MIN_REAL_OBS} clear observations. Snow-covered and frozen periods are set to the "
+    f"site's dormant-season background (Beck et al. 2006). Gaps longer than {pf.GAP_DAYS} days are filled, at low "
+    "weight, with the site's multi-year curve shifted to the year's level (as in the MSLSP product), so a gap "
+    "cannot bend the curve but the year's own observations decide the dates.",
+    "- **Dates:** EOS90, EOS50 and EOS10 are the days when the fitted curve has fallen to 90, 50 and 10% of its "
+    "amplitude after the peak; leaf-out dates (SOS10/50/90) are defined the same way on the rising side.",
+    f"- **Fit quality control:** R2 >= {pf.MIN_R2} on the real observations; amplitude at least "
+    f"{pf.MIN_AMP_TO_RMSE:g} times the fit error; dates in the right order; at least {pf.MIN_OBS_AFTER_PEAK} "
+    f"observations after the peak; EOS90 within {pf.MAX_EOS90_DEV_DAYS} days of the site's own median. The last "
+    "rule uses the site as its own reference, so dry-summer sites that really senesce in June are kept.",
+    "- **Why four sources:** each has a different weakness (satellite: clouds and mixed pixels; tower NDVI: sensor "
+    "drift; PhenoCam: few sites, one viewing angle). A result that appears in all four is not an artefact of one "
+    "instrument. Because the same curve and the same definitions are used, the dates can be compared directly.", "",
+    "### M4. Predictors: windows of GPP around the solstice (steps 27, 28, 41)", "",
+    "- **pre** = GPP from leaf-out (SOS10) to the summer solstice; **post** = GPP from the solstice to EOS; "
+    "**total** = both.",
+    "- **Fixed anchors.** Windows end at the site's mean EOS over all years, not at the same year's EOS. "
+    "Why: a window that ends at the year's own EOS is longer when EOS is later, so its GPP sum rises with EOS "
+    "by construction. The size of that artefact is measured with a length-only null (the site's average GPP "
+    "curve summed over the year's window), and it is as large as the apparent effect.",
+    "- **Calendar windows** (60 days before, 45 days from the solstice) and the **GPP rate** (mean per day) are "
+    "used as well. Why: a window that starts at leaf-out is longer in an early spring, so its GPP sum partly "
+    "measures leaf-out date.", "",
+    "### M5. The statistical model (eos_common.py; steps 33-44)", "",
+    "- **Within-site model.** Every variable is the year's value minus the site's own mean (sites with at least "
+    "3 years). Predictors are divided by their within-site standard deviation. Ordinary least squares on these "
+    "anomalies, with standard errors clustered by site. An effect is the shift of EOS in days when the predictor "
+    "is one standard deviation above the site's normal.",
+    "- **Why not pooled correlations or mixed models.** The hypothesis is about what happens at a site in a "
+    "productive year. Sites differ in productivity and in senescence date for many reasons (climate, species), "
+    "and a pooled plot mostly shows those differences. A mixed model with a random site intercept removes them "
+    "only partly; here it gave effects about twice as large (section 6). Subtracting the site mean removes "
+    "everything that is constant at a site.",
+    "- **Spring temperature as a standing covariate.** The mean air temperature of the 60 days before the "
+    "solstice is in every model of the main test. Why: a warm spring raises GPP and advances the onset of "
+    "senescence by itself (section 14), so without it the GPP effect is overstated.",
+    "- **H3 as an equivalence test.** 'Not significant' is not evidence of no effect. H3 is accepted only when "
+    "the whole-season effect lies significantly inside +/-2 days per SD (two one-sided tests).",
+    "- **Many tests.** Where many predictor x source x group cells are tested (step 38), p-values are "
+    "corrected with Benjamini-Hochberg, and an effect counts as robust only if it has the same sign in every "
+    "EOS source.", "",
+    "### M6. Sink side: carbon use efficiency (step 26)", "",
+    "- CUE per site-year from the method of Luo et al. (two-round MCMC on day-pair differences of Reco and GPP), "
+    "ported from the authors' MATLAB code, with two indexing errors of that code corrected. Extended here to "
+    "30-day sliding windows for a seasonal CUE. NPP = CUE x GPP.",
+    "- Limit: NPP and the respiration terms derived from it are GPP multiplied by a factor, so they are not "
+    "independent of GPP.", "",
+    "### M7. Checks on the main result (steps 42-44)", "",
+    "- **Same site-years** (step 42): PhenoCam and satellite compared on the site-years both have.",
+    "- **Leave one site out, other QC thresholds, statistical power** (step 43).",
+    "- **Alternative explanations** (step 44): leaf-out date, water balance, spring temperature, and sink "
+    "variables, each put in the same model as GPP.", "",
+    "### M8. Strong points", "",
+    "1. **Measured GPP** at the tower, independent of the greenness data that give the senescence dates.",
+    "2. **Four independent senescence records** processed with one routine and identical definitions.",
+    "3. **Within-site inference**: differences between sites cannot produce the result.",
+    "4. **The window-length artefact is removed and quantified**, not just mentioned.",
+    "5. **'No effect' is tested, not assumed** (equivalence test).",
+    "6. **Robustness is shown**: every single-site removal, twelve QC settings, three versions of the predictor.",
+    "7. **Competing explanations are tested in the same model** (temperature, leaf-out, water).",
+    "8. **Reproducible**: one command reruns everything from the raw downloads; every number in this report is "
+    "read from the tables of the last run.", "",
+    "### M9. Limits", "",
+    "- Observational data: the models show association within sites, not causation.",
+    "- Senescence dates carry an error of about 7-11 days (year-to-year SD within a site), comparable to the "
+    "signal; effects of 1-2 days per SD need several hundred site-years.",
+    "- PhenoCam and tower NDVI have too few site-years to confirm an effect of this size on their own.",
+    "- The satellite record starts in 2013; northern temperate and boreal sites only.", "")
+
 # =============================================================== 1. data
 add("## 1. Data", "")
 merged = pd.read_csv(ec.FLUX_CSV, usecols=['site_id', 'igbp', 'TIMESTAMP'])
@@ -135,8 +231,10 @@ add("## 3. Are Zani and Lu both right? The split-GPP hypothesis (step 41)", "",
     "- **H1** cumulative GPP from leaf-out (SOS10) to the summer solstice shifts EOS **earlier** (Zani et al. 2020)",
     "- **H2** cumulative GPP from the solstice to EOS shifts EOS **later**",
     "- **H3** the two cancel, so GPP over the whole season has **no effect** (Lu et al. 2022)", "",
-    "Headline model: strictly within sites (each year minus its site's mean; standard errors clustered by site). "
-    "'Controlled' adds the year's leaf-out date and the air temperature before and after the solstice. "
+    "Headline model: strictly within sites (each year minus its site's mean; standard errors clustered by site), "
+    "with the air temperature of the 60 days before the solstice held fixed. 'Spring T' is the effect of that "
+    "temperature; 'without T' is the same model without it; 'controlled' also adds the year's leaf-out date and "
+    "the air temperature after the solstice. "
     "Table: `data/split_gpp_cancellation_test.csv`; written summary: `Output/split_gpp_cancellation_summary.md`.", "")
 h = read("split_gpp_cancellation_test.csv")
 if h is not None:
@@ -164,6 +262,12 @@ if h is not None:
             'whole season [95% CI]': [f"{b:+.1f} [{lo:+.1f}, {hi:+.1f}]" for b, lo, hi in
                                       zip(d['b_total_days_per_sd'], d['total_ci_lo'], d['total_ci_hi'])],
             'all three hold': np.where(d['hypothesis_supported'].astype(bool), 'yes', 'no'),
+            'spring T': [f"{b:+.1f}{stars(p)}" for b, p in zip(d['b_T_spring_days_per_sd'], d['p_T_spring'])],
+            'without T: pre / post / whole': [
+                "-" if pd.isna(a) else f"{a:+.1f}{stars(pa)} / {b:+.1f}{stars(pb)} / {c:+.1f}"
+                for a, pa, b, pb, c in zip(d['raw_b_pre_days_per_sd'], d['raw_p_pre_negative'],
+                                           d['raw_b_post_days_per_sd'], d['raw_p_post_positive'],
+                                           d['raw_b_total_days_per_sd'])],
             'controlled: pre / post / whole': [
                 "-" if pd.isna(a) else f"{a:+.1f}{stars(pa)} / {b:+.1f}{stars(pb)} / {c:+.1f}"
                 for a, pa, b, pb, c in zip(d.get('ctrl_b_pre_days_per_sd'), d.get('ctrl_p_pre_negative'),
@@ -173,8 +277,8 @@ if h is not None:
 
     groups = ['all', 'summer-green', 'dry-summer', 'deciduous', 'evergreen', 'grass/shrub']
     add("### 3.1 Onset of senescence (EOS90), windows ending at the site mean EOS90", "",
-        "Days per +1 within-site SD of cumulative GPP. Stars: one-sided test in the direction of the hypothesis "
-        "(* p<0.05, ** p<0.01, *** p<0.001).", "")
+        "Days per +1 within-site SD of cumulative GPP. Stars on GPP: one-sided test in the direction of the "
+        "hypothesis; on spring T: two-sided (* p<0.05, ** p<0.01, *** p<0.001).", "")
     h_table('EOS90', 'fixed', groups)
     figure("split_gpp_cancellation/coefficients_EOS90_all.png", "EOS90, all sites: pre-solstice, post-solstice and whole-season GPP, for each window version")
     figure("split_gpp_cancellation/coefficients_EOS90_deciduous.png", "EOS90, deciduous sites")
