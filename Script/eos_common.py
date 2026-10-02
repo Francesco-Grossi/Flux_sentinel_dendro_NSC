@@ -48,7 +48,9 @@ WINDOW_YEAR_CSV = DATA_DIR / "eos_window_predictors_year_anchor.csv"            
 #   NPPd       = daily (seasonal) CUE x GPP  -> 'NPPd'  (gC m-2 d-1)
 #   CUE_daily  = daily (seasonal) CUE        -> 'CUEd'  (ratio: only window MEANS are meaningful)
 # Coarser cadence is linearly interpolated.
-NPP_COLUMNS = {'NPP': 'NPP', 'NPPd': 'NPPd', 'CUE_daily': 'CUEd'}
+#   Rg, Rm     = growth / maintenance respiration of the fitted model -> 'Rg_model', 'Rm_model'
+#                (Rm_model does not contain the day's GPP; see step 26)
+NPP_COLUMNS = {'NPP': 'NPP', 'NPPd': 'NPPd', 'CUE_daily': 'CUEd', 'Rg': 'Rg_model', 'Rm': 'Rm_model'}
 CARBON_FLUX_VARS = ('GPP', 'NEP', 'NPP', 'NPPd')   # cumulative and mean windows
 RATIO_VARS = ('CUEd',)                             # mean windows only
 NPP_CSV = DATA_DIR / "npp_luo2025_daily.csv"

@@ -76,6 +76,13 @@ Zani et al. (2020) found that more photosynthesis early in the season brings sen
 - Satellite (HLS): 104,978 image records at 141 sites ({'S30': 66330, 'L30': 38648}); median 51 clear images per site-year.
 - Season type: {'summer-green': 101, 'dry-summer': 19} (dry-summer = seasonal GPP peaks before 1 June).
 
+**What this shows**
+
+- The sample is 57% forest; the rest is grassland, shrubland and savanna. Results for 'all sites' are therefore mostly about forests, and the non-forest groups are small.
+- A site contributes 17 years on average. That is what makes within-site comparisons (an early year against a late year of the same site) possible.
+- With a median of 51 clear satellite images per site-year, about one every 7 days, the autumn decline is sampled densely enough to date its onset. Before Sentinel-2 was added the median was about 13.
+- 19 sites have their GPP peak before June. There the canopy dries out in early summer, so 'senescence' is a response to water, and those sites are analysed as a separate group.
+
 ## 2. End-of-season dates from four independent sources
 
 Steps 23-25 fit the same curve to satellite NDVI / NIRv, tower broadband NDVI and PhenoCam greenness. Tables: `data/eos_source_summary.csv`, `data/eos_source_agreement.csv`.
@@ -116,6 +123,13 @@ Steps 23-25 fit the same curve to satellite NDVI / NIRv, tower broadband NDVI an
 ![EOS10 of each source against the GPP-derived EOS10 (step 30)](../figure/vi_eos_vs_gpp_eos/EOS10.png)
 
 *EOS10 of each source against the GPP-derived EOS10 (step 30)*
+
+**What this shows**
+
+- Site-years with a usable EOS90: PhenoCam (GCC) 266 (41 sites), Tower NDVI 409 (58 sites), Satellite NDVI 516 (87 sites), Satellite NIRv 770 (107 sites). The satellite indices have by far the largest samples; the two ground sources cover fewer sites.
+- Within a site, EOS90 varies from year to year by 9.3 to 13.7 days (median SD), EOS10 by 10.0 to 15.0 days. This is the size of the signal every later analysis tries to explain: an effect of 1-2 days per SD of a predictor is a small part of it.
+- The sources agree only moderately on which years are early or late. The best pair for EOS50 is Satellite NDVI with Satellite NIRv (within-site r = 0.66); for EOS90 the correlations range from 0.24 to 0.56. A correlation of 0.5 between two measures of the same event means that roughly half of the year-to-year variance of each is measurement error or a real difference in what they see. This limits how strong any relation with GPP can appear.
+- Agreement is better for the middle of senescence (EOS50) than for its onset (EOS90) or end (EOS10): the start and the tail of the decline are flat parts of the curve and are harder to date.
 
 ## 3. Are Zani and Lu both right? The split-GPP hypothesis (step 41)
 
@@ -165,6 +179,16 @@ Days per +1 within-site SD of cumulative GPP. Stars on GPP: one-sided test in th
 | grass/shrub | Tower NDVI | 54 (6) | -10.4*** | +0.7 | -5.7 [-9.5, -1.9] | no | +0.6 | -10.1*** / +0.5 / -5.9 | -10.0** / -1.6 / -6.5 |
 | grass/shrub | Satellite NDVI | 116 (19) | -2.4* | -0.4 | -2.1 [-4.4, +0.2] | no | -0.3 | -2.6 / -0.3 / -2.0 | -3.1* / -0.4 / -2.6 |
 | grass/shrub | Satellite NIRv | 202 (30) | -2.7** | +0.9 | -1.4 [-2.8, +0.1] | no | -2.1 | -2.7** / +1.2 / -1.1 | -4.3*** / +1.5 / -1.7 |
+
+**What this shows**
+
+- **Pre-solstice GPP (H1).** With spring temperature held fixed, a year with one SD more GPP between leaf-out and the solstice has an onset of senescence shifted by PhenoCam (GCC) -0.7, Tower NDVI -1.5, Satellite NDVI -2.7***, Satellite NIRv -1.6** days. The sign is negative in 4 of 4 sources and significant in 2 of 4. This is the Zani-type effect, and it is small: the year-to-year SD of EOS90 is 7-10 days.
+- **What spring temperature takes away.** Without the temperature covariate the same slopes are PhenoCam (GCC) -1.3, Tower NDVI -2.4*, Satellite NDVI -2.5***, Satellite NIRv -2.0***. Spring temperature itself shifts EOS90 by PhenoCam (GCC) -2.6**, Tower NDVI -2.2, Satellite NDVI +0.4, Satellite NIRv -1.7** days per SD. A warm spring raises GPP and advances senescence on its own, so part of what looks like a GPP effect is a temperature effect.
+- **Post-solstice GPP (H2).** PhenoCam (GCC) -1.8, Tower NDVI +0.0, Satellite NDVI +1.3*, Satellite NIRv +0.7 days per SD; the hypothesis needs a positive effect and finds one in 1 of 4 sources. There is no consistent delaying effect of late-season GPP.
+- **Whole-season GPP (H3).** PhenoCam (GCC) -2.0, Tower NDVI -1.3, Satellite NDVI -1.0, Satellite NIRv -0.8 days per SD. The 95% interval lies inside +/-2 days (a formal 'no effect') for 2 of 4 sources. Where it does not, the interval is too wide to tell, or the effect is negative.
+- **All three together** hold for 1 of 4 sources over all sites.
+- **By plant type.** Deciduous forests: pre-solstice PhenoCam (GCC) -0.3, Tower NDVI +0.5, Satellite NDVI -2.7***, Satellite NIRv -0.6; evergreen forests: Tower NDVI -0.6, Satellite NDVI -3.2***, Satellite NIRv -1.6*. Groups are small (76 to 208 site-years), so single-group results are unstable.
+- **Reading.** The data support a weak advancing effect of early-season GPP on the onset of senescence and little effect of whole-season GPP. They do not show a late-season effect of opposite sign. Whole-season GPP has little effect because the early effect is small and is diluted by the larger, neutral late-season GPP - not because two opposite effects cancel.
 
 ![EOS90, all sites: pre-solstice, post-solstice and whole-season GPP, for each window version](../figure/split_gpp_cancellation/coefficients_EOS90_all.png)
 
@@ -245,6 +269,13 @@ The windows above start at the year's leaf-out, so an early spring lengthens the
 | grass/shrub | Satellite NDVI | 116 (19) | +0.2 | -1.5 | -1.3 [-3.2, +0.5] | no | -1.3 | -0.1 / -0.9 / -1.4 | -0.1 / -1.2 / -1.5 |
 | grass/shrub | Satellite NIRv | 202 (30) | -1.3 | +0.2 | -1.1 [-2.3, +0.2] | no | -2.0 | -1.3 / +0.7 / -1.3 | -1.2 / +0.4 / -1.2 |
 
+**What this shows**
+
+- **Calendar windows:** pre-solstice PhenoCam (GCC) -0.2, Tower NDVI -1.8, Satellite NDVI -0.6, Satellite NIRv -1.5**. **Rate:** PhenoCam (GCC) -0.5, Tower NDVI -1.5, Satellite NDVI +0.3, Satellite NIRv -1.3**. Compare the sum from leaf-out: PhenoCam (GCC) -0.7, Tower NDVI -1.5, Satellite NDVI -2.7***, Satellite NIRv -1.6**.
+- Over the three versions the pre-solstice slope is negative in 11 of 12 source x version cells and significant in 4 of 12. The effect is smaller when the predictor cannot carry leaf-out date, so part of the leaf-out-to-solstice result is an effect of an early spring as such.
+- The source that keeps a significant effect in every version is the one with the largest sample; the others agree in sign but cannot confirm an effect of 1-2 days (see the power calculation, section 13).
+- Formal verdict, all site groups: all three parts hold in 3 of 20 tests (sum), 0 of 21 tests (calendar), 0 of 20 tests (rate); H1 alone in 12, 4, 4.
+
 ### 3.3 End of senescence (EOS10), windows ending at the site mean EOS10
 
 | sites | EOS source | n (sites) | pre-solstice GPP | post-solstice GPP | whole season [95% CI] | all three hold | spring T | without T: pre / post / whole | controlled: pre / post / whole |
@@ -287,6 +318,12 @@ The windows above start at the year's leaf-out, so an early spring lengthens the
 | deciduous | Satellite NDVI | 170 (23) | +0.7 | -0.4 | +0.2 [-1.3, +1.8] | no | -0.2 | +0.5 / -0.3 / +0.2 | -0.3 / -0.3 / -0.5 |
 | deciduous | Satellite NIRv | 195 (25) | -0.9 | +0.6 | -0.2 [-1.3, +0.9] | no | +1.9* | +0.2 / -0.4 / -0.2 | -1.3* / +0.9 / -0.2 |
 
+**What this shows**
+
+- For the END of senescence the early-season effect is absent: pre-solstice GPP gives PhenoCam (GCC) +0.0, Tower NDVI -0.9, Satellite NDVI +0.9, Satellite NIRv +2.0 days per SD, negative in 1 of 4 sources. H1 holds in 1 of 20 tests.
+- Post-solstice GPP is PhenoCam (GCC) +0.6, Tower NDVI +1.1, Satellite NDVI +0.3, Satellite NIRv +0.1. A positive value here is not evidence that GPP delays senescence: the window runs into the weeks in which the canopy is senescing, and a canopy that stays green longer photosynthesises more in those weeks. When the window stops at the mean onset of senescence instead, the post-solstice slope is PhenoCam (GCC) +0.4, Tower NDVI +0.1, Satellite NDVI -0.5, Satellite NIRv -1.3.
+- So whatever early GPP does to the onset of senescence, it does not carry through to its end. The end of the season is set by something else (autumn temperature and photoperiod in the literature).
+
 ![EOS10, all sites](../figure/split_gpp_cancellation/coefficients_EOS10_all.png)
 
 *EOS10, all sites*
@@ -302,6 +339,11 @@ When the post-solstice window ends at the same year's EOS, a later EOS makes the
 | Satellite NDVI | -4.0 | +5.8 | +2.6 | +9.4 |
 | Satellite NIRv | -2.7 | +8.0 | +4.8 | +10.4 |
 
+**What this shows**
+
+- With windows ending at the same year's EOS90 the post-solstice slope is +5.8 to +10.2 days per SD, far larger than anything above. Window length alone - no year-specific GPP at all - produces +9.4 to +13.9. The apparent delaying effect of late-season GPP in this version is therefore almost entirely arithmetic: a later EOS makes the window longer, and a longer window holds more GPP.
+- This is why every other analysis in this report ends its windows at the site's mean EOS. Published positive relations between growing-season or late-season productivity and senescence date that use same-year windows should be read with this in mind.
+
 ## 4. One-to-one plots: pooled vs within-site (step 40)
 
 The same pairs drawn twice. Pooled plots mix differences between sites with year-to-year changes; the within-site plots keep only the latter and correspond to the tests of section 3. Growing-season totals and means run from the year's leaf-out to the site's mean EOS10 (not the same-year EOS10). All pairs: `figure/predictor_correlations/` and `figure/predictor_correlations_within_site/`.
@@ -314,6 +356,23 @@ The same pairs drawn twice. Pooled plots mix differences between sites with year
 | gpp_solstice_to_eos90 | 0.59 | 0.63 | 0.60 | 0.32 |
 | gpp_solstice_to_eos90_fixed | 0.54 | 0.59 | 0.43 | 0.19 |
 | total_gpp_growing_season | 0.30 | 0.44 | 0.24 | -0.04 |
+
+**Within-site correlation with EOS90** (year minus site mean; sites with at least 3 years)
+
+| predictor | GCC | NDVI | NDVI_tower | NIRv |
+|---|---|---|---|---|
+| gpp_sos10_to_solstice | -0.10 | -0.18 | -0.11 | -0.10 |
+| gpp_solstice_to_eos90 | 0.45 | 0.35 | 0.63 | 0.58 |
+| gpp_solstice_to_eos90_fixed | -0.11 | 0.00 | 0.03 | 0.02 |
+| total_gpp_growing_season | -0.03 | -0.03 | -0.00 | 0.06 |
+
+**What this shows**
+
+- **GPP from leaf-out to the solstice.** Pooled over all site-years the correlation with EOS90 is -0.30 to +0.22 and changes sign between sources. Within sites it is -0.18 to -0.10, negative in 4 of 4 sources. The pooled plot is dominated by differences between sites (productive sites differ from unproductive ones in many ways); only the within-site value speaks to the hypothesis.
+- **GPP from the solstice to the same-year EOS90:** within sites +0.35 to +0.63, a strong positive relation in every source. **To the site's mean EOS90:** -0.11 to +0.03. The relation vanishes when the window length is fixed. This pair of plots is the clearest picture of the window-length artefact.
+- **Between sites the post-solstice relation is real:** pooled, with the fixed window, r = +0.19 to +0.59. Sites with a productive late summer senesce later. That is a statement about sites, not about what a productive late summer does at a given site.
+- **GPP over the whole growing season:** within sites -0.03 to +0.06, i.e. no relation with the onset of senescence in any source. This is the Lu-type result.
+- **Mean growing-season temperature** (within sites -0.17 to -0.09) and **leaf-out date** (-0.04 to +0.07) are also weakly related to EOS90. With the window ending at the same year's EOS the temperature correlation was about -0.5; that was the same artefact.
 
 ![Pooled: EOS90 vs GPP from SOS10 to the solstice](../figure/predictor_correlations/EOS90_vs_gpp_sos10_to_solstice.png)
 
@@ -358,11 +417,11 @@ CUE after Luo et al. (annual), extended to 30-day sliding windows (seasonal / da
 
 | a | b | n_site_years | r_within | r_pooled |
 |---|---|---|---|---|
-| CUE_annual | CUE_pre | 2089 | 0.55 | 0.64 |
-| CUE_annual | CUE_post | 2089 | 0.56 | 0.70 |
-| CUE_pre | CUE_post | 2092 | 0.43 | 0.64 |
-| NPP_pre | NPPd_pre | 2089 | 0.96 | 0.97 |
-| NPP_post | NPPd_post | 2089 | 0.92 | 0.96 |
+| CUE_annual | CUE_pre | 1968 | 0.54 | 0.65 |
+| CUE_annual | CUE_post | 2001 | 0.57 | 0.71 |
+| CUE_pre | CUE_post | 1961 | 0.40 | 0.62 |
+| NPP_pre | NPPd_pre | 1968 | 0.79 | 0.94 |
+| NPP_post | NPPd_post | 2001 | 0.78 | 0.93 |
 
 ![Seasonal course of CUE by plant type (step 32)](../figure/cue_seasonal/seasonal_curve.png)
 
@@ -371,6 +430,13 @@ CUE after Luo et al. (annual), extended to 30-day sliding windows (seasonal / da
 ![Annual CUE against pre- and post-solstice CUE, within sites (step 32)](../figure/cue_seasonal/annual_vs_seasonal.png)
 
 *Annual CUE against pre- and post-solstice CUE, within sites (step 32)*
+
+**What this shows**
+
+- Annual CUE averages 0.52: about 52% of GPP ends up as NPP and 48% is respired by the plants. That is in the range reported for forests (0.4-0.6). The spread between site-years is large (SD 0.13), and part of it is estimation noise: the method infers CUE from how respiration follows GPP from day to day.
+- The seasonal estimate gives 0.62 before and 0.59 after the solstice: a slightly larger share of the fixed carbon is retained early in the season.
+- How much the time scales share (within-site r): CUE_annual vs CUE_pre +0.54; CUE_annual vs CUE_post +0.57; CUE_pre vs CUE_post +0.40; NPP_pre vs NPPd_pre +0.79; NPP_post vs NPPd_post +0.78. Where the correlation is low, the annual and the seasonal CUE carry different information; where NPP series correlate above 0.9, NPP is GPP in other units and cannot tell a sink effect from a source effect.
+- Consequence for everything below: NPP and the respiration terms derived from CUE are GPP multiplied by a factor that varies little, so 'sink' variables built this way mostly repeat the GPP result.
 
 ## 6. Which carbon window relates to which EOS? (step 33)
 
@@ -384,7 +450,7 @@ Single-predictor within-site models, windows ending at the site mean EOS (fixed 
 | NPP cum | -0.4 | -0.4 | +0.1 | +0.9 |
 | NPPd cum | -2.2 | +0.0 | +0.3 | +0.8 |
 | GPP mean | -0.2 | -2.9** | -1.1* | +0.2 |
-| CUEd mean | -2.2 | -0.2 | -0.7 | +0.2 |
+| CUEd mean | -2.3 | +0.2 | -0.6 | +0.1 |
 
 **EOS10, window solstice to mean EOS10** (days per +1 SD; * p<0.05, ** p<0.01, *** p<0.001, uncorrected)
 
@@ -394,7 +460,7 @@ Single-predictor within-site models, windows ending at the site mean EOS (fixed 
 | NPP cum | +0.7 | +0.5 | +0.1 | +0.5 |
 | NPPd cum | +0.2 | -0.3 | +0.2 | +0.2 |
 | GPP mean | +0.8 | +1.5 | +1.9* | +1.7** |
-| CUEd mean | -0.0 | -0.9 | -0.6 | -0.6 |
+| CUEd mean | -0.2 | -1.1 | -0.6 | -0.5 |
 
 **EOS50, window leaf-out to solstice** (days per +1 SD; * p<0.05, ** p<0.01, *** p<0.001, uncorrected)
 
@@ -404,7 +470,7 @@ Single-predictor within-site models, windows ending at the site mean EOS (fixed 
 | NPP cum | -0.9 | -1.1 | -1.0* | -0.4 |
 | NPPd cum | -1.9 | -0.6 | -0.6* | -0.3 |
 | GPP mean | -0.5 | -2.2* | -0.4 | -0.3 |
-| CUEd mean | -1.1 | -0.0 | -0.5 | +0.1 |
+| CUEd mean | -1.0 | +0.4 | -0.6 | -0.0 |
 
 **EOS50, window solstice to mean EOS10** (days per +1 SD; * p<0.05, ** p<0.01, *** p<0.001, uncorrected)
 
@@ -414,9 +480,17 @@ Single-predictor within-site models, windows ending at the site mean EOS (fixed 
 | NPP cum | +0.7 | +0.1 | +0.1 | +0.8* |
 | NPPd cum | +0.5 | -0.2 | +0.1 | +1.0* |
 | GPP mean | +0.8 | +0.5 | +1.2* | +1.5** |
-| CUEd mean | +0.5 | -0.5 | -0.3 | +0.2 |
+| CUEd mean | +0.4 | -0.4 | -0.3 | +0.3 |
 
-**Within-site model vs the random-intercept mixed model used before** (1512 cells): median absolute effect 0.77 vs 1.84 days per SD; p < 0.05 in 415 vs 497 cells; same sign in 87% of cells.
+**Within-site model vs the random-intercept mixed model used before** (1512 cells): median absolute effect 0.77 vs 1.84 days per SD; p < 0.05 in 418 vs 499 cells; same sign in 87% of cells.
+
+**What this shows**
+
+- **Leaf-out to solstice, cumulative GPP.** Effect on EOS90: PhenoCam (GCC) -1.2, Tower NDVI -1.9, Satellite NDVI -1.9***, Satellite NIRv -1.3**; on EOS10: PhenoCam (GCC) +0.2, Tower NDVI -0.6, Satellite NDVI +1.0, Satellite NIRv +1.6*. The early-season effect is on the onset of senescence, not on its end - the same pattern as in section 3, here without covariates.
+- **Solstice to mean EOS10, cumulative GPP on EOS10:** PhenoCam (GCC) +0.8, Tower NDVI +1.4, Satellite NDVI +1.3, Satellite NIRv +1.3*. These positive values come from a window that overlaps senescence (late senescence causes late-season GPP), so they are not evidence of a delaying effect.
+- **Whole season (leaf-out to EOS10) on EOS10:** with the same-year window PhenoCam (GCC) +3.6, Tower NDVI +3.0**, Satellite NDVI +2.3*, Satellite NIRv +3.0***; with the fixed window PhenoCam (GCC) +0.8, Tower NDVI +0.8, Satellite NDVI +1.4, Satellite NIRv +1.7*. The difference between the two lines is the window-length effect.
+- **NPP in place of GPP** (leaf-out to solstice, EOS90): -2.0 to -0.9 days per SD over sources and CUE versions - the same as GPP, as expected from section 5.
+- **Mixed model against within-site model:** see the line above. The mixed model, used in the first versions of this project, gives effects about twice as large because a random site intercept does not fully remove differences between sites. All numbers in this report are within-site.
 
 ![PhenoCam (GCC): GPP windows against EOS, fixed anchors (step 33)](../figure/eos_window_scan/fixed_GCC_GPP.png)
 
@@ -442,10 +516,10 @@ Mean flux in 15- and 30-day windows starting 120 days before to 75 days after th
 
 | carbon | EOS source | window start (days from solstice) | beta_days_per_sd | p_value | n_obs | at edge |
 |---|---|---|---|---|---|---|
-| CUEd | PhenoCam (GCC) | -30 | -0.4 | 0.729 | 252 | False |
-| CUEd | Satellite NDVI | -5 | -0.8 | 0.122 | 479 | False |
-| CUEd | Tower NDVI | 55 | -0.8 | 0.511 | 383 | False |
-| CUEd | Satellite NIRv | -5 | -0.5 | 0.261 | 721 | False |
+| CUEd | PhenoCam (GCC) | -30 | -0.2 | 0.877 | 232 | False |
+| CUEd | Satellite NDVI | -10 | -0.8 | 0.092 | 446 | False |
+| CUEd | Tower NDVI | 55 | -0.7 | 0.579 | 362 | False |
+| CUEd | Satellite NIRv | -5 | -0.5 | 0.262 | 678 | False |
 | GPP | PhenoCam (GCC) | -30 | -0.9 | 0.397 | 234 | False |
 | GPP | Satellite NDVI | -55 | -1.5 | 0.006 | 455 | False |
 | GPP | Tower NDVI | -60 | -2.6 | 0.029 | 356 | False |
@@ -463,10 +537,10 @@ Mean flux in 15- and 30-day windows starting 120 days before to 75 days after th
 
 | carbon | EOS source | window start (days from solstice) | beta_days_per_sd | p_value | n_obs | at edge |
 |---|---|---|---|---|---|---|
-| CUEd | PhenoCam (GCC) | -20 | -2.7 | 0.176 | 252 | False |
-| CUEd | Satellite NDVI | -80 | -1.3 | 0.031 | 479 | False |
-| CUEd | Tower NDVI | 5 | -1.6 | 0.041 | 383 | False |
-| CUEd | Satellite NIRv | 45 | -0.7 | 0.078 | 721 | False |
+| CUEd | PhenoCam (GCC) | -20 | -3.1 | 0.152 | 232 | False |
+| CUEd | Satellite NDVI | -80 | -1.3 | 0.036 | 448 | False |
+| CUEd | Tower NDVI | 5 | -1.7 | 0.042 | 362 | False |
+| CUEd | Satellite NIRv | 45 | -0.7 | 0.128 | 681 | False |
 | GPP | PhenoCam (GCC) | 20 | -0.9 | 0.537 | 234 | False |
 | GPP | Satellite NDVI | -120 | -0.7 | 0.264 | 447 | True |
 | GPP | Tower NDVI | -120 | -2.1 | 0.102 | 337 | True |
@@ -479,6 +553,14 @@ Mean flux in 15- and 30-day windows starting 120 days before to 75 days after th
 | NPPd | Satellite NDVI | -120 | -0.9 | 0.186 | 442 | True |
 | NPPd | Tower NDVI | -120 | -1.8 | 0.100 | 337 | True |
 | NPPd | Satellite NIRv | 45 | -0.6 | 0.250 | 681 | False |
+
+**What this shows**
+
+- **EOS90.** The 30-day window in which GPP has its most negative relation with the onset of senescence starts 30 days before the solstice for PhenoCam (GCC) (-0.9), 60 days before the solstice for Tower NDVI (-2.6*), 55 days before the solstice for Satellite NDVI (-1.5**), 50 days before the solstice for Satellite NIRv (-1.7***). It is significant in 3 of 4 sources.
+- Where it is significant the window starts 50 to 60 days before the solstice, i.e. in late April to early May and running into late May or early June. The sensitive period is spring, the weeks after leaf-out - earlier than the weeks around the solstice, where Zohner et al. (2023) place the switch.
+- The scan covers 120 days before to 75 days after the solstice. A minimum on the edge of that range would mean the true optimum lies outside it; this is the case for 0 of 4 sources.
+- **EOS10.** The most negative window gives -2.1 to +0.1 days per SD and is significant in 0 of 4 sources: no period of the season has a GPP that predicts the END of senescence.
+- A caution on reading the minima: taking the most negative of 40 windows overstates the effect (the p-values are not corrected for the search). The location of the minimum is more informative than its size.
 
 ![GPP: effect on EOS of 30-day windows by start date relative to the solstice (step 34)](../figure/eos_solstice_sliding_scan/GPP_L30.png)
 
@@ -570,6 +652,13 @@ Nested within-site models on identical rows. M0 climate only; + leaf-out date (S
 | Satellite NIRv | M4d_env+source+sink_daily | 621 | 4449 | 0.11 | 0.03 | 0.06 |
 | Satellite NIRv | M5_env+SOS+source+sink | 621 | 4444 | 0.12 | 0.04 | 0.07 |
 
+**What this shows**
+
+- **Climate alone** (temperature, radiation and precipitation before and after the solstice) explains 2 to 11% of the year-to-year variance of EOS10 within sites. Most of the variation in senescence date is left unexplained by seasonal climate means.
+- **Adding leaf-out date, GPP and NPP** raises this to 5 to 13%, a gain of 2 to 2 percentage points. Carbon uptake adds very little to climate.
+- **Prediction for a site the model has not seen** (leave-one-site-out R2): -0.11 to 0.09 for climate alone, -0.28 to 0.08 for the full model. Values near zero or below mean the relations do not transfer between sites: a model fitted on some sites does not predict the early and late years of another. Adding predictors makes this worse, not better (overfitting).
+- In the full model, leaf-out date has the most consistent coefficient: PhenoCam (GCC) -1.9, Tower NDVI -3.2*, Satellite NDVI -1.5, Satellite NIRv -1.2 days per SD (a later leaf-out goes with an earlier end of season). No GPP or NPP term is consistent in sign across the four sources.
+
 ## 9. Pathways and rate vs cumulative uptake (steps 36, 37)
 
 ![PhenoCam (GCC): climate -> GPP -> EOS10 path coefficients (step 36)](../figure/eos_path_analysis/GCC_EOS10_GPP.png)
@@ -589,11 +678,18 @@ Nested within-site models on identical rows. M0 climate only; + leaf-out date (S
 | Satellite NDVI | EOS10 | 395 | -1.1 | 0.024 | +1.0 | 0.163 |
 | Satellite NIRv | EOS10 | 650 | +0.2 | 0.614 | +1.6 | 0.025 |
 
+**What this shows**
+
+- A cumulative sum is a rate times a duration. Between leaf-out and the solstice the duration is set by the leaf-out date, so 'more cumulative GPP' can mean 'photosynthesised faster' or 'started earlier'.
+- **Rate** (mean daily GPP) on EOS10: PhenoCam (GCC) -0.2, Tower NDVI -2.9**, Satellite NDVI -1.1*, Satellite NIRv +0.2. **Cumulative**: PhenoCam (GCC) +0.2, Tower NDVI -0.6, Satellite NDVI +1.0, Satellite NIRv +1.6*. The rate is negative in 3 of 4 sources, the sum in 1 of 4.
+- With rate and window length in the same model, the length term is PhenoCam (GCC) +0.7, Tower NDVI +1.7, Satellite NDVI +1.8**, Satellite NIRv +2.7*** days per SD: a longer pre-solstice window, i.e. an earlier leaf-out, goes with a LATER end of season. That positive duration effect is why the cumulative sum shows no negative effect on EOS10 while the rate does in some sources.
+- The path figures decompose the same thing: climate acts on EOS10 mostly directly, and the part that passes through GPP is small.
+
 ## 10. Results by plant type, with multiple-testing correction (step 38)
 
 Tables: `data/eos_results_by_leaf_habit.csv`, `data/eos_results_consistency.csv`.
 
-- 780 tests; 91 (11.7%) with uncorrected p < 0.05 (about 5% expected by chance); 1 significant after FDR correction.
+- 780 tests; 90 (11.5%) with uncorrected p < 0.05 (about 5% expected by chance); 1 significant after FDR correction.
 
 **Effects with the same sign in every EOS source, both ground sources agreeing, at least one significant after FDR**
 
@@ -606,6 +702,13 @@ _No data._
 ![EOS50, air temperature controlled (step 38)](../figure/eos_results_by_leaf_habit/EOS50_adj_T.png)
 
 *EOS50, air temperature controlled (step 38)*
+
+**What this shows**
+
+- 780 combinations of plant type, EOS source, target (EOS10, EOS50), window and predictor were tested. 11.5% have p < 0.05 before correction, against 5% expected if nothing were going on - so there is some signal, but most single 'significant' cells are chance.
+- After correcting for the number of tests, 1 remain: grass/shrub, Satellite NDVI, EOS10, post GPP rate (mean) (+5.1 days per SD).
+- 71 of 208 predictor x group combinations have the same sign in every EOS source, and 0 meet the full robustness rule (same sign everywhere, both ground sources agreeing, one significant after correction).
+- For the middle and the end of senescence, then, no carbon variable - GPP, NPP, CUE, as a sum or as a rate, before or after the solstice - has an effect that is consistent across plant types and EOS sources. The one consistent carbon effect in this project is the one on the ONSET of senescence (section 3).
 
 ## 11. Timing of anomalies and drought years (step 39)
 
@@ -635,6 +738,13 @@ Tables: `data/anomaly_timing_effects.csv`, `data/drought_years.csv`, `data/droug
 | Satellite NIRv | EOS50 | deciduous | 40 / 182 | +1.4 | 0.345 |
 
 - Anomaly windows: 3964 tests, 11.7% with uncorrected p < 0.05; after FDR: all years 12, drought years 9, non-drought years 14.
+
+**What this shows**
+
+- A drought year is one whose May-September water balance (precipitation minus potential evaporation) is at least one SD below the site's mean: 15% of site-years.
+- In drought years senescence is earlier in 7 of 8 source x target combinations (shift -4.8 to +0.4 days), significantly so in 3: Satellite NDVI EOS10 -4.8 days; Satellite NDVI EOS50 -4.0 days; Satellite NIRv EOS50 -2.3 days.
+- The effect is clearest in the satellite indices, which have the most site-years; the ground sources agree in sign. Drought advances senescence by a few days - a larger effect than that of GPP.
+- Timing of anomalies: of 3964 window x variable x sign tests, 11.7% have uncorrected p < 0.05 and 35 survive correction. No 30-day window of temperature, radiation, VPD, precipitation, water balance or GPP shifts EOS10 or EOS50 consistently across sources. The heat maps show scattered cells, not a band at a particular time of year.
 
 ![Satellite NDVI: effect on EOS10 of positive (+) and negative (-) anomalies by time of year (step 39)](../figure/anomaly_timing/NDVI_EOS10.png)
 
@@ -686,6 +796,16 @@ The same within-site model on each source's own site-years, on the PhenoCam site
 | NIRv - GCC | EOS90 | 137 (23) | -8.1 | -0.1 [-2.9, +2.7] | +0.4 [-2.6, +3.4] |
 | NIRv - GCC | EOS50 | 137 (23) | -0.0 | -0.0 [-2.1, +2.1] | -0.0 [-1.8, +1.7] |
 | NIRv - GCC | EOS10 | 137 (23) | +8.9 | -0.1 [-2.2, +2.0] | -0.2 [-2.3, +1.9] |
+
+**What this shows**
+
+- PhenoCam and the satellite cover different sites and years, so different results could come from the sample or from what each instrument sees. Fitting both on the SAME site-years separates the two.
+- **Shared site-years, PhenoCam vs NDVI** (99 site-years, 16 sites): pre-solstice GPP PhenoCam (GCC) -1.4, Satellite NDVI -0.9; whole season PhenoCam (GCC) -0.8, Satellite NDVI -2.0.
+- **Shared site-years, PhenoCam vs NIRv** (137 site-years, 23 sites): pre-solstice GPP PhenoCam (GCC) -0.8, Satellite NIRv -0.9; whole season PhenoCam (GCC) -0.1, Satellite NIRv +0.2.
+- On the shared samples nothing is significant (0 of 4 pre-solstice slopes): with about 100 site-years an effect of 1-2 days cannot be detected. The comparison can show that the two sources do not contradict each other; it cannot confirm the effect.
+- **Difference model.** If GPP moved the satellite EOS90 and the PhenoCam EOS90 differently, the difference between them would depend on GPP. The slopes are -0.1 to +0.5 (pre) and -1.9 to +0.4 (post) days per SD, significant in 0 of 2 cases: the two sources respond to GPP in the same way.
+- **Systematic offsets** (satellite minus PhenoCam, mean days): NDVI - PhenoCam EOS90 +17; NDVI - PhenoCam EOS50 +16; NDVI - PhenoCam EOS10 +14; NIRv - PhenoCam EOS90 -8; NIRv - PhenoCam EOS50 -0; NIRv - PhenoCam EOS10 +9. The sources date the same stage at different calendar days, but that offset is constant and drops out of within-site analyses.
+- **Do they measure the same event?** Within-site correlation of the same stage in both sources: Satellite NDVI EOS90 r = 0.45; Satellite NDVI EOS50 r = 0.62; Satellite NDVI EOS10 r = 0.32; Satellite NIRv EOS90 r = 0.24; Satellite NIRv EOS50 r = 0.36; Satellite NIRv EOS10 r = 0.27. NDVI follows the PhenoCam closely in the middle of senescence; NIRv agrees poorly with it and should be read as a different measure of canopy state, not a noisier copy.
 
 ![EOS90: the same model on three samples (step 42)](../figure/phenocam_vs_satellite/models_EOS90.png)
 
@@ -773,6 +893,14 @@ One-predictor within-site model, two versions of pre-solstice GPP: `sos` = cumul
 | shared PhenoCam + NIRv | PhenoCam | cal | 137 (23) | -0.6 | 2.6 | 37% | 411 | 69 |
 | shared PhenoCam + NIRv | satellite NIRv | sos | 128 (22) | -1.1 | 4.2 | 17% | 1024 | 176 |
 | shared PhenoCam + NIRv | satellite NIRv | cal | 137 (23) | -0.6 | 4.0 | 18% | 978 | 164 |
+
+**What this shows**
+
+- These checks use the simplest model (EOS90 on pre-solstice GPP alone, no temperature covariate), so the slopes are larger than the headline ones of section 3. The question here is whether the SIGN and rough size depend on a single site or on a threshold choice.
+- **Leave one site out.** Over all sources and both predictors the slope stays negative in 100% of the refits. Where the full-sample slope is significant (Tower NDVI cal, Satellite NDVI sos, Satellite NDVI cal, Satellite NIRv sos, Satellite NIRv cal), it stays significant in 83 to 100% of the refits. The most influential sites are JP-Tmd, US-KFS, US-Me6, US-NC2; removing them changes the slope by at most 0.8 days. No single site produces the result.
+- **QC thresholds.** Over 12 combinations of minimum fit R2 and the site-median rule, 96 of 96 slopes are negative. By source the range is PhenoCam (GCC) -2.3 to -0.1; Tower NDVI -3.0 to -0.5; Satellite NDVI -2.2 to -0.7; Satellite NIRv -1.9 to -0.6. The satellite slopes move little; the ground-based ones move more because their samples are small and each threshold changes which years are in.
+- **Power.** To detect 1.5 days per SD with 80% probability, 376 to 1889 site-years are needed, depending on how noisy the source is. The satellite indices have 395 to 681 and a power of 82 to 93%. PhenoCam and tower NDVI have 205 to 357 site-years and a power of 21 to 28%.
+- So a non-significant result from PhenoCam or tower NDVI is not evidence against the effect: with their sample sizes they would miss it three times out of four. Only the satellite indices can confirm or reject an effect of this size; the ground sources can only agree or disagree in sign.
 
 ![Slope with each site left out in turn (step 43)](../figure/presolstice_robustness/loso.png)
 
@@ -939,6 +1067,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | all | PhenoCam | Ra | 231 (30) | +0.2 | -0.9 | 0.004 | 0.004 | +0.52 | +0.4 | -1.0 |
 | all | PhenoCam | Rg | 231 (30) | -1.9 | +1.1 | 0.026 | 0.004 | +0.66 | -2.3 | +0.7 |
 | all | PhenoCam | Rm | 231 (30) | +0.6 | -1.1 | 0.007 | 0.004 | +0.36 | +0.6 | -1.0 |
+| all | PhenoCam | Rm_model | 233 (30) | +0.2 | -0.4 | 0.000 | 0.003 | +0.46 | +0.2 | -0.8 |
 | all | PhenoCam | SI | 256 (33) | +0.6 | -0.1 | 0.002 | 0.003 | -0.06 | +0.6 | -0.7 |
 | all | PhenoCam | fT | 256 (33) | -1.7* | +0.4 | 0.016 | 0.003 | +0.18 | -1.7* | -0.4 |
 | all | PhenoCam | fW | 256 (33) | +1.6 | -0.5 | 0.012 | 0.003 | -0.19 | +1.4 | -0.5 |
@@ -947,6 +1076,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | all | tower NDVI | Ra | 356 (41) | -1.3 | +0.1 | 0.007 | 0.028 | +0.37 | -0.5 | -2.3 |
 | all | tower NDVI | Rg | 356 (41) | -2.0 | +0.1 | 0.016 | 0.028 | +0.65 | -0.6 | -2.1 |
 | all | tower NDVI | Rm | 356 (41) | -0.8 | +0.0 | 0.003 | 0.028 | +0.21 | -0.3 | -2.4* |
+| all | tower NDVI | Rm_model | 356 (41) | -3.1 | +1.8 | 0.018 | 0.028 | +0.50 | -0.7 | -2.1 |
 | all | tower NDVI | SI | 385 (43) | -0.8 | +0.5 | 0.003 | 0.028 | +0.31 | -0.1 | -2.5* |
 | all | tower NDVI | fT | 385 (43) | -2.9** | +0.1 | 0.036 | 0.028 | +0.41 | -2.8** | -1.3 |
 | all | tower NDVI | fW | 385 (43) | +1.6 | -0.7 | 0.009 | 0.028 | -0.07 | +1.4 | -2.4* |
@@ -955,6 +1085,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | all | satellite NDVI | Ra | 441 (66) | -0.5 | +0.5 | 0.002 | 0.012 | +0.39 | +0.2 | -1.4* |
 | all | satellite NDVI | Rg | 441 (66) | -0.7 | -1.1 | 0.014 | 0.012 | +0.76 | +0.1 | -1.4 |
 | all | satellite NDVI | Rm | 441 (66) | -0.2 | +0.6 | 0.002 | 0.012 | +0.17 | +0.1 | -1.3* |
+| all | satellite NDVI | Rm_model | 446 (67) | -1.6 | +1.5 | 0.006 | 0.010 | +0.48 | +0.3 | -1.3 |
 | all | satellite NDVI | SI | 497 (73) | -1.1* | -0.1 | 0.010 | 0.010 | +0.18 | -1.0* | -1.0* |
 | all | satellite NDVI | fT | 497 (73) | -1.3* | +0.4 | 0.014 | 0.010 | +0.24 | -1.0 | -0.9 |
 | all | satellite NDVI | fW | 497 (73) | -0.1 | -0.3 | 0.001 | 0.010 | -0.02 | -0.3 | -1.2* |
@@ -963,6 +1094,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | all | satellite NIRv | Ra | 672 (88) | -0.7 | +0.2 | 0.003 | 0.023 | +0.41 | -0.1 | -1.5*** |
 | all | satellite NIRv | Rg | 672 (88) | -1.1* | +0.5 | 0.008 | 0.023 | +0.68 | +0.2 | -1.6* |
 | all | satellite NIRv | Rm | 672 (88) | -0.4 | +0.1 | 0.001 | 0.023 | +0.24 | -0.1 | -1.5*** |
+| all | satellite NIRv | Rm_model | 675 (88) | -0.7 | +0.5 | 0.001 | 0.022 | +0.42 | +0.4 | -1.7*** |
 | all | satellite NIRv | SI | 751 (94) | -1.5** | +0.4 | 0.015 | 0.022 | +0.23 | -1.3* | -1.2** |
 | all | satellite NIRv | fT | 751 (94) | -2.0*** | -0.5 | 0.030 | 0.022 | +0.17 | -1.8** | -1.2** |
 | all | satellite NIRv | fW | 751 (94) | -0.1 | +0.3 | 0.000 | 0.022 | +0.08 | -0.1 | -1.5*** |
@@ -971,6 +1103,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | deciduous | PhenoCam | Ra | 104 (9) | +1.3 | -2.5* | 0.034 | 0.014 | +0.46 | +0.8 | -0.6 |
 | deciduous | PhenoCam | Rg | 104 (9) | -2.3 | +1.6 | 0.041 | 0.014 | +0.59 | -3.2 | +1.7 |
 | deciduous | PhenoCam | Rm | 104 (9) | +1.6 | -2.6** | 0.041 | 0.014 | +0.31 | +1.2 | -0.6 |
+| deciduous | PhenoCam | Rm_model | 104 (9) | +3.6 | -5.2 | 0.034 | 0.014 | +0.54 | -1.5 | +0.6 |
 | deciduous | PhenoCam | SI | 116 (10) | -1.8 | +1.3 | 0.020 | 0.014 | -0.00 | -1.5 | -0.2 |
 | deciduous | PhenoCam | fT | 116 (10) | -0.3 | +1.3 | 0.008 | 0.014 | +0.36 | +0.1 | -0.2 |
 | deciduous | PhenoCam | fW | 116 (10) | -1.5 | +1.0 | 0.011 | 0.014 | -0.30 | -1.4 | -0.6 |
@@ -979,6 +1112,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | deciduous | tower NDVI | Ra | 174 (17) | -0.1 | -0.0 | 0.000 | 0.059 | +0.33 | -0.0 | -0.4 |
 | deciduous | tower NDVI | Rg | 174 (17) | -1.8 | +2.2* | 0.040 | 0.059 | +0.63 | -1.6 | +0.6 |
 | deciduous | tower NDVI | Rm | 174 (17) | +0.3 | -0.4 | 0.001 | 0.059 | +0.17 | +0.2 | -0.4 |
+| deciduous | tower NDVI | Rm_model | 174 (17) | +0.4 | -0.3 | 0.000 | 0.059 | +0.56 | +0.5 | -0.7 |
 | deciduous | tower NDVI | SI | 189 (18) | +0.5 | +2.5 | 0.048 | 0.059 | +0.20 | +1.4 | -0.7 |
 | deciduous | tower NDVI | fT | 189 (18) | -1.2 | +1.2 | 0.017 | 0.059 | +0.40 | -1.8 | +0.3 |
 | deciduous | tower NDVI | fW | 189 (18) | +1.5 | +1.3 | 0.038 | 0.059 | -0.17 | +2.6** | +0.0 |
@@ -987,6 +1121,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | deciduous | satellite NDVI | Ra | 169 (23) | -0.4 | -0.6 | 0.006 | 0.013 | +0.43 | -0.3 | -0.5 |
 | deciduous | satellite NDVI | Rg | 169 (23) | -0.2 | -0.1 | 0.001 | 0.013 | +0.72 | +0.3 | -0.8 |
 | deciduous | satellite NDVI | Rm | 169 (23) | -0.3 | -0.5 | 0.005 | 0.013 | +0.23 | -0.3 | -0.5 |
+| deciduous | satellite NDVI | Rm_model | 170 (23) | -1.7 | +0.6 | 0.015 | 0.013 | +0.61 | -1.2 | +0.1 |
 | deciduous | satellite NDVI | SI | 194 (26) | -2.0*** | +0.9 | 0.050 | 0.013 | +0.16 | -1.6** | -0.3 |
 | deciduous | satellite NDVI | fT | 194 (26) | -1.0 | +0.3 | 0.013 | 0.013 | +0.38 | -0.4 | -0.4 |
 | deciduous | satellite NDVI | fW | 194 (26) | -1.4 | +1.1* | 0.022 | 0.013 | -0.18 | -1.2 | -0.8 |
@@ -995,6 +1130,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | deciduous | satellite NIRv | Ra | 194 (25) | -0.6 | -0.4 | 0.007 | 0.044 | +0.47 | -0.3 | -0.9 |
 | deciduous | satellite NIRv | Rg | 194 (25) | -1.6** | +1.5 | 0.030 | 0.044 | +0.72 | -0.9 | -0.4 |
 | deciduous | satellite NIRv | Rm | 194 (25) | -0.3 | -0.7 | 0.006 | 0.044 | +0.30 | -0.2 | -1.0 |
+| deciduous | satellite NIRv | Rm_model | 195 (25) | -2.0 | +0.9 | 0.015 | 0.044 | +0.57 | -0.9 | -0.5 |
 | deciduous | satellite NIRv | SI | 224 (28) | -0.9 | +1.2 | 0.015 | 0.044 | +0.23 | -0.3 | -1.0 |
 | deciduous | satellite NIRv | fT | 224 (28) | -2.7*** | -0.3 | 0.064 | 0.044 | +0.39 | -2.7** | -0.0 |
 | deciduous | satellite NIRv | fW | 224 (28) | +1.6 | +0.4 | 0.028 | 0.044 | -0.10 | +1.5 | -0.9 |
@@ -1003,6 +1139,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | evergreen | tower NDVI | Ra | 86 (12) | -3.5 | +1.5 | 0.035 | 0.070 | +0.44 | -1.7 | -4.2* |
 | evergreen | tower NDVI | Rg | 86 (12) | -0.1 | -2.3 | 0.016 | 0.070 | +0.47 | +2.7 | -6.3*** |
 | evergreen | tower NDVI | Rm | 86 (12) | -3.2 | +1.9 | 0.031 | 0.070 | +0.32 | -1.8 | -4.4* |
+| evergreen | tower NDVI | Rm_model | 86 (12) | -8.5* | +3.6 | 0.140 | 0.070 | +0.44 | -5.2* | -3.0 |
 | evergreen | tower NDVI | SI | 89 (12) | -3.9 | +0.8 | 0.043 | 0.070 | +0.47 | -2.3 | -3.8*** |
 | evergreen | tower NDVI | fT | 89 (12) | -5.6*** | +1.0 | 0.095 | 0.070 | +0.52 | -4.5 | -2.4 |
 | evergreen | tower NDVI | fW | 89 (12) | +2.1 | -1.1 | 0.013 | 0.070 | -0.00 | +1.7 | -4.7** |
@@ -1011,6 +1148,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | evergreen | satellite NDVI | Ra | 82 (15) | -2.6 | +3.8* | 0.060 | 0.016 | +0.37 | -0.7 | -1.5 |
 | evergreen | satellite NDVI | Rg | 82 (15) | +0.5 | -4.9** | 0.095 | 0.016 | +0.81 | -0.3 | -1.6 |
 | evergreen | satellite NDVI | Rm | 82 (15) | -2.1 | +4.2* | 0.071 | 0.016 | +0.14 | -0.5 | -1.7 |
+| evergreen | satellite NDVI | Rm_model | 82 (15) | -4.2 | +4.6 | 0.042 | 0.016 | +0.41 | -0.1 | -1.7 |
 | evergreen | satellite NDVI | SI | 89 (17) | -1.3 | +1.2 | 0.009 | 0.016 | +0.32 | -0.7 | -1.5 |
 | evergreen | satellite NDVI | fT | 89 (17) | -1.0 | +1.1 | 0.011 | 0.016 | +0.16 | -0.9 | -1.6 |
 | evergreen | satellite NDVI | fW | 89 (17) | -0.4 | +0.3 | 0.001 | 0.016 | +0.23 | -0.1 | -1.7 |
@@ -1019,6 +1157,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | evergreen | satellite NIRv | Ra | 211 (27) | -1.4 | +0.8 | 0.015 | 0.034 | +0.31 | -0.5 | -1.9** |
 | evergreen | satellite NIRv | Rg | 211 (27) | -0.5 | -0.3 | 0.004 | 0.034 | +0.64 | +1.2 | -2.8** |
 | evergreen | satellite NIRv | Rm | 211 (27) | -1.1 | +0.7 | 0.010 | 0.034 | +0.15 | -0.6 | -1.9*** |
+| evergreen | satellite NIRv | Rm_model | 211 (27) | -1.6 | +1.6 | 0.009 | 0.034 | +0.35 | +0.5 | -2.2*** |
 | evergreen | satellite NIRv | SI | 217 (27) | -0.9 | +0.6 | 0.007 | 0.034 | +0.28 | -0.2 | -2.0** |
 | evergreen | satellite NIRv | fT | 217 (27) | -1.1 | -0.9 | 0.019 | 0.034 | +0.11 | -1.1 | -1.9** |
 | evergreen | satellite NIRv | fW | 217 (27) | -0.2 | +0.7 | 0.003 | 0.034 | +0.19 | +0.5 | -2.1** |
@@ -1130,6 +1269,17 @@ Plant-available soil water = measured soil water content relative to the site's 
 | evergreen | all sources stacked | warm + low GPP | earlier if temperature drives it | 72 (23) | 18% | +0.2 [-3.8, +4.2] |
 | evergreen | all sources stacked | cool + high GPP | earlier if GPP drives it | 85 (27) | 21% | +0.5 [-1.9, +2.9] |
 
+**What this shows**
+
+- Each explanation is tested by putting the competing variable in the same within-site model as GPP. 'Stacked' rows use all four EOS sources at once (each site-year once per source); they have the most power and are quoted here.
+- **A. Leaf-out date.** In deciduous forests (647 site-years) leaf-out date predicts EOS90 (+1.4** days per SD with GPP in the model: earlier leaf-out, earlier senescence) and early GPP does not (-0.3). Over all vegetation types it is the reverse: GPP -1.5***, leaf-out -0.4. In deciduous trees the timing of the whole leaf cycle shifts together (a leaf that emerges early ages early); the GPP effect is not a deciduous-forest effect.
+- **B. Water.** At dry-summer sites (136 site-years, 9 sites) the spring water balance predicts EOS90 (+1.8**: a wet spring delays senescence) and GPP does not (+0.3). At summer-green sites (1591 site-years) water has no effect (+0.2) and the GPP effect is unchanged by it (-1.6***). Measured plant-available soil water gives the same answer at summer-green sites (water +0.3, GPP -1.8***; 1274 site-years). Water limitation explains senescence where summers are dry; it does not explain the GPP effect elsewhere.
+- **C. Sink variables.** NPP and the respiration terms (correlation with GPP within sites 0.17 to 0.78) give pre-solstice effects of -2.0 to +0.6 days per SD; next to GPP in the same model they are significant in 0 of 16 cases. They add nothing to GPP, of which they are a rescaled copy. Maintenance respiration from the fitted model, which does not contain the day's GPP: PhenoCam (GCC) +0.2, Tower NDVI -3.1, Satellite NDVI -1.6, Satellite NIRv -0.7; next to GPP PhenoCam (GCC) +0.2, Tower NDVI -0.7, Satellite NDVI +0.3, Satellite NIRv +0.4. The temperature part of the sink-limitation index does predict EOS90 (PhenoCam (GCC) -1.7*, Tower NDVI -2.9**, Satellite NDVI -1.3*, Satellite NIRv -2.0***) and keeps an effect next to GPP in 3 of 4 sources.
+- **D. Spring temperature.** GPP and temperature of the 60 days before the solstice are only weakly correlated within sites (r = 0.19), so their effects can be separated. Together in one model: temperature -2.0***, GPP -1.1** days per SD. With radiation and water balance also held fixed, GPP keeps -1.1*. Temperature alone explains 4 times more variance than GPP adds to it.
+- By plant type, GPP net of all weather: evergreen -1.5**, deciduous -0.1. The GPP effect that the weather does not explain is carried by evergreen forests.
+- **Years in which temperature and GPP diverge.** Mean EOS90 anomaly: warm + high GPP -2.4** days; cool + low GPP +1.6* days; warm + low GPP -0.2 days; cool + high GPP +1.1 days. Senescence is early when spring is both warm and productive and late when it is both cool and unproductive. When only one of the two is high the shift is small. Neither variable alone drives the onset of senescence; the two add up.
+- **Overall.** About half of the uncorrected 'pre-solstice GPP' effect is a spring-temperature effect. What remains (about one day per SD) is not explained by leaf-out date, water or weather, and is found mainly in evergreen forests. Whether it is a sink effect cannot be told from flux-derived variables, because every one of them is tied to GPP.
+
 ![Deciduous forests: leaf-out date against early GPP (step 44)](../figure/mechanism/leafout_vs_gpp.png)
 
 *Deciduous forests: leaf-out date against early GPP (step 44)*
@@ -1204,14 +1354,16 @@ Dendrometer data at the few flux sites that have them (`Output/dendrometer_datas
 - **NPP = GPP - respiration**
 - **GPP - total sink = NPP - growth**: carbon fixed but used neither for respiration nor for the measured growth. It goes to what the dendrometers do not see (roots; at US-Ha1 also leaves) and to reserves.
 
-| site | years | window | GPP | respiration | growth | total sink | NPP | GPP - total sink |
-|---|---|---|---|---|---|---|---|---|
-| AT-Zoe | 5 | whole season | 983 | 315 | 205 | 521 | 667 | 462 |
-| AT-Zoe | 5 | before the solstice | 347 | 88 | 83 | 181 | 260 | 166 |
-| AT-Zoe | 5 | after the solstice | 623 | 207 | 122 | 329 | 417 | 295 |
-| US-Ha1 | 24 | whole season | 1566 | 353 | 165 | 518 | 1213 | 1048 |
-| US-Ha1 | 24 | before the solstice | 398 | 97 | 64 | 161 | 301 | 237 |
-| US-Ha1 | 24 | after the solstice | 1168 | 256 | 101 | 357 | 912 | 811 |
+| site | years | window | GPP | autotrophic respiration | growth | total sink (growth + respiration) | NPP (GPP - respiration) | GPP - total sink | growth respiration (model) | maintenance respiration (model) | autotrophic respiration (model) | total sink (growth + model respiration) | GPP - total sink (model respiration) |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| AT-Zoe | 5 | whole season | 983 | 315 | 205 | 521 | 667 | 462 | 133 | 192 | 325 | 530 | 452 |
+| AT-Zoe | 5 | before the solstice | 347 | 88 | 83 | 181 | 260 | 166 | 47 | 22 | 69 | 163 | 184 |
+| AT-Zoe | 5 | after the solstice | 623 | 207 | 122 | 329 | 417 | 295 | 84 | 166 | 250 | 372 | 251 |
+| US-Ha1 | 24 | whole season | 1566 | 353 | 165 | 518 | 1213 | 1048 | 226 | 260 | 486 | 651 | 914 |
+| US-Ha1 | 24 | before the solstice | 398 | 97 | 64 | 161 | 301 | 237 | 57 | 19 | 75 | 140 | 258 |
+| US-Ha1 | 24 | after the solstice | 1168 | 256 | 101 | 357 | 912 | 811 | 169 | 242 | 411 | 512 | 656 |
+
+Model respiration (step 26): growth respiration = gR x CUE x GPP; maintenance respiration = temperature response x biomass built since 1 January. The maintenance term does not contain the day's GPP, so a total sink built with it is not GPP times a factor.
 
 Growth as a share of NPP over the season: AT-Zoe 33%, US-Ha1 14%.
 
@@ -1225,12 +1377,22 @@ Growth as a share of NPP over the season: AT-Zoe 33%, US-Ha1 14%.
 | PhenoCam | pre-solstice | total sink (growth + respiration) | -5.9 [-10.6, -1.3] | 0.012 | 15 | US-Ha1 (15) |
 | PhenoCam | pre-solstice | NPP (GPP - respiration) | -3.5 [-10.5, +3.5] | 0.327 | 15 | US-Ha1 (15) |
 | PhenoCam | pre-solstice | GPP - total sink | -2.5 [-10.0, +4.9] | 0.503 | 15 | US-Ha1 (15) |
+| PhenoCam | pre-solstice | growth respiration (model) | -6.6 [-12.4, -0.9] | 0.024 | 15 | US-Ha1 (15) |
+| PhenoCam | pre-solstice | maintenance respiration (model) | -3.6 [-6.8, -0.5] | 0.025 | 15 | US-Ha1 (15) |
+| PhenoCam | pre-solstice | autotrophic respiration (model) | -6.5 [-10.8, -2.2] | 0.003 | 15 | US-Ha1 (15) |
+| PhenoCam | pre-solstice | total sink (growth + model respiration) | -7.3 [-12.9, -1.8] | 0.010 | 15 | US-Ha1 (15) |
+| PhenoCam | pre-solstice | GPP - total sink (model respiration) | -6.3 [-9.6, -3.0] | 0.000 | 15 | US-Ha1 (15) |
 | PhenoCam | post-solstice | GPP | -7.7 [-11.2, -4.1] | 0.000 | 15 | US-Ha1 (15) |
 | PhenoCam | post-solstice | autotrophic respiration | -2.9 [-8.0, +2.3] | 0.272 | 15 | US-Ha1 (15) |
 | PhenoCam | post-solstice | growth | -3.3 [-12.8, +6.1] | 0.489 | 15 | US-Ha1 (15) |
 | PhenoCam | post-solstice | total sink (growth + respiration) | -3.2 [-8.1, +1.6] | 0.194 | 15 | US-Ha1 (15) |
 | PhenoCam | post-solstice | NPP (GPP - respiration) | -4.2 [-12.9, +4.5] | 0.345 | 15 | US-Ha1 (15) |
 | PhenoCam | post-solstice | GPP - total sink | -4.1 [-13.0, +4.9] | 0.373 | 15 | US-Ha1 (15) |
+| PhenoCam | post-solstice | growth respiration (model) | -5.6 [-13.9, +2.8] | 0.193 | 15 | US-Ha1 (15) |
+| PhenoCam | post-solstice | maintenance respiration (model) | -3.9 [-8.4, +0.5] | 0.083 | 15 | US-Ha1 (15) |
+| PhenoCam | post-solstice | autotrophic respiration (model) | -5.4 [-10.9, +0.1] | 0.054 | 15 | US-Ha1 (15) |
+| PhenoCam | post-solstice | total sink (growth + model respiration) | -5.6 [-11.3, +0.2] | 0.057 | 15 | US-Ha1 (15) |
+| PhenoCam | post-solstice | GPP - total sink (model respiration) | -3.7 [-14.2, +6.7] | 0.485 | 15 | US-Ha1 (15) |
 | satellite NIRv | pre-solstice | growth | +10.7 [+5.3, +16.0] | 0.000 | 12 | US-Ha1 (9), AT-Zoe (3) |
 | satellite NIRv | post-solstice | GPP | +7.5 [+1.1, +14.0] | 0.022 | 12 | US-Ha1 (9), AT-Zoe (3) |
 | satellite NIRv | post-solstice | autotrophic respiration | -1.9 [-9.3, +5.5] | 0.611 | 12 | US-Ha1 (9), AT-Zoe (3) |
@@ -1238,18 +1400,44 @@ Growth as a share of NPP over the season: AT-Zoe 33%, US-Ha1 14%.
 | satellite NIRv | post-solstice | total sink (growth + respiration) | -2.2 [-9.0, +4.7] | 0.540 | 12 | US-Ha1 (9), AT-Zoe (3) |
 | satellite NIRv | post-solstice | NPP (GPP - respiration) | +7.3 [+1.6, +13.1] | 0.013 | 12 | US-Ha1 (9), AT-Zoe (3) |
 | satellite NIRv | post-solstice | GPP - total sink | +7.5 [+2.0, +13.0] | 0.008 | 12 | US-Ha1 (9), AT-Zoe (3) |
+| satellite NIRv | post-solstice | growth respiration (model) | +5.7 [-1.5, +12.8] | 0.119 | 12 | US-Ha1 (9), AT-Zoe (3) |
+| satellite NIRv | post-solstice | maintenance respiration (model) | +7.6 [+2.2, +13.1] | 0.006 | 12 | US-Ha1 (9), AT-Zoe (3) |
+| satellite NIRv | post-solstice | autotrophic respiration (model) | +8.6 [+3.4, +13.7] | 0.001 | 12 | US-Ha1 (9), AT-Zoe (3) |
+| satellite NIRv | post-solstice | total sink (growth + model respiration) | +8.1 [+1.1, +15.0] | 0.023 | 12 | US-Ha1 (9), AT-Zoe (3) |
+| satellite NIRv | post-solstice | GPP - total sink (model respiration) | +5.6 [-1.7, +12.9] | 0.132 | 12 | US-Ha1 (9), AT-Zoe (3) |
 | all sources stacked | pre-solstice | GPP | -2.8 [-6.1, +0.5] | 0.102 | 33 | US-Ha1 (33) |
 | all sources stacked | pre-solstice | autotrophic respiration | -2.6 [-5.4, +0.3] | 0.077 | 33 | US-Ha1 (33) |
 | all sources stacked | pre-solstice | growth | +1.8 [-3.1, +6.7] | 0.471 | 36 | US-Ha1 (33), AT-Zoe (3) |
 | all sources stacked | pre-solstice | total sink (growth + respiration) | -2.2 [-5.2, +0.8] | 0.157 | 33 | US-Ha1 (33) |
 | all sources stacked | pre-solstice | NPP (GPP - respiration) | -1.1 [-5.5, +3.2] | 0.610 | 33 | US-Ha1 (33) |
 | all sources stacked | pre-solstice | GPP - total sink | -1.3 [-5.5, +2.8] | 0.532 | 33 | US-Ha1 (33) |
+| all sources stacked | pre-solstice | growth respiration (model) | -2.6 [-6.8, +1.5] | 0.218 | 33 | US-Ha1 (33) |
+| all sources stacked | pre-solstice | maintenance respiration (model) | -1.4 [-4.3, +1.5] | 0.353 | 33 | US-Ha1 (33) |
+| all sources stacked | pre-solstice | autotrophic respiration (model) | -2.6 [-5.9, +0.7] | 0.128 | 33 | US-Ha1 (33) |
+| all sources stacked | pre-solstice | total sink (growth + model respiration) | -1.4 [-6.0, +3.3] | 0.565 | 33 | US-Ha1 (33) |
+| all sources stacked | pre-solstice | GPP - total sink (model respiration) | -3.0 [-6.0, -0.1] | 0.046 | 33 | US-Ha1 (33) |
 | all sources stacked | post-solstice | GPP | -2.1 [-7.1, +2.9] | 0.415 | 36 | US-Ha1 (33), AT-Zoe (3) |
 | all sources stacked | post-solstice | autotrophic respiration | -1.8 [-5.0, +1.3] | 0.258 | 36 | US-Ha1 (33), AT-Zoe (3) |
 | all sources stacked | post-solstice | growth | -2.6 [-7.6, +2.4] | 0.304 | 36 | US-Ha1 (33), AT-Zoe (3) |
 | all sources stacked | post-solstice | total sink (growth + respiration) | -2.1 [-5.1, +0.8] | 0.157 | 36 | US-Ha1 (33), AT-Zoe (3) |
 | all sources stacked | post-solstice | NPP (GPP - respiration) | -0.5 [-6.1, +5.1] | 0.856 | 36 | US-Ha1 (33), AT-Zoe (3) |
 | all sources stacked | post-solstice | GPP - total sink | -0.3 [-6.0, +5.3] | 0.909 | 36 | US-Ha1 (33), AT-Zoe (3) |
+| all sources stacked | post-solstice | growth respiration (model) | -1.7 [-7.0, +3.6] | 0.536 | 36 | US-Ha1 (33), AT-Zoe (3) |
+| all sources stacked | post-solstice | maintenance respiration (model) | -1.3 [-4.5, +2.0] | 0.448 | 36 | US-Ha1 (33), AT-Zoe (3) |
+| all sources stacked | post-solstice | autotrophic respiration (model) | -1.7 [-5.4, +1.9] | 0.350 | 36 | US-Ha1 (33), AT-Zoe (3) |
+| all sources stacked | post-solstice | total sink (growth + model respiration) | -2.0 [-5.7, +1.7] | 0.283 | 36 | US-Ha1 (33), AT-Zoe (3) |
+| all sources stacked | post-solstice | GPP - total sink (model respiration) | -0.8 [-6.5, +4.8] | 0.774 | 36 | US-Ha1 (33), AT-Zoe (3) |
+
+**What this shows**
+
+- **Data.** 61 site-years of stem growth at 8 sites; 5 sites have at least three years. Only 37 site-years have readings dense enough to date the start and end of growth.
+- **Seasonal course.** On average 43% of a year's stem growth is done by the summer solstice. Growth starts around day 143, is fastest around day 165 and is 90% complete by day 233 - weeks before the canopy starts to senesce (EOS90 around day 260-270). Stem growth and leaf senescence are separated in time.
+- **A. Growth and GPP.** Annual growth follows annual GPP (within-site r = +0.42, p = 0.003). Growth by the solstice does not follow GPP before the solstice (r = +0.07) but follows spring temperature (r = +0.41, p = 0.019). Early in the season the sink runs on temperature, not on the current carbon supply - the same conclusion as section 14 D, from an independent measurement.
+- **B. Growth and the onset of senescence.** All sources stacked (40 site-years, mostly US-Ha1): growth by the solstice +0.8, annual growth -2.1, pre-solstice GPP on the same years -2.4 days per SD; none can be distinguished from zero. Single sources disagree in sign. With one site supplying most of the years and band readings only 4-5 times a year there, this is not a test of the sink hypothesis yet.
+- **C. Carbon budget.** Over the growing season, AT-Zoe: GPP 983, respiration 315 (32% of GPP), measured growth 205, total sink 521, GPP minus total sink 462 gC m-2; US-Ha1: GPP 1566, respiration 353 (23% of GPP), measured growth 165, total sink 518, GPP minus total sink 1048 gC m-2. Measured growth is 33% of NPP at AT-Zoe, 14% of NPP at US-Ha1.
+- The residual (GPP minus total sink) is large because the measured growth is aboveground only and because the respiration estimate is low: forests typically respire 45-55% of GPP. The absolute level of the residual should not be interpreted; its year-to-year variation may be.
+- With respiration from the fitted model (growth + maintenance; the maintenance term follows temperature and accumulated biomass, not the day's GPP), respiration before the solstice is 69 gC m-2 at AT-Zoe (against 88), 75 gC m-2 at US-Ha1 (against 97): the year's total is the same by construction, but its seasonal distribution differs.
+- **Budget terms before the solstice against EOS90** (stacked, days per SD): GPP -2.8, autotrophic respiration -2.6, growth +1.8, total sink (growth + respiration) -2.2, total sink (growth + model respiration) -1.4, NPP (GPP - respiration) -1.1, GPP - total sink -1.3, GPP - total sink (model respiration) -3.0*. Total sink behaves like GPP because respiration is its largest part and is derived from GPP. The terms that are independent of the day's GPP - measured growth, and the model-based sink - are the ones to watch, and they show no clear effect on this small sample.
 
 ![US-Ha1: cumulative stem growth, one line per year (step 29)](../figure/dendro_growth/US-Ha1.png)
 
@@ -1274,6 +1462,17 @@ Growth as a share of NPP over the season: AT-Zoe 33%, US-Ha1 14%.
 ![Carbon budget through the season: GPP, respiration, growth, total sink and the residual (step 45)](../figure/dendro_growth/carbon_budget.png)
 
 *Carbon budget through the season: GPP, respiration, growth, total sink and the residual (step 45)*
+
+## 16. What the results add up to
+
+1. **Early-season GPP and the onset of senescence.** A year with more GPP before the summer solstice has a slightly earlier onset of senescence at the same site. The effect is about 1-2.5 days per SD without covariates and about 1 day once spring temperature is held fixed. It is found in every EOS source in sign, survives the removal of any site and every QC setting, and is statistically secured only in the satellite record (sections 3, 13).
+2. **Whole-season GPP** has little or no effect on the onset of senescence (sections 3, 4). In that sense Zani et al. and Lu et al. are both right.
+3. **But not because two effects cancel.** Late-season GPP has no consistent delaying effect once the window-length artefact is removed (sections 3.4, 4). The early effect is simply small and is diluted in the seasonal total.
+4. **The end of senescence (EOS10)** is not related to GPP in any window (sections 3.3, 6, 7, 10).
+5. **Spring temperature** is a stronger predictor of the onset of senescence than GPP and accounts for about half of the uncorrected GPP effect (section 14 D). Stem growth before the solstice also follows temperature, not GPP (section 15).
+6. **Deciduous forests:** leaf-out date, not GPP, predicts the onset of senescence. **Dry-summer sites:** spring water balance, not GPP. The GPP effect that remains is mainly in evergreen forests (section 14).
+7. **Sink variables from the flux data** (NPP, respiration) cannot separate sink from source, because they are GPP times a factor. Measured stem growth can, but exists for too few site-years to decide (sections 5, 14 C, 15).
+8. **Methodological result.** Same-year windows and mixed models both inflate the apparent effects - the first by construction, the second by a factor of about two (sections 3.4, 6). Within-site models with fixed windows are needed for this question.
 
 ---
 

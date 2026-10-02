@@ -60,12 +60,34 @@ one of them, that one is used and flux_partition records which ('NT+DT',
 
 Input : data_raw/*_<site>_FLUXNET_*.zip (daily DD file), for the sites in
         data/fluxnet_landsat_merged.csv
-Output: data/cue_luo2025_site_year.csv          site_id, year, gR, CUE, Ea, tau, *_sd, ...
+Respiration terms (an extension; my reading of the model in the MATLAB cost
+function, which the MATLAB code itself does not output):
+    Rg = gR x CUE x GPP                         growth respiration
+    Rm = mR0 x exp(-Ea/k (1/T - 1/T0)) x CUE x cumGPP x (1 - tau)
+                                                maintenance respiration of the
+         biomass built since 1 January, at the day's temperature. It does not
+         contain the day's GPP, unlike (1 - CUE) x GPP.
+         The model is fitted on differences between days, so this expression
+         fixes the seasonal COURSE of Rm, not its level (taken literally it
+         exceeds GPP). Rm is therefore scaled per site-year so that
+         Rg + Rm = (1 - CUE) x GPP over the year: the year's autotrophic
+         respiration is distributed over the days by temperature and
+         accumulated biomass instead of by the day's GPP.
+mR0 and T0 are site constants from round 1 and are saved with the yearly table.
+
+Saved per site: each site's result is written to data_raw/_cue_cache/<site>.pkl
+as soon as it is finished. A rerun reads those back and computes only the
+sites that are missing, or whose input archive or method settings changed.
+An interrupted run therefore loses only the sites it was working on.
+Set CUE_RESTART=1 to recompute everything.
+
+Output: data/cue_luo2025_site_year.csv          site_id, year, gR, CUE, Ea, tau, *_sd, mR0, T0, ...
         data/cue_luo2025_temperature_bins.csv   CUE and Ea per 1-degree bin (round 2)
         data/cue_luo2025_seasonal.csv           CUE per sliding window (round 3)
         data/npp_luo2025_daily.csv              site_id, date, CUE_annual, CUE_daily,
                                                 NPP  = CUE_annual x GPP_NT_VUT_REF
                                                 NPPd = CUE_daily  x GPP_NT_VUT_REF
+                                                Rg, Rm (see above)
 Usage : python 26_cue_npp_luo2025.py                     all pipeline sites
         python 26_cue_npp_luo2025.py path/to/FLX_..._DD_....csv [more.csv]   only these files
         CUE_INDEXING=matlab python 26_cue_npp_luo2025.py      (writes *_matlab.csv)
@@ -77,7 +99,7 @@ import re
 import sys
 import zipfile
 import zlib
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
 import numpy as np
@@ -95,6 +117,9 @@ OUT_BINS = DATA_DIR / f"cue_luo2025_temperature_bins{SUFFIX}.csv"
 OUT_SEASON = DATA_DIR / f"cue_luo2025_seasonal{SUFFIX}.csv"
 OUT_NPP = DATA_DIR / f"npp_luo2025_daily{SUFFIX}.csv"
 N_WORKERS = max(1, (os.cpu_count() or 2) - 1)
+CACHE_DIR = RAW_DIR / f"_cue_cache{SUFFIX}"      # one file per finished site
+CACHE_VERSION = 2                                 # raise when the method changes, to recompute every site
+RESTART = os.environ.get("CUE_RESTART", "0") == "1"
 
 NSIMU = 200                 # options.nsimu
 ADAPT_INT = 100             # mcmcrun default
@@ -285,7 +310,9 @@ def estimate_site_cue(df, rng, mode=INDEXING_MODE):
                     row[f'{name}_sd'] = np.nanstd(draws[:, :, p])
         rows.append(row)
     annual = pd.DataFrame(rows).reindex(columns=cols)
-    bins = pd.DataFrame({'year': out2[:, 0].astype(int), 'tair_bin': out2[:, 1] + 0.5, 'CUE': out2[:, 3],
+    # site constants of the respiration model (the same for every year of the site)
+    annual['mR0'], annual['T0'], annual['tau_site'], annual['gR_site'] = mR0, T0, tau_fixed, gR_fixed
+    bins =pd.DataFrame({'year': out2[:, 0].astype(int), 'tair_bin': out2[:, 1] + 0.5, 'CUE': out2[:, 3],
                          'Ea': out2[:, 4], 'CUE_sd': out2[:, 7], 'Ea_sd': out2[:, 8], 'converged': ~stuck})
 
     # ---- round 3: seasonal CUE in sliding time windows, pairs of similar air temperature
@@ -374,8 +401,41 @@ def read_fluxnet_dd(source):
     return d, partition
 
 
+def cache_path(site_id):
+    return CACHE_DIR / f"{site_id}.pkl"
+
+
+def cache_key(source):
+    """Changes when the input archive or any setting of the method changes."""
+    st = os.stat(source)
+    return (os.path.basename(str(source)), st.st_size, int(st.st_mtime), INDEXING_MODE, NSIMU, ADAPT_INT, N_BOOT,
+            SEASON_WINDOW_DAYS, SEASON_STEP_DAYS, SEASON_MAX_DT, SEASON_MIN_DAYS, SEASON_MIN_PAIRS, CACHE_VERSION)
+
+
+def load_cached(site_id, source):
+    p = cache_path(site_id)
+    if RESTART or not p.exists():
+        return None
+    try:
+        saved = pd.read_pickle(p)
+    except Exception:
+        return None
+    return saved['tables'] if saved.get('key') == cache_key(source) else None
+
+
 def run_site(args):
+    """One site, saved to the cache as soon as it is done - an interrupted run loses only the sites in progress."""
     site_id, source = args
+    site_id, out, err = compute_site(site_id, source)
+    if out is not None:
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        tmp = cache_path(site_id).with_suffix('.tmp')
+        pd.to_pickle({'key': cache_key(source), 'tables': out}, tmp)
+        os.replace(tmp, cache_path(site_id))
+    return site_id, out, err
+
+
+def compute_site(site_id, source):
     try:
         d, partition = read_fluxnet_dd(source)
     except zipfile.BadZipFile:
@@ -408,21 +468,35 @@ if __name__ == '__main__':
             match = [z for z in zips if re.search(rf'(^|[_-]){re.escape(s)}([_-]|$)', os.path.basename(z))]
             if match:
                 jobs.append((s, match[0]))
-    print(f"Estimating CUE for {len(jobs)} sites (indexing mode: '{INDEXING_MODE}', {N_WORKERS} workers)...")
+    # sites finished in an earlier run (same input file, same settings) are read back, not recomputed
+    by_site, todo = {}, []
+    for site_id, source in jobs:
+        saved = None if files else load_cached(site_id, source)
+        if saved is None:
+            todo.append((site_id, source))
+        else:
+            by_site[site_id] = saved
+    print(f"Estimating CUE for {len(jobs)} sites (indexing mode: '{INDEXING_MODE}', {N_WORKERS} workers): "
+          f"{len(by_site)} already done in '{CACHE_DIR.name}', {len(todo)} to compute "
+          f"(set CUE_RESTART=1 to recompute all)...", flush=True)
 
-    results, skipped = [], {}
-    with ProcessPoolExecutor(max_workers=min(N_WORKERS, len(jobs))) as pool:
-        for k, (site_id, out, err) in enumerate(pool.map(run_site, jobs), start=1):
-            if err:
-                skipped[site_id] = err
-                continue
-            results.append(out)
-            annual, _, seasonal, daily = out
-            ok = annual['CUE'].notna()
-            print(f"  [{k}/{len(jobs)}] {site_id}: {int(ok.sum())}/{len(annual)} years, "
-                  f"mean CUE {annual.loc[ok, 'CUE'].mean():.3f}; seasonal windows "
-                  f"{int(seasonal['converged'].sum()) if len(seasonal) else 0}, "
-                  f"daily CUE for {daily['year'].nunique()} years", flush=True)
+    skipped = {}
+    if todo:
+        with ProcessPoolExecutor(max_workers=min(N_WORKERS, len(todo))) as pool:
+            pending = [pool.submit(compute_site if files else run_site, *((j,) if not files else j)) for j in todo]
+            for k, fut in enumerate(as_completed(pending), start=1):
+                site_id, out, err = fut.result()
+                if err:
+                    skipped[site_id] = err
+                    continue
+                by_site[site_id] = out
+                annual, _, seasonal, daily = out
+                ok = annual['CUE'].notna()
+                print(f"  [{k}/{len(todo)}] {site_id}: {int(ok.sum())}/{len(annual)} years, "
+                      f"mean CUE {annual.loc[ok, 'CUE'].mean():.3f}; seasonal windows "
+                      f"{int(seasonal['converged'].sum()) if len(seasonal) else 0}, "
+                      f"daily CUE for {daily['year'].nunique()} years - saved", flush=True)
+    results = [by_site[s] for s, _ in jobs if s in by_site]          # fixed order, whatever finished first
     if not results:
         raise SystemExit(f"No site produced a CUE estimate. Skipped: {skipped}")
     cue, bins, seasonal, daily = (pd.concat([r[n] for r in results if len(r[n])], ignore_index=True)
@@ -448,16 +522,32 @@ if __name__ == '__main__':
         print(f"Skipped {len(skipped)} sites: {skipped}")
 
     # daily NPP on the pipeline's own GPP (QC-passing site-years), with the annual and the daily CUE
-    flux = pd.read_csv(FLUX_CSV, usecols=['site_id', 'TIMESTAMP', 'GPP_NT_VUT_REF'])
+    flux = pd.read_csv(FLUX_CSV, usecols=['site_id', 'TIMESTAMP', 'GPP_NT_VUT_REF', 'TA_F'])
     flux['date'] = pd.to_datetime(flux['TIMESTAMP'].astype(str), format='%Y%m%d', errors='coerce')
-    flux = flux.dropna(subset=['date'])
+    flux = flux.dropna(subset=['date']).sort_values(['site_id', 'date'])
     flux['year'], flux['doy'] = flux['date'].dt.year, flux['date'].dt.dayofyear
-    npp = flux.merge(cue[['site_id', 'year', 'CUE']].rename(columns={'CUE': 'CUE_annual'}),
-                     on=['site_id', 'year'], how='inner')
+    gpp = flux['GPP_NT_VUT_REF'].where(flux['GPP_NT_VUT_REF'].between(-5, 50))      # -9999 = missing
+    ta = flux['TA_F'].where(flux['TA_F'].between(-60, 50))
+    flux['cum_gpp'] = gpp.clip(lower=0).fillna(0).groupby([flux['site_id'], flux['year']]).cumsum()
+    par = cue[['site_id', 'year', 'CUE', 'gR', 'Ea', 'tau', 'mR0', 'T0']].rename(columns={'CUE': 'CUE_annual'})
+    npp = flux.assign(gpp=gpp, ta=ta).merge(par, on=['site_id', 'year'], how='inner')
     npp = npp.merge(daily, on=['site_id', 'year', 'doy'], how='left')
-    npp['NPP'] = npp['CUE_annual'] * npp['GPP_NT_VUT_REF']
-    npp['NPPd'] = npp['CUE_daily'] * npp['GPP_NT_VUT_REF']
-    npp = npp.dropna(subset=['NPP', 'NPPd'], how='all')[['site_id', 'date', 'CUE_annual', 'CUE_daily', 'NPP', 'NPPd']]
+    npp['NPP'] = npp['CUE_annual'] * npp['gpp']
+    npp['NPPd'] = npp['CUE_daily'] * npp['gpp']
+    # respiration terms of the fitted model. Rm does not use the day's GPP: it is the maintenance cost of
+    # the biomass built since 1 January (CUE x cumulative GPP, less turnover), at the day's temperature.
+    arrh = np.exp((-npp['Ea'] / BOLTZMANN_EV) * (1.0 / (npp['ta'] + 273.15) - 1.0 / (npp['T0'] + 273.15)))
+    npp['Rg'] = npp['gR'] * npp['CUE_annual'] * npp['gpp']
+    shape = arrh * npp['mR0'] * npp['CUE_annual'] * npp['cum_gpp'] * (1 - npp['tau'])
+    # The model is fitted on day-to-day DIFFERENCES, so this expression gives the seasonal course of Rm but
+    # not its level (taken literally it exceeds GPP at most sites). It is therefore scaled, per site-year,
+    # so that Rg + Rm adds up to the year's autotrophic respiration (1 - CUE) x GPP.
+    key = [npp['site_id'], npp['year']]
+    ra_year = ((1 - npp['CUE_annual']) * npp['gpp']).groupby(key).transform('sum')
+    rm_year = (ra_year - npp['Rg'].groupby(key).transform('sum')).clip(lower=0)
+    npp['Rm'] = shape / shape.groupby(key).transform('sum').where(lambda s: s > 0) * rm_year
+    npp = npp.dropna(subset=['NPP', 'NPPd'], how='all')[['site_id', 'date', 'CUE_annual', 'CUE_daily', 'NPP', 'NPPd',
+                                                         'Rg', 'Rm']]
     npp.to_csv(OUT_NPP, index=False)
     print(f"Daily NPP -> '{OUT_NPP}' ({len(npp):,} days, {npp['site_id'].nunique()} sites; "
           f"NPP on {int(npp['NPP'].notna().sum()):,} days, NPPd on {int(npp['NPPd'].notna().sum()):,})")

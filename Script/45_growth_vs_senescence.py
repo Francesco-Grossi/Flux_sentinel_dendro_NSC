@@ -227,10 +227,15 @@ CARBON_FRACTION = 0.5
 BUDGET_FROM, BUDGET_TO = 90, 305         # the season over which growth is counted in step 29
 TERMS = {'gpp': 'GPP', 'ra': 'autotrophic respiration', 'growth': 'growth', 'sink_total': 'total sink (growth + respiration)',
          'npp': 'NPP (GPP - respiration)', 'residual': 'GPP - total sink'}
+# the same with the respiration of the fitted model (growth + maintenance respiration, step 26)
+MODEL_TERMS = {'rg_model': 'growth respiration (model)', 'rm_model': 'maintenance respiration (model)',
+               'ra_model': 'autotrophic respiration (model)', 'sink_total_model': 'total sink (growth + model respiration)',
+               'residual_model': 'GPP - total sink (model respiration)'}
 
 scale = site_growth_scale()
 flux['Ra'] = flux['GPP'] - flux['NPPd'].fillna(flux['NPP']) if 'NPPd' in flux.columns else np.nan   # (1 - CUE) x GPP
-lkb = ec.FluxLookup(flux, ['GPP', 'Ra'])
+HAS_MODEL = 'Rm_model' in flux.columns and flux['Rm_model'].notna().any()
+lkb = ec.FluxLookup(flux, ['GPP', 'Ra', 'Rg_model', 'Rm_model'])
 gd = pd.read_csv(DAILY_CSV) if DAILY_CSV.exists() else pd.DataFrame()
 c_rows = []
 for (site, year), g in (gd[gd['site_id'].isin(scale)].groupby(['site_id', 'year']) if len(gd) else []):
@@ -243,11 +248,17 @@ for (site, year), g in (gd[gd['site_id'].isin(scale)].groupby(['site_id', 'year'
         gr = float(cum[b - 1] - cum[a - 2]) if a > 1 else float(cum[b - 1])
         r.update({f'gpp_{w}': gpp, f'ra_{w}': ra, f'growth_{w}': gr, f'sink_total_{w}': gr + ra, f'npp_{w}': gpp - ra,
                   f'residual_{w}': gpp - ra - gr})
+        if HAS_MODEL:
+            rg, rm = lkb.window_mean(site, year, 'Rg_model', a, b) * n, lkb.window_mean(site, year, 'Rm_model', a, b) * n
+            r.update({f'rg_model_{w}': rg, f'rm_model_{w}': rm, f'ra_model_{w}': rg + rm,
+                      f'sink_total_model_{w}': gr + rg + rm, f'residual_model_{w}': gpp - gr - rg - rm})
     c_rows.append(r)
 C = pd.DataFrame(c_rows)
 if len(C):
     C = C.dropna(subset=['gpp_season', 'ra_season'])
     C['growth_share_of_npp'] = C['growth_season'] / C['npp_season']
+    if HAS_MODEL:
+        TERMS = {**TERMS, **MODEL_TERMS}
 C.to_csv(OUT_C, index=False)
 ct_rows = []
 if len(C):
@@ -326,11 +337,15 @@ if len(C):
               "- **NPP = GPP - respiration**",
               "- **GPP - total sink = NPP - growth**: carbon fixed but used neither for respiration nor for the measured "
               "growth. It goes to what the dendrometers do not see (roots; at US-Ha1 also leaves) and to reserves.", "",
-              "| site | years | window | GPP | respiration | growth | total sink | NPP | GPP - total sink |", "|---|---|---|---|---|---|---|---|---|"]
+              "| site | years | window | " + " | ".join(TERMS.values()) + " |", "|---|---|---|" + "---|" * len(TERMS)]
     for site, g in C.groupby('site_id'):
         for w, wl in (('season', 'whole season'), ('pre', 'before the solstice'), ('post', 'after the solstice')):
             v = g[[f'{t}_{w}' for t in TERMS]].mean()
             lines.append(f"| {site} | {len(g)} | {wl} | " + " | ".join(f"{x:.0f}" for x in v) + " |")
+    if HAS_MODEL:
+        lines += ["", "Model respiration (step 26): growth respiration = gR x CUE x GPP; maintenance respiration = "
+                  "temperature response x biomass built since 1 January. The maintenance term does not contain the "
+                  "day's GPP, so a total sink built with it is not GPP times a factor."]
     lines += ["", "Growth as a share of NPP over the season: "
               + ", ".join(f"{s} {100 * v:.0f}%" for s, v in C.groupby('site_id')['growth_share_of_npp'].mean().items()) + ".", ""]
 if len(CT):

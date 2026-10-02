@@ -38,6 +38,9 @@ C. Sink instead of source. If senescence responds to how much the plant
        Rg     growth respiration      = gR x CUE x GPP   (gR: the year's
               growth-respiration coefficient from step 26)
        Rm     maintenance respiration = Ra - Rg
+       Rm_model  maintenance respiration from the fitted model of step 26:
+              temperature response x biomass built since 1 January. Unlike
+              the three above it does not contain the day's GPP.
        SI     sink-limitation index = fT x fW, independent of the fluxes:
               fT = 0 below SINK_T_MIN, rising linearly to 1 at SINK_T_OPT
                    (cambial growth stops near 5 C);
@@ -125,6 +128,8 @@ if 'CUEd' in flux.columns:
         flux['Rg'] = (flux['gR'] * cue * flux['GPP']).clip(upper=flux['Ra'])
         flux['Rm'] = flux['Ra'] - flux['Rg']
         sink_vars += ['Rg', 'Rm']
+if 'Rm_model' in flux.columns and flux['Rm_model'].notna().any():
+    sink_vars += ['Rm_model']
 
 
 def bucket(g):

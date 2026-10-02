@@ -154,6 +154,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | all | PhenoCam | Ra | 231 (30) | +0.2 | -0.9 | 0.004 | 0.004 | +0.52 | +0.4 | -1.0 |
 | all | PhenoCam | Rg | 231 (30) | -1.9 | +1.1 | 0.026 | 0.004 | +0.66 | -2.3 | +0.7 |
 | all | PhenoCam | Rm | 231 (30) | +0.6 | -1.1 | 0.007 | 0.004 | +0.36 | +0.6 | -1.0 |
+| all | PhenoCam | Rm_model | 233 (30) | +0.2 | -0.4 | 0.000 | 0.003 | +0.46 | +0.2 | -0.8 |
 | all | PhenoCam | SI | 256 (33) | +0.6 | -0.1 | 0.002 | 0.003 | -0.06 | +0.6 | -0.7 |
 | all | PhenoCam | fT | 256 (33) | -1.7* | +0.4 | 0.016 | 0.003 | +0.18 | -1.7* | -0.4 |
 | all | PhenoCam | fW | 256 (33) | +1.6 | -0.5 | 0.012 | 0.003 | -0.19 | +1.4 | -0.5 |
@@ -162,6 +163,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | all | tower NDVI | Ra | 356 (41) | -1.3 | +0.1 | 0.007 | 0.028 | +0.37 | -0.5 | -2.3 |
 | all | tower NDVI | Rg | 356 (41) | -2.0 | +0.1 | 0.016 | 0.028 | +0.65 | -0.6 | -2.1 |
 | all | tower NDVI | Rm | 356 (41) | -0.8 | +0.0 | 0.003 | 0.028 | +0.21 | -0.3 | -2.4* |
+| all | tower NDVI | Rm_model | 356 (41) | -3.1 | +1.8 | 0.018 | 0.028 | +0.50 | -0.7 | -2.1 |
 | all | tower NDVI | SI | 385 (43) | -0.8 | +0.5 | 0.003 | 0.028 | +0.31 | -0.1 | -2.5* |
 | all | tower NDVI | fT | 385 (43) | -2.9** | +0.1 | 0.036 | 0.028 | +0.41 | -2.8** | -1.3 |
 | all | tower NDVI | fW | 385 (43) | +1.6 | -0.7 | 0.009 | 0.028 | -0.07 | +1.4 | -2.4* |
@@ -170,6 +172,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | all | satellite NDVI | Ra | 441 (66) | -0.5 | +0.5 | 0.002 | 0.012 | +0.39 | +0.2 | -1.4* |
 | all | satellite NDVI | Rg | 441 (66) | -0.7 | -1.1 | 0.014 | 0.012 | +0.76 | +0.1 | -1.4 |
 | all | satellite NDVI | Rm | 441 (66) | -0.2 | +0.6 | 0.002 | 0.012 | +0.17 | +0.1 | -1.3* |
+| all | satellite NDVI | Rm_model | 446 (67) | -1.6 | +1.5 | 0.006 | 0.010 | +0.48 | +0.3 | -1.3 |
 | all | satellite NDVI | SI | 497 (73) | -1.1* | -0.1 | 0.010 | 0.010 | +0.18 | -1.0* | -1.0* |
 | all | satellite NDVI | fT | 497 (73) | -1.3* | +0.4 | 0.014 | 0.010 | +0.24 | -1.0 | -0.9 |
 | all | satellite NDVI | fW | 497 (73) | -0.1 | -0.3 | 0.001 | 0.010 | -0.02 | -0.3 | -1.2* |
@@ -178,6 +181,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | all | satellite NIRv | Ra | 672 (88) | -0.7 | +0.2 | 0.003 | 0.023 | +0.41 | -0.1 | -1.5*** |
 | all | satellite NIRv | Rg | 672 (88) | -1.1* | +0.5 | 0.008 | 0.023 | +0.68 | +0.2 | -1.6* |
 | all | satellite NIRv | Rm | 672 (88) | -0.4 | +0.1 | 0.001 | 0.023 | +0.24 | -0.1 | -1.5*** |
+| all | satellite NIRv | Rm_model | 675 (88) | -0.7 | +0.5 | 0.001 | 0.022 | +0.42 | +0.4 | -1.7*** |
 | all | satellite NIRv | SI | 751 (94) | -1.5** | +0.4 | 0.015 | 0.022 | +0.23 | -1.3* | -1.2** |
 | all | satellite NIRv | fT | 751 (94) | -2.0*** | -0.5 | 0.030 | 0.022 | +0.17 | -1.8** | -1.2** |
 | all | satellite NIRv | fW | 751 (94) | -0.1 | +0.3 | 0.000 | 0.022 | +0.08 | -0.1 | -1.5*** |
@@ -186,6 +190,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | deciduous | PhenoCam | Ra | 104 (9) | +1.3 | -2.5* | 0.034 | 0.014 | +0.46 | +0.8 | -0.6 |
 | deciduous | PhenoCam | Rg | 104 (9) | -2.3 | +1.6 | 0.041 | 0.014 | +0.59 | -3.2 | +1.7 |
 | deciduous | PhenoCam | Rm | 104 (9) | +1.6 | -2.6** | 0.041 | 0.014 | +0.31 | +1.2 | -0.6 |
+| deciduous | PhenoCam | Rm_model | 104 (9) | +3.6 | -5.2 | 0.034 | 0.014 | +0.54 | -1.5 | +0.6 |
 | deciduous | PhenoCam | SI | 116 (10) | -1.8 | +1.3 | 0.020 | 0.014 | -0.00 | -1.5 | -0.2 |
 | deciduous | PhenoCam | fT | 116 (10) | -0.3 | +1.3 | 0.008 | 0.014 | +0.36 | +0.1 | -0.2 |
 | deciduous | PhenoCam | fW | 116 (10) | -1.5 | +1.0 | 0.011 | 0.014 | -0.30 | -1.4 | -0.6 |
@@ -194,6 +199,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | deciduous | tower NDVI | Ra | 174 (17) | -0.1 | -0.0 | 0.000 | 0.059 | +0.33 | -0.0 | -0.4 |
 | deciduous | tower NDVI | Rg | 174 (17) | -1.8 | +2.2* | 0.040 | 0.059 | +0.63 | -1.6 | +0.6 |
 | deciduous | tower NDVI | Rm | 174 (17) | +0.3 | -0.4 | 0.001 | 0.059 | +0.17 | +0.2 | -0.4 |
+| deciduous | tower NDVI | Rm_model | 174 (17) | +0.4 | -0.3 | 0.000 | 0.059 | +0.56 | +0.5 | -0.7 |
 | deciduous | tower NDVI | SI | 189 (18) | +0.5 | +2.5 | 0.048 | 0.059 | +0.20 | +1.4 | -0.7 |
 | deciduous | tower NDVI | fT | 189 (18) | -1.2 | +1.2 | 0.017 | 0.059 | +0.40 | -1.8 | +0.3 |
 | deciduous | tower NDVI | fW | 189 (18) | +1.5 | +1.3 | 0.038 | 0.059 | -0.17 | +2.6** | +0.0 |
@@ -202,6 +208,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | deciduous | satellite NDVI | Ra | 169 (23) | -0.4 | -0.6 | 0.006 | 0.013 | +0.43 | -0.3 | -0.5 |
 | deciduous | satellite NDVI | Rg | 169 (23) | -0.2 | -0.1 | 0.001 | 0.013 | +0.72 | +0.3 | -0.8 |
 | deciduous | satellite NDVI | Rm | 169 (23) | -0.3 | -0.5 | 0.005 | 0.013 | +0.23 | -0.3 | -0.5 |
+| deciduous | satellite NDVI | Rm_model | 170 (23) | -1.7 | +0.6 | 0.015 | 0.013 | +0.61 | -1.2 | +0.1 |
 | deciduous | satellite NDVI | SI | 194 (26) | -2.0*** | +0.9 | 0.050 | 0.013 | +0.16 | -1.6** | -0.3 |
 | deciduous | satellite NDVI | fT | 194 (26) | -1.0 | +0.3 | 0.013 | 0.013 | +0.38 | -0.4 | -0.4 |
 | deciduous | satellite NDVI | fW | 194 (26) | -1.4 | +1.1* | 0.022 | 0.013 | -0.18 | -1.2 | -0.8 |
@@ -210,6 +217,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | deciduous | satellite NIRv | Ra | 194 (25) | -0.6 | -0.4 | 0.007 | 0.044 | +0.47 | -0.3 | -0.9 |
 | deciduous | satellite NIRv | Rg | 194 (25) | -1.6** | +1.5 | 0.030 | 0.044 | +0.72 | -0.9 | -0.4 |
 | deciduous | satellite NIRv | Rm | 194 (25) | -0.3 | -0.7 | 0.006 | 0.044 | +0.30 | -0.2 | -1.0 |
+| deciduous | satellite NIRv | Rm_model | 195 (25) | -2.0 | +0.9 | 0.015 | 0.044 | +0.57 | -0.9 | -0.5 |
 | deciduous | satellite NIRv | SI | 224 (28) | -0.9 | +1.2 | 0.015 | 0.044 | +0.23 | -0.3 | -1.0 |
 | deciduous | satellite NIRv | fT | 224 (28) | -2.7*** | -0.3 | 0.064 | 0.044 | +0.39 | -2.7** | -0.0 |
 | deciduous | satellite NIRv | fW | 224 (28) | +1.6 | +0.4 | 0.028 | 0.044 | -0.10 | +1.5 | -0.9 |
@@ -218,6 +226,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | evergreen | tower NDVI | Ra | 86 (12) | -3.5 | +1.5 | 0.035 | 0.070 | +0.44 | -1.7 | -4.2* |
 | evergreen | tower NDVI | Rg | 86 (12) | -0.1 | -2.3 | 0.016 | 0.070 | +0.47 | +2.7 | -6.3*** |
 | evergreen | tower NDVI | Rm | 86 (12) | -3.2 | +1.9 | 0.031 | 0.070 | +0.32 | -1.8 | -4.4* |
+| evergreen | tower NDVI | Rm_model | 86 (12) | -8.5* | +3.6 | 0.140 | 0.070 | +0.44 | -5.2* | -3.0 |
 | evergreen | tower NDVI | SI | 89 (12) | -3.9 | +0.8 | 0.043 | 0.070 | +0.47 | -2.3 | -3.8*** |
 | evergreen | tower NDVI | fT | 89 (12) | -5.6*** | +1.0 | 0.095 | 0.070 | +0.52 | -4.5 | -2.4 |
 | evergreen | tower NDVI | fW | 89 (12) | +2.1 | -1.1 | 0.013 | 0.070 | -0.00 | +1.7 | -4.7** |
@@ -226,6 +235,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | evergreen | satellite NDVI | Ra | 82 (15) | -2.6 | +3.8* | 0.060 | 0.016 | +0.37 | -0.7 | -1.5 |
 | evergreen | satellite NDVI | Rg | 82 (15) | +0.5 | -4.9** | 0.095 | 0.016 | +0.81 | -0.3 | -1.6 |
 | evergreen | satellite NDVI | Rm | 82 (15) | -2.1 | +4.2* | 0.071 | 0.016 | +0.14 | -0.5 | -1.7 |
+| evergreen | satellite NDVI | Rm_model | 82 (15) | -4.2 | +4.6 | 0.042 | 0.016 | +0.41 | -0.1 | -1.7 |
 | evergreen | satellite NDVI | SI | 89 (17) | -1.3 | +1.2 | 0.009 | 0.016 | +0.32 | -0.7 | -1.5 |
 | evergreen | satellite NDVI | fT | 89 (17) | -1.0 | +1.1 | 0.011 | 0.016 | +0.16 | -0.9 | -1.6 |
 | evergreen | satellite NDVI | fW | 89 (17) | -0.4 | +0.3 | 0.001 | 0.016 | +0.23 | -0.1 | -1.7 |
@@ -234,6 +244,7 @@ Plant-available soil water = measured soil water content relative to the site's 
 | evergreen | satellite NIRv | Ra | 211 (27) | -1.4 | +0.8 | 0.015 | 0.034 | +0.31 | -0.5 | -1.9** |
 | evergreen | satellite NIRv | Rg | 211 (27) | -0.5 | -0.3 | 0.004 | 0.034 | +0.64 | +1.2 | -2.8** |
 | evergreen | satellite NIRv | Rm | 211 (27) | -1.1 | +0.7 | 0.010 | 0.034 | +0.15 | -0.6 | -1.9*** |
+| evergreen | satellite NIRv | Rm_model | 211 (27) | -1.6 | +1.6 | 0.009 | 0.034 | +0.35 | +0.5 | -2.2*** |
 | evergreen | satellite NIRv | SI | 217 (27) | -0.9 | +0.6 | 0.007 | 0.034 | +0.28 | -0.2 | -2.0** |
 | evergreen | satellite NIRv | fT | 217 (27) | -1.1 | -0.9 | 0.019 | 0.034 | +0.11 | -1.1 | -1.9** |
 | evergreen | satellite NIRv | fW | 217 (27) | -0.2 | +0.7 | 0.003 | 0.034 | +0.19 | +0.5 | -2.1** |
