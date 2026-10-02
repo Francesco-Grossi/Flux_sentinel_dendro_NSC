@@ -1,8 +1,8 @@
 # Phenology - carbon pipeline: results
 
-Generated on 2026-10-01 by `Script/42_results_report.py` from the outputs of the last pipeline run.
+Generated on 2026-10-02 by `Script/45_results_report.py` from the outputs of the last pipeline run. A written interpretation of these results, with the analyses still to do, is in [findings_and_next_steps.md](findings_and_next_steps.md).
 
-Effects are days of shift in the end of season (EOS) per +1 SD of the predictor unless stated otherwise; negative = earlier senescence. EOS90 / EOS50 / EOS10 = day of year when greenness has fallen to 90 / 50 / 10 % of its seasonal amplitude (onset, middle, end of senescence).
+Effects are days of shift in the end of season (EOS) per +1 within-site SD of the predictor (within-site models: each year minus its site's mean, standard errors clustered by site) unless stated otherwise; negative = earlier senescence. EOS90 / EOS50 / EOS10 = day of year when greenness has fallen to 90 / 50 / 10 % of its seasonal amplitude (onset, middle, end of senescence).
 
 ## 1. Data
 
@@ -64,10 +64,14 @@ Headline model: strictly within sites (each year minus its site's mean; standard
 
 | target | window version | tests | H1 | H2 | H3 | all_three |
 |---|---|---|---|---|---|---|
+| EOS10 | calendar windows around the solstice (independent of leaf-out) | 21 | 0 | 3 | 8 | 0 |
 | EOS10 | ends at site mean EOS (unbiased) | 20 | 0 | 3 | 1 | 0 |
 | EOS10 | ends at site mean EOS90, before senescence | 20 | 0 | 1 | 8 | 0 |
+| EOS10 | mean daily GPP instead of the sum | 20 | 10 | 11 | 5 | 1 |
 | EOS10 | ends at same-year EOS (window-length effect built in) | 20 | 0 | 13 | 1 | 0 |
+| EOS90 | calendar windows around the solstice (independent of leaf-out) | 21 | 9 | 4 | 6 | 3 |
 | EOS90 | ends at site mean EOS (unbiased) | 20 | 16 | 7 | 6 | 6 |
+| EOS90 | mean daily GPP instead of the sum | 20 | 7 | 4 | 5 | 2 |
 | EOS90 | ends at same-year EOS (window-length effect built in) | 20 | 15 | 20 | 0 | 0 |
 
 ### 3.1 Onset of senescence (EOS90), windows ending at the site mean EOS90
@@ -121,7 +125,62 @@ Days per +1 within-site SD of cumulative GPP. Stars: one-sided test in the direc
 
 *Tower NDVI: EOS90 anomaly against GPP anomaly, within sites (rows: window versions)*
 
-### 3.2 End of senescence (EOS10), windows ending at the site mean EOS10
+### 3.2 EOS90 with predictors that do not depend on leaf-out
+
+The windows above start at the year's leaf-out, so an early spring lengthens the pre-solstice window. **Calendar windows** (60 days before / 45 days from the solstice) and the **GPP rate** (mean daily GPP over the same windows) remove that.
+
+**Calendar windows**
+
+| sites | EOS source | n (sites) | pre-solstice GPP | post-solstice GPP | whole season [95% CI] | all three hold | controlled: pre / post / whole |
+|---|---|---|---|---|---|---|---|
+| all | PhenoCam (GCC) | 186 (25) | -1.3 | -0.0 | -1.0 [-3.5, +1.6] | no | -1.8 / +0.3 / -1.2 |
+| all | Tower NDVI | 356 (41) | -2.8** | +0.8 | -1.6 [-4.3, +1.2] | no | -2.8* / +1.0 / -1.4 |
+| all | Satellite NDVI | 446 (67) | -1.2* | -0.0 | -1.0 [-2.0, -0.1] | no | -1.1* / +0.1 / -0.9 |
+| all | Satellite NIRv | 675 (88) | -1.9*** | +1.1* | -0.7 [-1.6, +0.2] | yes | -1.9*** / +0.9 / -0.9 |
+| summer-green | PhenoCam (GCC) | 156 (20) | -1.9 | -0.4 | -1.6 [-4.4, +1.2] | no | -2.6 / +0.3 / -1.8 |
+| summer-green | Tower NDVI | 341 (38) | -3.1** | +0.8 | -1.9 [-4.7, +1.0] | no | -3.2** / +1.0 / -1.7 |
+| summer-green | Satellite NDVI | 426 (63) | -1.1* | -0.1 | -1.0 [-2.0, -0.0] | no | -0.8 / -0.2 / -0.8 |
+| summer-green | Satellite NIRv | 605 (79) | -2.1*** | +1.3* | -0.7 [-1.7, +0.3] | yes | -2.2*** / +1.1* / -0.9 |
+| dry-summer | PhenoCam (GCC) | 30 (5) | +2.0 | +1.9 | +3.3 [-1.0, +7.5] | no | - |
+| dry-summer | Satellite NIRv | 70 (9) | -0.4 | -0.1 | -0.4 [-3.9, +3.1] | no | -1.3 / +0.1 / -0.9 |
+| deciduous | PhenoCam (GCC) | 81 (9) | -0.0 | -2.3 | -2.0 [-6.0, +2.1] | no | +1.4 / -3.8 / -2.0 |
+| deciduous | Tower NDVI | 174 (17) | -1.2 | +3.1** | +1.6 [-0.4, +3.5] | no | -0.7 / +2.2 / +1.4 |
+| deciduous | Satellite NDVI | 170 (23) | -1.1 | +1.0 | -0.0 [-1.5, +1.4] | no | +0.2 / +0.1 / +0.3 |
+| deciduous | Satellite NIRv | 195 (25) | -2.1** | +2.3* | +0.2 [-1.9, +2.2] | yes | -1.6 / +1.6 / +0.2 |
+| evergreen | Tower NDVI | 86 (12) | -5.1* | +0.7 | -3.7 [-6.8, -0.5] | no | -3.9 / +0.1 / -3.2 |
+| evergreen | Satellite NDVI | 82 (15) | -1.3 | -0.9 | -1.9 [-3.8, -0.0] | no | -0.0 / -2.2 / -2.0 |
+| evergreen | Satellite NIRv | 211 (27) | -2.2*** | +0.3 | -1.5 [-2.9, -0.1] | no | -1.9** / +0.1 / -1.6 |
+| grass/shrub | PhenoCam (GCC) | 97 (14) | -2.3 | +1.6 | -0.4 [-3.8, +3.0] | no | -4.4* / +2.4*** / -1.6 |
+| grass/shrub | Tower NDVI | 96 (12) | -2.7 | -4.9 | -6.6 [-10.4, -2.8] | no | -5.3* / -3.2 / -7.7 |
+| grass/shrub | Satellite NDVI | 194 (29) | -1.6 | -1.2 | -2.1 [-3.9, -0.3] | no | -2.7** / -0.2 / -2.1 |
+| grass/shrub | Satellite NIRv | 269 (36) | -1.6 | +0.6 | -0.8 [-2.4, +0.8] | no | -2.4** / +0.6 / -1.4 |
+
+**GPP rate**
+
+| sites | EOS source | n (sites) | pre-solstice GPP | post-solstice GPP | whole season [95% CI] | all three hold | controlled: pre / post / whole |
+|---|---|---|---|---|---|---|---|
+| all | PhenoCam (GCC) | 131 (17) | -1.9 | -0.1 | -2.0 [-4.9, +0.9] | no | -1.8 / -0.5 / -1.9 |
+| all | Tower NDVI | 303 (35) | -2.2* | +1.0 | -1.5 [-3.8, +0.8] | no | -2.8* / +1.0 / -1.4 |
+| all | Satellite NDVI | 362 (56) | -0.0 | +0.2 | -0.2 [-1.4, +1.0] | no | -0.5 / +0.2 / -0.3 |
+| all | Satellite NIRv | 606 (81) | -1.7*** | +1.1* | -0.7 [-1.6, +0.1] | yes | -1.4** / +0.7 / -0.6 |
+| summer-green | PhenoCam (GCC) | 124 (15) | -1.9 | -0.2 | -2.3 [-5.6, +1.0] | no | -1.8 / -0.7 / -2.3 |
+| summer-green | Tower NDVI | 300 (34) | -2.2* | +0.9 | -1.6 [-4.0, +0.8] | no | -2.8* / +0.9 / -1.6 |
+| summer-green | Satellite NDVI | 351 (54) | +0.2 | +0.0 | -0.2 [-1.4, +1.1] | no | -0.2 / -0.1 / -0.3 |
+| summer-green | Satellite NIRv | 564 (76) | -1.7*** | +1.1* | -0.8 [-1.7, +0.2] | yes | -1.3* / +0.7 / -0.6 |
+| dry-summer | Satellite NIRv | 42 (5) | -2.2 | +0.7 | -0.5 [-3.1, +2.0] | no | -1.8 / +0.1 / -0.8 |
+| deciduous | PhenoCam (GCC) | 74 (8) | +0.2 | -3.3 | -2.1 [-5.8, +1.6] | no | -0.2 / -3.9 / -3.2 |
+| deciduous | Tower NDVI | 170 (17) | +0.0 | +2.3* | +1.8 [-0.0, +3.7] | no | +0.4 / +2.0 / +1.3 |
+| deciduous | Satellite NDVI | 170 (23) | +0.7 | +0.7 | +1.3 [-0.5, +3.1] | no | -0.3 / +0.8 / +0.6 |
+| deciduous | Satellite NIRv | 196 (25) | -1.4* | +1.7 | +0.3 [-1.7, +2.3] | no | -0.5 / +0.7 / +0.2 |
+| evergreen | Tower NDVI | 79 (12) | -5.0* | +0.9 | -3.5 [-7.4, +0.4] | no | -8.2*** / +1.1 / -4.9 |
+| evergreen | Satellite NDVI | 76 (14) | -2.0 | +0.5 | -1.1 [-3.4, +1.2] | no | -1.6 / -0.3 / -1.6 |
+| evergreen | Satellite NIRv | 208 (26) | -2.4** | +0.8 | -1.3 [-2.5, -0.1] | no | -2.2** / +0.5 / -1.4 |
+| grass/shrub | PhenoCam (GCC) | 49 (7) | -4.6 | +3.1* | -2.5 [-8.0, +3.0] | no | -4.9 / +2.4 / -2.0 |
+| grass/shrub | Tower NDVI | 54 (6) | -2.3 | -3.4 | -5.1 [-9.1, -1.2] | no | -7.0 / -2.4 / -7.1 |
+| grass/shrub | Satellite NDVI | 116 (19) | -0.1 | -0.9 | -1.4 [-3.4, +0.5] | no | -0.4 / -0.7 / -1.0 |
+| grass/shrub | Satellite NIRv | 202 (30) | -1.3 | +0.7 | -1.3 [-2.7, +0.1] | no | -1.3 / +0.6 / -0.9 |
+
+### 3.3 End of senescence (EOS10), windows ending at the site mean EOS10
 
 | sites | EOS source | n (sites) | pre-solstice GPP | post-solstice GPP | whole season [95% CI] | all three hold | controlled: pre / post / whole |
 |---|---|---|---|---|---|---|---|
@@ -146,11 +205,28 @@ Days per +1 within-site SD of cumulative GPP. Stars: one-sided test in the direc
 | grass/shrub | Satellite NDVI | 136 (22) | +1.0 | +2.7* | +3.7 [+1.4, +6.0] | no | +0.6 / +2.5* / +2.8 |
 | grass/shrub | Satellite NIRv | 225 (34) | +3.1 | +0.9 | +3.2 [+1.1, +5.3] | no | +0.8 / +1.1 / +1.7 |
 
+**EOS10, calendar windows**
+
+| sites | EOS source | n (sites) | pre-solstice GPP | post-solstice GPP | whole season [95% CI] | all three hold | controlled: pre / post / whole |
+|---|---|---|---|---|---|---|---|
+| all | PhenoCam (GCC) | 186 (25) | +1.0 | -0.2 | +0.6 [-1.7, +2.9] | no | +0.6 / +0.8 / +1.1 |
+| all | Tower NDVI | 356 (41) | -0.7 | +1.1 | +0.3 [-1.5, +2.1] | no | -1.5 / +1.6** / +0.2 |
+| all | Satellite NDVI | 446 (67) | +0.3 | +0.4 | +0.6 [-0.7, +1.9] | no | -0.2 / +0.5 / +0.3 |
+| all | Satellite NIRv | 675 (88) | +0.9 | +0.3 | +0.9 [-0.2, +2.1] | no | +0.5 / +0.2 / +0.6 |
+| summer-green | PhenoCam (GCC) | 156 (20) | +0.6 | -0.3 | +0.2 [-2.5, +2.9] | no | -0.6 / +1.7 / +0.8 |
+| summer-green | Tower NDVI | 341 (38) | -0.9 | +1.1 | +0.2 [-1.7, +2.0] | no | -1.9* / +1.7** / -0.1 |
+| summer-green | Satellite NDVI | 426 (63) | +0.6 | -0.2 | +0.3 [-0.9, +1.6] | no | -0.0 / -0.0 / -0.1 |
+| summer-green | Satellite NIRv | 605 (79) | +0.6 | +0.2 | +0.7 [-0.4, +1.8] | no | +0.0 / +0.3 / +0.3 |
+| deciduous | PhenoCam (GCC) | 81 (9) | -0.9 | +3.0* | +1.9 [-1.0, +4.8] | no | -5.4 / +7.6 / +1.9 |
+| deciduous | Tower NDVI | 174 (17) | -1.4 | +2.5** | +0.9 [-1.5, +3.3] | no | -2.3** / +2.4** / +0.4 |
+| deciduous | Satellite NDVI | 170 (23) | +0.5 | -0.3 | +0.2 [-1.3, +1.8] | no | -0.5 / -0.2 / -0.5 |
+| deciduous | Satellite NIRv | 195 (25) | +0.2 | -0.4 | -0.2 [-1.4, +1.0] | no | -0.6 / +0.3 / -0.3 |
+
 ![EOS10, all sites](../figure/split_gpp_cancellation/coefficients_EOS10_all.png)
 
 *EOS10, all sites*
 
-### 3.3 Same-year windows and the window-length effect
+### 3.4 Same-year windows and the window-length effect
 
 When the post-solstice window ends at the same year's EOS, a later EOS makes the window longer and its cumulative GPP larger by construction. The last column is the post-solstice slope produced by window length alone (the site's average GPP curve, no year-specific GPP).
 
@@ -163,16 +239,16 @@ When the post-solstice window ends at the same year's EOS, a later EOS makes the
 
 ## 4. One-to-one plots: pooled vs within-site (step 40)
 
-The same pairs drawn twice. Pooled plots mix differences between sites with year-to-year changes; the within-site plots keep only the latter and correspond to the tests of section 3. All pairs: `figure/predictor_correlations/` and `figure/predictor_correlations_within_site/`.
+The same pairs drawn twice. Pooled plots mix differences between sites with year-to-year changes; the within-site plots keep only the latter and correspond to the tests of section 3. Growing-season totals and means run from the year's leaf-out to the site's mean EOS10 (not the same-year EOS10). All pairs: `figure/predictor_correlations/` and `figure/predictor_correlations_within_site/`.
 
 **Pooled correlation with EOS90**
 
-| predictor | NDVI | NIRv |
-|---|---|---|
-| gpp_sos10_to_solstice | 0.22 | -0.30 |
-| gpp_solstice_to_eos90 | 0.63 | 0.32 |
-| gpp_solstice_to_eos90_fixed | 0.59 | 0.19 |
-| total_gpp_growing_season | 0.44 | -0.04 |
+| predictor | GCC | NDVI | NDVI_tower | NIRv |
+|---|---|---|---|---|
+| gpp_sos10_to_solstice | -0.10 | 0.22 | -0.05 | -0.30 |
+| gpp_solstice_to_eos90 | 0.58 | 0.63 | 0.60 | 0.32 |
+| gpp_solstice_to_eos90_fixed | 0.53 | 0.59 | 0.43 | 0.19 |
+| total_gpp_growing_season | 0.30 | 0.44 | 0.24 | -0.04 |
 
 ![Pooled: EOS90 vs GPP from SOS10 to the solstice](../figure/predictor_correlations/EOS90_vs_gpp_sos10_to_solstice.png)
 
@@ -233,47 +309,49 @@ CUE after Luo et al. (annual), extended to 30-day sliding windows (seasonal / da
 
 ## 6. Which carbon window relates to which EOS? (step 33)
 
-Single-predictor mixed models, windows ending at the site mean EOS (fixed anchors). Table: `data/eos_window_scan.csv`.
+Single-predictor within-site models, windows ending at the site mean EOS (fixed anchors). Table: `data/eos_window_scan.csv`.
 
 **EOS10, window leaf-out to solstice** (days per +1 SD; * p<0.05, ** p<0.01, *** p<0.001, uncorrected)
 
 | predictor | PhenoCam (GCC) | Tower NDVI | Satellite NDVI | Satellite NIRv |
 |---|---|---|---|---|
-| GPP cum | +1.5 | -0.1 | +2.3 | +4.0** |
-| NPP cum | +0.1 | -1.6 | +1.8* | +2.6** |
-| NPPd cum | +1.3 | -1.3 | +2.2* | +2.7** |
-| GPP mean | -0.0 | -4.1 | -2.0 | +1.3 |
-| CUEd mean | -4.1* | -0.0 | -0.8 | +0.4 |
+| GPP cum | +1.0 | -0.6 | +1.0 | +1.6* |
+| NPP cum | +0.8 | -0.4 | +0.1 | +0.9 |
+| NPPd cum | -2.0 | +0.0 | +0.3 | +0.8 |
+| GPP mean | -0.6 | -2.9** | -1.1* | +0.2 |
+| CUEd mean | -2.9 | -0.2 | -0.7 | +0.2 |
 
 **EOS10, window solstice to mean EOS10** (days per +1 SD; * p<0.05, ** p<0.01, *** p<0.001, uncorrected)
 
 | predictor | PhenoCam (GCC) | Tower NDVI | Satellite NDVI | Satellite NIRv |
 |---|---|---|---|---|
-| GPP cum | +3.3 | +9.6*** | +6.6*** | +6.2*** |
-| NPP cum | -1.7 | +0.2 | -0.4 | +0.5 |
-| NPPd cum | +4.6 | +0.8 | +0.6 | +0.8 |
-| GPP mean | +1.1 | +7.4** | +5.0** | +4.7*** |
-| CUEd mean | -0.1 | -1.0 | -0.6 | -0.8 |
+| GPP cum | +0.6 | +1.4 | +1.3 | +1.3* |
+| NPP cum | +1.0 | +0.5 | +0.1 | +0.5 |
+| NPPd cum | +0.3 | -0.3 | +0.2 | +0.2 |
+| GPP mean | +0.5 | +1.5 | +1.9* | +1.7** |
+| CUEd mean | +0.1 | -0.9 | -0.6 | -0.6 |
 
 **EOS50, window leaf-out to solstice** (days per +1 SD; * p<0.05, ** p<0.01, *** p<0.001, uncorrected)
 
 | predictor | PhenoCam (GCC) | Tower NDVI | Satellite NDVI | Satellite NIRv |
 |---|---|---|---|---|
-| GPP cum | -2.5 | -2.2 | -1.3 | -0.9 |
-| NPP cum | -0.6 | -0.7 | +0.8 | +2.4*** |
-| NPPd cum | +1.0 | -0.1 | +0.8 | +1.7** |
-| GPP mean | -0.8 | -3.3 | -0.5 | -0.8 |
-| CUEd mean | -1.8 | +0.6 | -0.6 | +0.2 |
+| GPP cum | -0.9 | -1.4 | -0.5 | -0.1 |
+| NPP cum | -0.9 | -1.1 | -1.0* | -0.4 |
+| NPPd cum | -2.3* | -0.6 | -0.6* | -0.3 |
+| GPP mean | -1.0 | -2.2* | -0.4 | -0.3 |
+| CUEd mean | -1.5 | -0.0 | -0.5 | +0.1 |
 
 **EOS50, window solstice to mean EOS10** (days per +1 SD; * p<0.05, ** p<0.01, *** p<0.001, uncorrected)
 
 | predictor | PhenoCam (GCC) | Tower NDVI | Satellite NDVI | Satellite NIRv |
 |---|---|---|---|---|
-| GPP cum | +3.3 | +5.1* | +5.1*** | +4.5*** |
-| NPP cum | -3.2 | +1.1 | -0.8 | +1.3* |
-| NPPd cum | +2.3 | +2.2 | -0.2 | +0.5 |
-| GPP mean | +2.3 | +4.3* | +3.7** | +3.7*** |
-| CUEd mean | +0.6 | -0.4 | -0.3 | +0.3 |
+| GPP cum | +0.4 | +0.3 | +0.8 | +1.3** |
+| NPP cum | +0.6 | +0.1 | +0.1 | +0.8* |
+| NPPd cum | +0.2 | -0.2 | +0.1 | +1.0* |
+| GPP mean | +0.5 | +0.5 | +1.2* | +1.5** |
+| CUEd mean | +0.3 | -0.5 | -0.3 | +0.2 |
+
+**Within-site model vs the random-intercept mixed model used before** (1512 cells): median absolute effect 0.83 vs 1.89 days per SD; p < 0.05 in 416 vs 488 cells; same sign in 87% of cells.
 
 ![PhenoCam (GCC): GPP windows against EOS, fixed anchors (step 33)](../figure/eos_window_scan/fixed_GCC_GPP.png)
 
@@ -293,26 +371,49 @@ Single-predictor mixed models, windows ending at the site mean EOS (fixed anchor
 
 ## 7. When around the solstice is the relation strongest? (step 34)
 
-Mean flux in 15- and 30-day windows starting 75 days before to 75 days after the solstice. Table: `data/eos_solstice_sliding_scan.csv`; the most negative window per case:
+Mean flux in 15- and 30-day windows starting 120 days before to 75 days after the solstice, within-site models. `at edge` = the minimum is on the first or last window of the scan. Table: `data/eos_solstice_sliding_scan.csv`; the most negative window per case:
 
-| carbon | EOS source | window start (days from solstice) | beta_days_per_sd | p_value | n_obs |
-|---|---|---|---|---|---|
-| CUEd | PhenoCam (GCC) | -20 | -3.9 | 0.024 | 218 |
-| CUEd | Satellite NDVI | -75 | -1.6 | 0.040 | 502 |
-| CUEd | Tower NDVI | 5 | -1.7 | 0.168 | 407 |
-| CUEd | Satellite NIRv | 45 | -1.0 | 0.128 | 742 |
-| GPP | PhenoCam (GCC) | -75 | -0.6 | 0.853 | 204 |
-| GPP | Satellite NDVI | -75 | -0.2 | 0.910 | 472 |
-| GPP | Tower NDVI | -75 | -4.4 | 0.050 | 378 |
-| GPP | Satellite NIRv | 55 | +1.5 | 0.193 | 702 |
-| NPP | PhenoCam (GCC) | 55 | -3.1 | 0.382 | 223 |
-| NPP | Satellite NDVI | 5 | -0.5 | 0.589 | 515 |
-| NPP | Tower NDVI | -5 | -2.6 | 0.228 | 409 |
-| NPP | Satellite NIRv | 75 | +0.2 | 0.817 | 758 |
-| NPPd | PhenoCam (GCC) | 70 | +0.0 | 0.987 | 218 |
-| NPPd | Satellite NDVI | 5 | +0.0 | 0.999 | 502 |
-| NPPd | Tower NDVI | 30 | -3.5 | 0.159 | 407 |
-| NPPd | Satellite NIRv | 75 | +0.4 | 0.667 | 742 |
+**EOS90, 30-day windows**
+
+| carbon | EOS source | window start (days from solstice) | beta_days_per_sd | p_value | n_obs | at edge |
+|---|---|---|---|---|---|---|
+| CUEd | PhenoCam (GCC) | 35 | -0.3 | 0.791 | 202 | False |
+| CUEd | Satellite NDVI | -5 | -0.8 | 0.122 | 479 | False |
+| CUEd | Tower NDVI | 55 | -0.8 | 0.511 | 383 | False |
+| CUEd | Satellite NIRv | -5 | -0.5 | 0.261 | 721 | False |
+| GPP | PhenoCam (GCC) | -30 | -1.3 | 0.320 | 187 | False |
+| GPP | Satellite NDVI | -55 | -1.5 | 0.006 | 455 | False |
+| GPP | Tower NDVI | -60 | -2.6 | 0.029 | 356 | False |
+| GPP | Satellite NIRv | -50 | -1.7 | 0.000 | 682 | False |
+| NPP | PhenoCam (GCC) | -95 | -1.6 | 0.231 | 186 | False |
+| NPP | Satellite NDVI | -75 | -1.6 | 0.002 | 454 | False |
+| NPP | Tower NDVI | -85 | -2.4 | 0.037 | 352 | False |
+| NPP | Satellite NIRv | -55 | -1.4 | 0.002 | 682 | False |
+| NPPd | PhenoCam (GCC) | -100 | -2.2 | 0.064 | 184 | False |
+| NPPd | Satellite NDVI | -55 | -1.4 | 0.015 | 450 | False |
+| NPPd | Tower NDVI | -85 | -2.2 | 0.011 | 352 | False |
+| NPPd | Satellite NIRv | -55 | -1.2 | 0.012 | 680 | False |
+
+**EOS10, 30-day windows**
+
+| carbon | EOS source | window start (days from solstice) | beta_days_per_sd | p_value | n_obs | at edge |
+|---|---|---|---|---|---|---|
+| CUEd | PhenoCam (GCC) | -20 | -2.8 | 0.234 | 202 | False |
+| CUEd | Satellite NDVI | -80 | -1.3 | 0.031 | 479 | False |
+| CUEd | Tower NDVI | 5 | -1.6 | 0.041 | 383 | False |
+| CUEd | Satellite NIRv | 45 | -0.7 | 0.078 | 721 | False |
+| GPP | PhenoCam (GCC) | 20 | -1.3 | 0.438 | 187 | False |
+| GPP | Satellite NDVI | -120 | -0.7 | 0.264 | 447 | True |
+| GPP | Tower NDVI | -120 | -2.1 | 0.102 | 337 | True |
+| GPP | Satellite NIRv | 55 | +0.1 | 0.902 | 684 | False |
+| NPP | PhenoCam (GCC) | -90 | -1.4 | 0.468 | 186 | False |
+| NPP | Satellite NDVI | -120 | -1.3 | 0.025 | 446 | True |
+| NPP | Tower NDVI | -120 | -2.2 | 0.058 | 337 | True |
+| NPP | Satellite NIRv | 20 | -0.4 | 0.444 | 685 | False |
+| NPPd | PhenoCam (GCC) | -20 | -2.9 | 0.210 | 185 | False |
+| NPPd | Satellite NDVI | -120 | -0.9 | 0.186 | 442 | True |
+| NPPd | Tower NDVI | -120 | -1.8 | 0.100 | 337 | True |
+| NPPd | Satellite NIRv | 45 | -0.6 | 0.250 | 681 | False |
 
 ![GPP: effect on EOS of 30-day windows by start date relative to the solstice (step 34)](../figure/eos_solstice_sliding_scan/GPP_L30.png)
 
@@ -328,81 +429,81 @@ Mean flux in 15- and 30-day windows starting 75 days before to 75 days after the
 
 ## 8. Does carbon explain EOS beyond climate? (step 35)
 
-Nested mixed models on identical rows. M0 climate only; + leaf-out date (SOS); + source (GPP); + sink (NPP). Tables: `data/eos_env_vs_carbon_comparison.csv`, `..._cv.csv`, `..._lrt.csv`.
+Nested within-site models on identical rows. M0 climate only; + leaf-out date (SOS); + source (GPP); + sink (NPP). Tables: `data/eos_env_vs_carbon_comparison.csv`, `..._cv.csv`, `..._lrt.csv`.
 
 **EOS10**
 
-| EOS source | model | n_obs | aic | R2 (fixed effects) | gain over climate | R2 leave-one-site-out |
+| EOS source | model | n_obs | aic | R2 (within sites) | gain over climate | R2 leave-one-site-out |
 |---|---|---|---|---|---|---|
-| PhenoCam (GCC) | M0_env | 156 | 1389 | 0.23 | 0.00 | 0.15 |
-| PhenoCam (GCC) | M1_env+SOS | 156 | 1384 | 0.32 | 0.09 | 0.21 |
-| PhenoCam (GCC) | M2_env+source | 156 | 1392 | 0.22 | -0.01 | 0.07 |
-| PhenoCam (GCC) | M3_env+sink | 156 | 1393 | 0.22 | -0.01 | 0.06 |
-| PhenoCam (GCC) | M4_env+source+sink | 156 | 1394 | 0.22 | -0.01 | 0.09 |
-| PhenoCam (GCC) | M3d_env+sink_daily | 156 | 1391 | 0.25 | 0.02 | 0.16 |
-| PhenoCam (GCC) | M4d_env+source+sink_daily | 156 | 1390 | 0.19 | -0.04 | -0.09 |
-| PhenoCam (GCC) | M5_env+SOS+source+sink | 156 | 1389 | 0.35 | 0.12 | 0.25 |
-| Tower NDVI | M5_env+SOS+source+sink | 318 | 2874 | 0.19 | 0.12 | -2.74 |
-| Tower NDVI | M4d_env+source+sink_daily | 318 | 2877 | 0.16 | 0.09 | -6.82 |
-| Tower NDVI | M3d_env+sink_daily | 318 | 2883 | 0.07 | 0.00 | -1.09 |
-| Tower NDVI | M4_env+source+sink | 318 | 2877 | 0.16 | 0.09 | -3.38 |
-| Tower NDVI | M3_env+sink | 318 | 2883 | 0.07 | 0.00 | -0.42 |
-| Tower NDVI | M2_env+source | 318 | 2873 | 0.16 | 0.09 | 0.05 |
-| Tower NDVI | M1_env+SOS | 318 | 2881 | 0.08 | 0.01 | -0.13 |
-| Tower NDVI | M0_env | 318 | 2880 | 0.07 | 0.00 | -0.11 |
-| Satellite NDVI | M5_env+SOS+source+sink | 389 | 3236 | 0.22 | 0.09 | 0.27 |
-| Satellite NDVI | M4d_env+source+sink_daily | 389 | 3248 | 0.16 | 0.04 | 0.18 |
-| Satellite NDVI | M3d_env+sink_daily | 389 | 3247 | 0.13 | 0.01 | 0.15 |
-| Satellite NDVI | M4_env+source+sink | 389 | 3247 | 0.16 | 0.04 | 0.18 |
-| Satellite NDVI | M3_env+sink | 389 | 3246 | 0.13 | 0.01 | 0.15 |
-| Satellite NDVI | M2_env+source | 389 | 3248 | 0.15 | 0.03 | 0.17 |
-| Satellite NDVI | M1_env+SOS | 389 | 3239 | 0.16 | 0.04 | 0.22 |
-| Satellite NDVI | M0_env | 389 | 3247 | 0.13 | 0.00 | 0.15 |
-| Satellite NIRv | M0_env | 626 | 5272 | 0.07 | 0.00 | -0.07 |
-| Satellite NIRv | M1_env+SOS | 626 | 5262 | 0.11 | 0.04 | 0.06 |
-| Satellite NIRv | M2_env+source | 626 | 5257 | 0.12 | 0.05 | 0.05 |
-| Satellite NIRv | M3_env+sink | 626 | 5275 | 0.08 | 0.00 | -0.07 |
-| Satellite NIRv | M4_env+source+sink | 626 | 5260 | 0.12 | 0.05 | 0.05 |
-| Satellite NIRv | M3d_env+sink_daily | 626 | 5275 | 0.08 | 0.00 | -0.07 |
-| Satellite NIRv | M4d_env+source+sink_daily | 626 | 5260 | 0.12 | 0.05 | 0.05 |
-| Satellite NIRv | M5_env+SOS+source+sink | 626 | 5250 | 0.17 | 0.10 | 0.16 |
+| PhenoCam (GCC) | M0_env | 155 | 1301 | 0.04 | 0.00 | -0.20 |
+| PhenoCam (GCC) | M1_env+SOS | 155 | 1299 | 0.06 | 0.02 | -0.25 |
+| PhenoCam (GCC) | M2_env+source | 155 | 1304 | 0.04 | 0.01 | -0.32 |
+| PhenoCam (GCC) | M3_env+sink | 155 | 1303 | 0.04 | 0.01 | -0.31 |
+| PhenoCam (GCC) | M4_env+source+sink | 155 | 1306 | 0.05 | 0.02 | -0.47 |
+| PhenoCam (GCC) | M3d_env+sink_daily | 155 | 1303 | 0.05 | 0.01 | -0.26 |
+| PhenoCam (GCC) | M4d_env+source+sink_daily | 155 | 1299 | 0.10 | 0.06 | -0.34 |
+| PhenoCam (GCC) | M5_env+SOS+source+sink | 155 | 1304 | 0.08 | 0.04 | -0.46 |
+| Tower NDVI | M5_env+SOS+source+sink | 313 | 2676 | 0.08 | 0.02 | -0.02 |
+| Tower NDVI | M4d_env+source+sink_daily | 313 | 2677 | 0.07 | 0.01 | -0.03 |
+| Tower NDVI | M3d_env+sink_daily | 313 | 2678 | 0.05 | 0.00 | -0.03 |
+| Tower NDVI | M4_env+source+sink | 313 | 2679 | 0.06 | 0.01 | -0.03 |
+| Tower NDVI | M3_env+sink | 313 | 2676 | 0.06 | 0.01 | -0.02 |
+| Tower NDVI | M2_env+source | 313 | 2676 | 0.06 | 0.01 | -0.03 |
+| Tower NDVI | M1_env+SOS | 313 | 2674 | 0.06 | 0.01 | -0.02 |
+| Tower NDVI | M0_env | 313 | 2674 | 0.05 | 0.00 | -0.02 |
+| Satellite NDVI | M5_env+SOS+source+sink | 375 | 2839 | 0.08 | 0.02 | -0.01 |
+| Satellite NDVI | M4d_env+source+sink_daily | 375 | 2840 | 0.08 | 0.01 | -0.02 |
+| Satellite NDVI | M3d_env+sink_daily | 375 | 2839 | 0.07 | 0.00 | 0.00 |
+| Satellite NDVI | M4_env+source+sink | 375 | 2841 | 0.07 | 0.01 | -0.03 |
+| Satellite NDVI | M3_env+sink | 375 | 2840 | 0.07 | 0.00 | -0.00 |
+| Satellite NDVI | M2_env+source | 375 | 2839 | 0.07 | 0.00 | -0.00 |
+| Satellite NDVI | M1_env+SOS | 375 | 2834 | 0.08 | 0.01 | 0.02 |
+| Satellite NDVI | M0_env | 375 | 2836 | 0.07 | 0.00 | 0.02 |
+| Satellite NIRv | M0_env | 621 | 4820 | 0.11 | 0.00 | 0.09 |
+| Satellite NIRv | M1_env+SOS | 621 | 4820 | 0.11 | 0.00 | 0.09 |
+| Satellite NIRv | M2_env+source | 621 | 4816 | 0.12 | 0.01 | 0.09 |
+| Satellite NIRv | M3_env+sink | 621 | 4823 | 0.11 | 0.00 | 0.08 |
+| Satellite NIRv | M4_env+source+sink | 621 | 4819 | 0.12 | 0.01 | 0.08 |
+| Satellite NIRv | M3d_env+sink_daily | 621 | 4823 | 0.11 | 0.00 | 0.08 |
+| Satellite NIRv | M4d_env+source+sink_daily | 621 | 4818 | 0.12 | 0.01 | 0.09 |
+| Satellite NIRv | M5_env+SOS+source+sink | 621 | 4819 | 0.13 | 0.02 | 0.08 |
 
 **EOS50**
 
-| EOS source | model | n_obs | aic | R2 (fixed effects) | gain over climate | R2 leave-one-site-out |
+| EOS source | model | n_obs | aic | R2 (within sites) | gain over climate | R2 leave-one-site-out |
 |---|---|---|---|---|---|---|
-| PhenoCam (GCC) | M0_env | 156 | 1332 | 0.12 | 0.00 | 0.18 |
-| PhenoCam (GCC) | M1_env+SOS | 156 | 1334 | 0.11 | -0.01 | 0.14 |
-| PhenoCam (GCC) | M2_env+source | 156 | 1336 | 0.12 | 0.01 | 0.17 |
-| PhenoCam (GCC) | M3_env+sink | 156 | 1335 | 0.13 | 0.01 | 0.18 |
-| PhenoCam (GCC) | M4_env+source+sink | 156 | 1338 | 0.13 | 0.01 | 0.19 |
-| PhenoCam (GCC) | M3d_env+sink_daily | 156 | 1333 | 0.10 | -0.01 | 0.14 |
-| PhenoCam (GCC) | M4d_env+source+sink_daily | 156 | 1335 | 0.10 | -0.01 | 0.09 |
-| PhenoCam (GCC) | M5_env+SOS+source+sink | 156 | 1338 | 0.12 | 0.00 | 0.18 |
-| Tower NDVI | M5_env+SOS+source+sink | 318 | 2692 | 0.09 | 0.06 | -0.26 |
-| Tower NDVI | M4d_env+source+sink_daily | 318 | 2690 | 0.09 | 0.05 | -3.78 |
-| Tower NDVI | M3d_env+sink_daily | 318 | 2699 | 0.04 | 0.00 | -0.26 |
-| Tower NDVI | M4_env+source+sink | 318 | 2690 | 0.09 | 0.05 | -0.28 |
-| Tower NDVI | M3_env+sink | 318 | 2699 | 0.04 | 0.00 | -0.57 |
-| Tower NDVI | M2_env+source | 318 | 2687 | 0.09 | 0.05 | 0.05 |
-| Tower NDVI | M1_env+SOS | 318 | 2697 | 0.03 | -0.00 | -0.17 |
-| Tower NDVI | M0_env | 318 | 2695 | 0.04 | 0.00 | -0.15 |
-| Satellite NDVI | M5_env+SOS+source+sink | 389 | 2957 | 0.09 | 0.05 | 0.26 |
-| Satellite NDVI | M4d_env+source+sink_daily | 389 | 2960 | 0.07 | 0.03 | 0.21 |
-| Satellite NDVI | M3d_env+sink_daily | 389 | 2967 | 0.05 | 0.00 | 0.14 |
-| Satellite NDVI | M4_env+source+sink | 389 | 2960 | 0.07 | 0.03 | 0.21 |
-| Satellite NDVI | M3_env+sink | 389 | 2967 | 0.05 | 0.00 | 0.14 |
-| Satellite NDVI | M2_env+source | 389 | 2958 | 0.06 | 0.02 | 0.20 |
-| Satellite NDVI | M1_env+SOS | 389 | 2966 | 0.05 | 0.00 | 0.15 |
-| Satellite NDVI | M0_env | 389 | 2964 | 0.04 | 0.00 | 0.14 |
-| Satellite NIRv | M0_env | 626 | 4931 | 0.02 | 0.00 | -0.07 |
-| Satellite NIRv | M1_env+SOS | 626 | 4927 | 0.03 | 0.01 | -0.00 |
-| Satellite NIRv | M2_env+source | 626 | 4915 | 0.04 | 0.01 | -0.02 |
-| Satellite NIRv | M3_env+sink | 626 | 4934 | 0.02 | -0.00 | -0.07 |
-| Satellite NIRv | M4_env+source+sink | 626 | 4918 | 0.04 | 0.01 | -0.02 |
-| Satellite NIRv | M3d_env+sink_daily | 626 | 4935 | 0.02 | -0.00 | -0.07 |
-| Satellite NIRv | M4d_env+source+sink_daily | 626 | 4918 | 0.04 | 0.01 | -0.02 |
-| Satellite NIRv | M5_env+SOS+source+sink | 626 | 4897 | 0.06 | 0.04 | 0.14 |
+| PhenoCam (GCC) | M0_env | 155 | 1225 | 0.02 | 0.00 | -0.45 |
+| PhenoCam (GCC) | M1_env+SOS | 155 | 1226 | 0.03 | 0.00 | -0.49 |
+| PhenoCam (GCC) | M2_env+source | 155 | 1228 | 0.03 | 0.00 | -0.49 |
+| PhenoCam (GCC) | M3_env+sink | 155 | 1227 | 0.03 | 0.01 | -0.47 |
+| PhenoCam (GCC) | M4_env+source+sink | 155 | 1230 | 0.04 | 0.02 | -0.59 |
+| PhenoCam (GCC) | M3d_env+sink_daily | 155 | 1224 | 0.05 | 0.03 | -0.46 |
+| PhenoCam (GCC) | M4d_env+source+sink_daily | 155 | 1226 | 0.06 | 0.04 | -0.56 |
+| PhenoCam (GCC) | M5_env+SOS+source+sink | 155 | 1230 | 0.05 | 0.03 | -0.60 |
+| Tower NDVI | M5_env+SOS+source+sink | 313 | 2467 | 0.08 | 0.02 | -0.03 |
+| Tower NDVI | M4d_env+source+sink_daily | 313 | 2465 | 0.08 | 0.02 | -0.03 |
+| Tower NDVI | M3d_env+sink_daily | 313 | 2467 | 0.07 | 0.00 | -0.03 |
+| Tower NDVI | M4_env+source+sink | 313 | 2466 | 0.08 | 0.02 | -0.02 |
+| Tower NDVI | M3_env+sink | 313 | 2464 | 0.07 | 0.01 | -0.02 |
+| Tower NDVI | M2_env+source | 313 | 2463 | 0.08 | 0.02 | -0.02 |
+| Tower NDVI | M1_env+SOS | 313 | 2466 | 0.06 | 0.00 | -0.02 |
+| Tower NDVI | M0_env | 313 | 2464 | 0.06 | 0.00 | -0.01 |
+| Satellite NDVI | M5_env+SOS+source+sink | 375 | 2498 | 0.07 | 0.04 | -0.03 |
+| Satellite NDVI | M4d_env+source+sink_daily | 375 | 2497 | 0.06 | 0.03 | -0.02 |
+| Satellite NDVI | M3d_env+sink_daily | 375 | 2503 | 0.04 | 0.01 | -0.02 |
+| Satellite NDVI | M4_env+source+sink | 375 | 2496 | 0.07 | 0.04 | -0.02 |
+| Satellite NDVI | M3_env+sink | 375 | 2495 | 0.06 | 0.03 | -0.00 |
+| Satellite NDVI | M2_env+source | 375 | 2497 | 0.05 | 0.02 | -0.01 |
+| Satellite NDVI | M1_env+SOS | 375 | 2504 | 0.03 | 0.00 | -0.03 |
+| Satellite NDVI | M0_env | 375 | 2503 | 0.03 | 0.00 | -0.02 |
+| Satellite NIRv | M0_env | 621 | 4461 | 0.08 | 0.00 | 0.05 |
+| Satellite NIRv | M1_env+SOS | 621 | 4462 | 0.08 | 0.00 | 0.04 |
+| Satellite NIRv | M2_env+source | 621 | 4447 | 0.10 | 0.03 | 0.07 |
+| Satellite NIRv | M3_env+sink | 621 | 4449 | 0.10 | 0.02 | 0.07 |
+| Satellite NIRv | M4_env+source+sink | 621 | 4449 | 0.11 | 0.03 | 0.06 |
+| Satellite NIRv | M3d_env+sink_daily | 621 | 4454 | 0.09 | 0.02 | 0.06 |
+| Satellite NIRv | M4d_env+source+sink_daily | 621 | 4449 | 0.11 | 0.03 | 0.06 |
+| Satellite NIRv | M5_env+SOS+source+sink | 621 | 4444 | 0.12 | 0.04 | 0.07 |
 
 ## 9. Pathways and rate vs cumulative uptake (steps 36, 37)
 
@@ -418,24 +519,20 @@ Nested mixed models on identical rows. M0 climate only; + leaf-out date (SOS); +
 
 | EOS source | target | n_obs | beta_rate | p_rate | beta_cum | p_cum |
 |---|---|---|---|---|---|---|
-| PhenoCam (GCC) | EOS10 | 177 | -0.0 | 0.999 | +1.5 | 0.639 |
-| Tower NDVI | EOS10 | 347 | -4.1 | 0.069 | -0.1 | 0.969 |
-| Satellite NDVI | EOS10 | 418 | -2.0 | 0.183 | +2.3 | 0.154 |
-| Satellite NIRv | EOS10 | 671 | +1.3 | 0.332 | +4.0 | 0.003 |
+| PhenoCam (GCC) | EOS10 | 161 | -0.6 | 0.532 | +1.0 | 0.449 |
+| Tower NDVI | EOS10 | 318 | -2.9 | 0.004 | -0.6 | 0.592 |
+| Satellite NDVI | EOS10 | 395 | -1.1 | 0.024 | +1.0 | 0.163 |
+| Satellite NIRv | EOS10 | 650 | +0.2 | 0.614 | +1.6 | 0.025 |
 
 ## 10. Results by plant type, with multiple-testing correction (step 38)
 
 Tables: `data/eos_results_by_leaf_habit.csv`, `data/eos_results_consistency.csv`.
 
-- 780 tests; 130 (16.7%) with uncorrected p < 0.05 (about 5% expected by chance); 8 significant after FDR correction.
+- 780 tests; 90 (11.5%) with uncorrected p < 0.05 (about 5% expected by chance); 1 significant after FDR correction.
 
 **Effects with the same sign in every EOS source, both ground sources agreeing, at least one significant after FDR**
 
-| leaf_habit | target | model | window | predictor | direction | median_beta | sources |
-|---|---|---|---|---|---|---|---|
-| all | EOS10 | adj_T | post | GPP cumulative (source) | later EOS | +5.1 | GCC:+1.8, NDVI:+4.4, NDVI_tower:+8.2, NIRv:+5.8 |
-| all | EOS50 | adj_T | post | GPP cumulative (source) | later EOS | +3.6 | GCC:+3.1, NDVI:+3.0, NDVI_tower:+4.2, NIRv:+4.1 |
-| all | EOS50 | adj_T | post | GPP rate (mean) | later EOS | +3.0 | GCC:+2.2, NDVI:+2.6, NDVI_tower:+3.6, NIRv:+3.5 |
+_No data._
 
 ![EOS10: every predictor by plant type and EOS source (step 38)](../figure/eos_results_by_leaf_habit/EOS10_raw.png)
 
@@ -481,6 +578,347 @@ Tables: `data/anomaly_timing_effects.csv`, `data/drought_years.csv`, `data/droug
 ![PhenoCam (GCC): effect on EOS10 of positive (+) and negative (-) anomalies by time of year (step 39)](../figure/anomaly_timing/GCC_EOS10.png)
 
 *PhenoCam (GCC): effect on EOS10 of positive (+) and negative (-) anomalies by time of year (step 39)*
+
+## 12. PhenoCam vs satellite EOS on equal terms (step 42)
+
+The same within-site model on each source's own site-years, on the PhenoCam sites only, and on the shared site-years; predictors are calendar windows, identical for every source. Tables: `data/phenocam_vs_satellite_models.csv`, `..._difference.csv`, `..._levels.csv`.
+
+**EOS90: days per +1 within-site SD of GPP [95% CI]** (two-sided stars)
+
+| pair | sample | EOS source | n (sites) | pre | post | total |
+|---|---|---|---|---|---|---|
+| GCC vs NDVI | own | PhenoCam (GCC) | 186 (25) | -1.3 [-3.9, +1.3] | -0.0 [-3.0, +3.0] | -1.0 [-3.5, +1.6] |
+| GCC vs NDVI | own | Satellite NDVI | 446 (67) | -1.2 [-2.4, +0.0] | -0.0 [-1.3, +1.2] | -1.0* [-2.0, -0.1] |
+| GCC vs NDVI | shared | PhenoCam (GCC) | 81 (13) | -1.8 [-4.0, +0.4] | +0.2 [-2.8, +3.2] | -1.1 [-2.9, +0.6] |
+| GCC vs NDVI | shared | Satellite NDVI | 81 (13) | -1.7 [-5.7, +2.3] | -2.8 [-5.8, +0.1] | -3.1 [-6.7, +0.5] |
+| GCC vs NDVI | sites | Satellite NDVI | 180 (26) | -0.1 [-2.5, +2.2] | -1.0 [-3.0, +1.0] | -1.0 [-2.8, +0.8] |
+| GCC vs NIRv | own | Satellite NIRv | 675 (88) | -1.9*** [-2.9, -0.9] | +1.1 [-0.0, +2.2] | -0.7 [-1.6, +0.2] |
+| GCC vs NIRv | shared | PhenoCam (GCC) | 111 (18) | -1.0 [-2.9, +0.9] | +0.9 [-1.3, +3.1] | -0.1 [-1.6, +1.4] |
+| GCC vs NIRv | shared | Satellite NIRv | 111 (18) | -1.0 [-4.2, +2.3] | +1.3 [-1.4, +3.9] | +0.2 [-2.2, +2.6] |
+| GCC vs NIRv | sites | Satellite NIRv | 260 (33) | -1.0 [-3.3, +1.4] | +0.7 [-0.9, +2.4] | -0.1 [-1.8, +1.6] |
+
+**EOS10: days per +1 within-site SD of GPP [95% CI]** (two-sided stars)
+
+| pair | sample | EOS source | n (sites) | pre | post | total |
+|---|---|---|---|---|---|---|
+| GCC vs NDVI | own | PhenoCam (GCC) | 186 (25) | +1.0 [-1.3, +3.3] | -0.2 [-3.5, +3.1] | +0.6 [-1.7, +2.9] |
+| GCC vs NDVI | own | Satellite NDVI | 446 (67) | +0.3 [-1.1, +1.7] | +0.4 [-1.1, +1.9] | +0.6 [-0.7, +1.9] |
+| GCC vs NDVI | shared | PhenoCam (GCC) | 81 (13) | +0.9 [-1.8, +3.6] | -0.9 [-2.6, +0.9] | +0.1 [-2.3, +2.5] |
+| GCC vs NDVI | shared | Satellite NDVI | 81 (13) | +0.3 [-2.0, +2.6] | +1.2 [-1.5, +3.8] | +1.0 [-1.9, +3.9] |
+| GCC vs NDVI | sites | Satellite NDVI | 180 (26) | -0.7 [-2.8, +1.5] | +1.9 [-0.0, +3.8] | +1.1 [-0.8, +3.0] |
+| GCC vs NIRv | own | Satellite NIRv | 675 (88) | +0.9 [-0.3, +2.0] | +0.3 [-0.9, +1.4] | +0.9 [-0.2, +2.1] |
+| GCC vs NIRv | shared | PhenoCam (GCC) | 111 (18) | +0.5 [-1.8, +2.8] | -0.8 [-2.4, +0.8] | -0.2 [-2.4, +2.0] |
+| GCC vs NIRv | shared | Satellite NIRv | 111 (18) | +0.8 [-1.0, +2.5] | -0.7 [-1.9, +0.5] | +0.1 [-1.5, +1.7] |
+| GCC vs NIRv | sites | Satellite NIRv | 260 (33) | +1.6 [-0.5, +3.8] | +1.1 [-0.6, +2.8] | +2.2* [+0.5, +3.9] |
+
+**Does GPP shift the two EOS measures differently?** Satellite EOS minus PhenoCam EOS, regressed on GPP (shared site-years). A slope different from zero would mean the sources respond differently.
+
+| difference | level | n (sites) | mean difference (days) | pre | post |
+|---|---|---|---|---|---|
+| NDVI - GCC | EOS90 | 81 (13) | +17.4 | +0.0 [-3.7, +3.7] | -3.0 [-6.9, +0.8] |
+| NDVI - GCC | EOS50 | 81 (13) | +16.7 | +0.1 [-1.4, +1.5] | -0.5 [-2.0, +1.0] |
+| NDVI - GCC | EOS10 | 81 (13) | +15.2 | -0.6 [-4.8, +3.7] | +2.0* [+0.0, +4.0] |
+| NIRv - GCC | EOS90 | 111 (18) | -8.4 | +0.0 [-3.1, +3.2] | +0.4 [-3.3, +4.0] |
+| NIRv - GCC | EOS50 | 111 (18) | +0.4 | +0.1 [-2.3, +2.5] | +0.1 [-1.9, +2.1] |
+| NIRv - GCC | EOS10 | 111 (18) | +10.1 | +0.3 [-2.0, +2.6] | +0.1 [-2.0, +2.2] |
+
+![EOS90: the same model on three samples (step 42)](../figure/phenocam_vs_satellite/models_EOS90.png)
+
+*EOS90: the same model on three samples (step 42)*
+
+![Which PhenoCam stage corresponds to which satellite NDVI stage (step 42)](../figure/phenocam_vs_satellite/levels_NDVI.png)
+
+*Which PhenoCam stage corresponds to which satellite NDVI stage (step 42)*
+
+![PhenoCam vs satellite NDVI EOS anomalies on shared site-years (step 42)](../figure/phenocam_vs_satellite/scatter_NDVI.png)
+
+*PhenoCam vs satellite NDVI EOS anomalies on shared site-years (step 42)*
+
+## 13. How solid is the pre-solstice effect on EOS90? (step 43)
+
+One-predictor within-site model, two versions of pre-solstice GPP: `sos` = cumulative from leaf-out to the solstice, `cal` = the 60 days before the solstice. Tables: `data/presolstice_loso*.csv`, `data/presolstice_qc_sensitivity.csv`, `data/presolstice_power.csv`.
+
+
+### 1. Leave one site out
+
+| EOS source | predictor | all sites (p) | range with one site removed | negative in | p < 0.05 in | most influential site | slope without it (p) |
+|---|---|---|---|---|---|---|---|
+| PhenoCam | sos | -2.0 (0.102) | -2.5 to -1.4 | 100% | 5% | US-KFS | -1.4 (0.237) |
+| PhenoCam | cal | -1.3 (0.319) | -1.7 to -0.6 | 100% | 0% | US-KFS | -0.6 (0.638) |
+| tower NDVI | sos | -1.9 (0.151) | -2.2 to -1.1 | 100% | 0% | JP-Tmd | -1.1 (0.353) |
+| tower NDVI | cal | -2.5 (0.039) | -2.8 to -1.7 | 100% | 83% | JP-Tmd | -1.7 (0.126) |
+| satellite NDVI | sos | -1.9 (0.000) | -2.1 to -1.7 | 100% | 100% | US-NC2 | -1.7 (0.002) |
+| satellite NDVI | cal | -1.1 (0.026) | -1.2 to -0.9 | 100% | 96% | US-NC2 | -0.9 (0.085) |
+| satellite NIRv | sos | -1.3 (0.005) | -1.5 to -1.1 | 100% | 100% | US-NC2 | -1.1 (0.020) |
+| satellite NIRv | cal | -1.5 (0.001) | -1.6 to -1.3 | 100% | 100% | US-NC2 | -1.3 (0.003) |
+
+### 2. QC thresholds
+
+**GPP from leaf-out to the solstice** - slope (site-years)
+
+| min R2 | max EOS90 distance | PhenoCam | tower NDVI | satellite NDVI | satellite NIRv |
+|---|---|---|---|---|---|
+| 0.7 | 30 d | -1.4 (172) | -0.7 (325) | -1.4** (403) | -1.0* (658) |
+| 0.7 | 60 d | -1.6 (183) | -2.7** (372) | -2.0*** (418) | -1.3** (680) |
+| 0.7 | 90 d | -0.9 (186) | -2.6* (377) | -2.0*** (418) | -1.4** (684) |
+| 0.7 | no rule | -1.4 (188) | -3.0** (381) | -2.2*** (419) | -0.6 (689) |
+| 0.8 | 30 d | -1.8 (149) | -0.6 (290) | -1.3** (382) | -1.0* (629) |
+| 0.8 (default) | 60 d | -2.0 (161) | -1.9 (318) | -1.9*** (395) | -1.3** (650) |
+| 0.8 | 90 d | -1.5 (163) | -1.3 (323) | -1.9*** (395) | -1.4** (653) |
+| 0.8 | no rule | -2.2 (165) | -1.6 (324) | -2.2*** (396) | -0.8 (657) |
+| 0.9 | 30 d | -1.8 (111) | -0.5 (218) | -1.2** (305) | -1.5*** (519) |
+| 0.9 | 60 d | -3.1* (115) | -0.5 (239) | -1.6** (315) | -1.8*** (536) |
+| 0.9 | 90 d | -3.1* (115) | -1.0 (240) | -1.6** (315) | -1.9*** (538) |
+| 0.9 | no rule | -3.1* (115) | -1.0 (240) | -1.6** (315) | -1.9*** (538) |
+
+**GPP in the 60 days before the solstice** - slope (site-years)
+
+| min R2 | max EOS90 distance | PhenoCam | tower NDVI | satellite NDVI | satellite NIRv |
+|---|---|---|---|---|---|
+| 0.7 | 30 d | -0.5 (200) | -0.5 (362) | -0.7* (460) | -1.2** (690) |
+| 0.7 | 60 d | -0.6 (217) | -2.4* (410) | -1.0* (482) | -1.5** (713) |
+| 0.7 | 90 d | +0.2 (220) | -2.8* (416) | -1.0* (482) | -1.6*** (717) |
+| 0.7 | no rule | -0.6 (223) | -2.9* (420) | -1.5* (483) | -1.3* (722) |
+| 0.8 | 30 d | -1.1 (170) | -1.1 (324) | -0.7* (437) | -1.1** (659) |
+| 0.8 (default) | 60 d | -1.3 (186) | -2.5* (357) | -1.1* (456) | -1.5*** (681) |
+| 0.8 | 90 d | -0.6 (188) | -2.0 (362) | -1.1* (456) | -1.7*** (684) |
+| 0.8 | no rule | -1.5 (193) | -2.1 (363) | -1.6* (457) | -1.2* (688) |
+| 0.9 | 30 d | -1.9 (121) | -0.6 (240) | -0.8* (341) | -1.4*** (545) |
+| 0.9 | 60 d | -3.2* (125) | -1.2 (261) | -1.1* (353) | -1.6*** (559) |
+| 0.9 | 90 d | -3.2* (125) | -1.5 (262) | -1.1* (353) | -1.7*** (561) |
+| 0.9 | no rule | -3.2* (125) | -1.5 (262) | -1.1* (353) | -1.7*** (561) |
+
+### 3. Power to detect 1.5 days per SD (80% power, two-sided alpha 0.05)
+
+| sample | EOS source | predictor | site-years (sites) | slope | smallest detectable effect | power now | site-years needed | sites needed |
+|---|---|---|---|---|---|---|---|---|
+| own site-years | PhenoCam | sos | 161 (21) | -2.0 | 3.4 | 23% | 844 | 110 |
+| own site-years | PhenoCam | cal | 186 (25) | -1.3 | 3.6 | 21% | 1072 | 144 |
+| own site-years | tower NDVI | sos | 318 (37) | -1.9 | 3.7 | 21% | 1889 | 220 |
+| own site-years | tower NDVI | cal | 357 (41) | -2.5 | 3.3 | 24% | 1774 | 204 |
+| own site-years | satellite NDVI | sos | 395 (62) | -1.9 | 1.5 | 82% | 376 | 59 |
+| own site-years | satellite NDVI | cal | 456 (69) | -1.1 | 1.4 | 85% | 400 | 60 |
+| own site-years | satellite NIRv | sos | 650 (87) | -1.3 | 1.3 | 88% | 511 | 68 |
+| own site-years | satellite NIRv | cal | 681 (88) | -1.5 | 1.2 | 93% | 444 | 57 |
+| shared PhenoCam + NDVI | PhenoCam | sos | 66 (11) | -2.7 | 3.0 | 28% | 272 | 45 |
+| shared PhenoCam + NDVI | PhenoCam | cal | 81 (13) | -1.8 | 3.4 | 24% | 405 | 65 |
+| shared PhenoCam + NDVI | satellite NDVI | sos | 64 (10) | -3.2 | 5.5 | 12% | 866 | 135 |
+| shared PhenoCam + NDVI | satellite NDVI | cal | 81 (13) | -1.6 | 5.0 | 13% | 889 | 143 |
+| shared PhenoCam + NIRv | PhenoCam | sos | 94 (15) | -1.4 | 2.4 | 41% | 243 | 39 |
+| shared PhenoCam + NIRv | PhenoCam | cal | 111 (18) | -1.0 | 2.8 | 32% | 398 | 65 |
+| shared PhenoCam + NIRv | satellite NIRv | sos | 106 (18) | -1.1 | 5.0 | 13% | 1175 | 199 |
+| shared PhenoCam + NIRv | satellite NIRv | cal | 111 (18) | -0.9 | 4.9 | 14% | 1184 | 192 |
+
+![Slope with each site left out in turn (step 43)](../figure/presolstice_robustness/loso.png)
+
+*Slope with each site left out in turn (step 43)*
+
+![Slope under other phenology QC thresholds (step 43)](../figure/presolstice_robustness/qc_sensitivity.png)
+
+*Slope under other phenology QC thresholds (step 43)*
+
+## 14. Why? Leaf-out, water and sink variables (step 44)
+
+Tables: `data/mechanism_leafout_vs_gpp.csv`, `data/mechanism_water.csv`, `data/mechanism_sink.csv`.
+
+
+### A. Leaf-out date against early GPP
+
+| sites | EOS source | early GPP | n (sites) | r(GPP, leaf-out) | GPP alone | leaf-out alone | GPP, leaf-out fixed | leaf-out, GPP fixed | R2 only GPP | R2 only leaf-out |
+|---|---|---|---|---|---|---|---|---|---|---|
+| deciduous | PhenoCam | sos | 81 (9) | -0.47 | -0.8 | +1.4 | -0.2 | +1.3 | 0.000 | 0.007 |
+| deciduous | PhenoCam | cal | 81 (9) | -0.29 | -0.7 | +1.4 | -0.3 | +1.3 | 0.000 | 0.009 |
+| deciduous | PhenoCam | rate | 81 (9) | +0.31 | +0.1 | +1.4 | -0.4 | +1.5 | 0.001 | 0.012 |
+| deciduous | tower NDVI | sos | 171 (17) | -0.35 | +0.3 | +0.8 | +0.7 | +1.0 | 0.003 | 0.006 |
+| deciduous | tower NDVI | cal | 174 (17) | -0.16 | -0.4 | +0.9 | -0.3 | +0.8 | 0.000 | 0.004 |
+| deciduous | tower NDVI | rate | 171 (17) | +0.51 | +0.8 | +0.8 | +0.5 | +0.5 | 0.001 | 0.001 |
+| deciduous | satellite NDVI | sos | 173 (23) | -0.46 | -1.4* | +3.6*** | +0.4 | +3.8*** | 0.001 | 0.131 |
+| deciduous | satellite NDVI | cal | 172 (23) | -0.26 | -0.6 | +3.6*** | +0.4 | +3.7*** | 0.001 | 0.147 |
+| deciduous | satellite NDVI | rate | 173 (23) | +0.23 | +1.1 | +3.6*** | +0.3 | +3.5*** | 0.001 | 0.137 |
+| deciduous | satellite NIRv | sos | 198 (25) | -0.49 | -0.9 | +0.4 | -0.9 | -0.0 | 0.005 | 0.000 |
+| deciduous | satellite NIRv | cal | 197 (25) | -0.24 | -1.0 | +0.4 | -1.0 | +0.2 | 0.008 | 0.000 |
+| deciduous | satellite NIRv | rate | 198 (25) | +0.21 | -0.5 | +0.4 | -0.7 | +0.6 | 0.004 | 0.003 |
+| deciduous | all sources stacked | sos | 623 (29) | -0.41 | -0.7 | +1.4** | -0.2 | +1.3* | 0.000 | 0.012 |
+| deciduous | all sources stacked | cal | 624 (29) | -0.21 | -0.7 | +1.4** | -0.4 | +1.3** | 0.001 | 0.013 |
+| deciduous | all sources stacked | rate | 623 (29) | +0.32 | +0.4 | +1.4** | -0.1 | +1.4** | 0.000 | 0.015 |
+| evergreen | tower NDVI | sos | 81 (12) | -0.48 | -2.7 | -0.9 | -4.1* | -2.9 | 0.039 | 0.019 |
+| evergreen | tower NDVI | cal | 87 (12) | -0.10 | -4.6** | +0.9 | -4.5*** | +0.4 | 0.062 | 0.001 |
+| evergreen | tower NDVI | rate | 81 (12) | +0.75 | -4.2* | -0.9 | -8.2*** | +5.3* | 0.088 | 0.037 |
+| evergreen | satellite NDVI | sos | 82 (16) | -0.21 | -2.5*** | +0.9 | -2.5*** | +0.4 | 0.031 | 0.001 |
+| evergreen | satellite NDVI | cal | 88 (17) | -0.05 | -1.4 | +0.8 | -1.4 | +0.8 | 0.008 | 0.003 |
+| evergreen | satellite NDVI | rate | 82 (16) | +0.31 | -1.4 | +0.9 | -1.8 | +1.5 | 0.016 | 0.011 |
+| evergreen | satellite NIRv | sos | 210 (26) | -0.47 | -1.7* | -0.8 | -2.6*** | -2.0* | 0.043 | 0.025 |
+| evergreen | satellite NIRv | cal | 213 (27) | +0.06 | -2.0*** | -0.6 | -2.0** | -0.5 | 0.031 | 0.002 |
+| evergreen | satellite NIRv | rate | 210 (26) | +0.34 | -2.0** | -0.8 | -1.9** | -0.1 | 0.026 | 0.000 |
+| evergreen | all sources stacked | sos | 381 (28) | -0.37 | -1.9** | -0.5 | -2.4*** | -1.4 | 0.027 | 0.009 |
+| evergreen | all sources stacked | cal | 396 (28) | +0.01 | -2.0*** | +0.1 | -2.0*** | +0.2 | 0.022 | 0.000 |
+| evergreen | all sources stacked | rate | 381 (28) | +0.42 | -2.1** | -0.5 | -2.3** | +0.4 | 0.023 | 0.001 |
+| grass/shrub | PhenoCam | sos | 72 (10) | -0.47 | -4.0* | +0.5 | -4.9* | -1.8 | 0.116 | 0.015 |
+| grass/shrub | PhenoCam | cal | 97 (14) | -0.12 | -2.5 | +1.5 | -2.3 | +1.2 | 0.028 | 0.008 |
+| grass/shrub | PhenoCam | rate | 72 (10) | +0.18 | -3.4 | +0.5 | -3.6 | +1.2 | 0.079 | 0.008 |
+| grass/shrub | tower NDVI | sos | 66 (8) | -0.25 | -6.5 | +3.5 | -6.0 | +2.0 | 0.096 | 0.011 |
+| grass/shrub | tower NDVI | cal | 96 (12) | -0.15 | -5.3* | -2.3 | -5.8** | -3.2* | 0.097 | 0.029 |
+| grass/shrub | tower NDVI | rate | 66 (8) | +0.30 | -4.0 | +3.5 | -5.6* | +5.2* | 0.082 | 0.071 |
+| grass/shrub | satellite NDVI | sos | 140 (23) | -0.60 | -2.4 | +1.4 | -2.4 | -0.1 | 0.039 | 0.000 |
+| grass/shrub | satellite NDVI | cal | 196 (29) | -0.17 | -1.7 | -0.7 | -1.9* | -1.0 | 0.024 | 0.007 |
+| grass/shrub | satellite NDVI | rate | 140 (23) | +0.36 | +0.0 | +1.4 | -0.5 | +1.5 | 0.002 | 0.021 |
+| grass/shrub | satellite NIRv | sos | 242 (36) | -0.48 | -1.4 | -1.4* | -2.7** | -2.7*** | 0.029 | 0.028 |
+| grass/shrub | satellite NIRv | cal | 271 (36) | -0.18 | -1.5 | -0.9 | -1.7 | -1.2 | 0.014 | 0.008 |
+| grass/shrub | satellite NIRv | rate | 242 (36) | +0.07 | -1.0 | -1.4* | -0.9 | -1.3 | 0.004 | 0.009 |
+| grass/shrub | all sources stacked | sos | 520 (37) | -0.46 | -2.8** | -0.1 | -3.6*** | -1.8** | 0.055 | 0.014 |
+| grass/shrub | all sources stacked | cal | 660 (37) | -0.16 | -2.3* | -0.9 | -2.5** | -1.3 | 0.031 | 0.008 |
+| grass/shrub | all sources stacked | rate | 520 (37) | +0.16 | -1.5* | -0.1 | -1.5* | +0.1 | 0.013 | 0.000 |
+| all | PhenoCam | sos | 161 (21) | -0.40 | -2.0 | +0.6 | -2.1 | -0.2 | 0.020 | 0.000 |
+| all | PhenoCam | cal | 186 (25) | -0.11 | -1.3 | +1.2 | -1.2 | +1.1 | 0.007 | 0.006 |
+| all | PhenoCam | rate | 161 (21) | +0.25 | -1.2 | +0.6 | -1.5 | +1.0 | 0.011 | 0.005 |
+| all | tower NDVI | sos | 318 (37) | -0.35 | -1.9 | +0.6 | -1.9 | -0.1 | 0.014 | 0.000 |
+| all | tower NDVI | cal | 357 (41) | -0.13 | -2.5* | -0.3 | -2.5* | -0.6 | 0.026 | 0.002 |
+| all | tower NDVI | rate | 318 (37) | +0.51 | -1.5 | +0.6 | -2.4 | +1.8 | 0.019 | 0.011 |
+| all | satellite NDVI | sos | 395 (62) | -0.44 | -1.9*** | +2.0* | -1.2* | +1.5 | 0.011 | 0.016 |
+| all | satellite NDVI | cal | 456 (69) | -0.14 | -1.1* | +0.4 | -1.1* | +0.3 | 0.008 | 0.001 |
+| all | satellite NDVI | rate | 395 (62) | +0.28 | +0.2 | +2.0* | -0.4 | +2.1* | 0.001 | 0.038 |
+| all | satellite NIRv | sos | 650 (87) | -0.42 | -1.3** | -0.8 | -2.0*** | -1.7*** | 0.023 | 0.016 |
+| all | satellite NIRv | cal | 681 (88) | -0.10 | -1.5*** | -0.6 | -1.6*** | -0.8 | 0.016 | 0.004 |
+| all | satellite NIRv | rate | 650 (87) | +0.16 | -1.2** | -0.8 | -1.1* | -0.7 | 0.007 | 0.003 |
+| all | all sources stacked | sos | 1524 (94) | -0.40 | -1.7*** | +0.2 | -1.9*** | -0.5 | 0.019 | 0.002 |
+| all | all sources stacked | cal | 1680 (94) | -0.12 | -1.6*** | -0.1 | -1.6*** | -0.3 | 0.015 | 0.001 |
+| all | all sources stacked | rate | 1524 (94) | +0.27 | -0.8* | +0.2 | -1.0* | +0.5 | 0.006 | 0.001 |
+
+### B. Water balance (90 days before the solstice) against pre-solstice GPP
+
+| sites | EOS source | GPP | n (sites) | r(GPP, water) | GPP alone | water alone | GPP, water fixed | water, GPP fixed | GPP, water + T fixed | R2 only GPP | R2 only water |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| dry-summer | PhenoCam | sos | 30 (5) | +0.31 | -0.8 | +2.6 | -1.8 | +3.2 | -1.7 | 0.033 | 0.105 |
+| dry-summer | PhenoCam | cal | 30 (5) | +0.28 | +2.8 | +2.6 | +2.2 | +2.0 | +2.5 | 0.054 | 0.042 |
+| dry-summer | satellite NIRv | sos | 69 (9) | +0.04 | -1.2 | +1.6*** | -1.3 | +1.7** | -1.3 | 0.015 | 0.026 |
+| dry-summer | satellite NIRv | cal | 70 (9) | +0.05 | -0.5 | +1.6** | -0.5 | +1.6*** | -0.5 | 0.003 | 0.023 |
+| dry-summer | all sources stacked | sos | 131 (9) | +0.15 | -0.2 | +2.0** | -0.5 | +2.1** | -0.5 | 0.002 | 0.042 |
+| dry-summer | all sources stacked | cal | 135 (9) | +0.10 | +0.4 | +1.9** | +0.3 | +1.9** | +0.3 | 0.001 | 0.035 |
+| summer-green | PhenoCam | sos | 131 (16) | -0.27 | -2.3 | +1.8 | -1.9 | +1.3 | -1.8 | 0.017 | 0.008 |
+| summer-green | PhenoCam | cal | 156 (20) | -0.29 | -1.9 | +1.7 | -1.6 | +1.2 | -1.3 | 0.010 | 0.007 |
+| summer-green | tower NDVI | sos | 303 (34) | -0.17 | -2.2 | +0.9 | -2.1 | +0.6 | -1.3 | 0.019 | 0.001 |
+| summer-green | tower NDVI | cal | 342 (38) | -0.19 | -2.8* | +1.0 | -2.7* | +0.5 | -2.0 | 0.029 | 0.001 |
+| summer-green | satellite NDVI | sos | 378 (58) | +0.04 | -2.1*** | -0.4 | -2.1*** | -0.3 | -2.0*** | 0.038 | 0.001 |
+| summer-green | satellite NDVI | cal | 436 (65) | +0.01 | -1.1* | -0.4 | -1.1* | -0.3 | -0.7 | 0.008 | 0.001 |
+| summer-green | satellite NIRv | sos | 581 (78) | +0.07 | -1.3* | -0.1 | -1.3** | +0.0 | -1.0 | 0.012 | 0.000 |
+| summer-green | satellite NIRv | cal | 611 (79) | +0.03 | -1.6*** | -0.1 | -1.6*** | -0.0 | -1.2** | 0.017 | 0.000 |
+| summer-green | all sources stacked | sos | 1393 (85) | -0.03 | -1.8*** | +0.3 | -1.8*** | +0.2 | -1.4** | 0.020 | 0.000 |
+| summer-green | all sources stacked | cal | 1545 (85) | -0.06 | -1.7*** | +0.3 | -1.7*** | +0.2 | -1.3** | 0.017 | 0.000 |
+| all | PhenoCam | sos | 161 (21) | -0.19 | -2.0 | +1.9 | -1.7 | +1.6 | -1.6 | 0.015 | 0.013 |
+| all | PhenoCam | cal | 186 (25) | -0.23 | -1.3 | +1.8 | -0.9 | +1.6 | -0.8 | 0.004 | 0.012 |
+| all | tower NDVI | sos | 318 (37) | -0.14 | -1.9 | +1.0 | -1.8 | +0.7 | -1.0 | 0.013 | 0.002 |
+| all | tower NDVI | cal | 357 (41) | -0.17 | -2.5* | +1.1 | -2.4* | +0.7 | -1.6 | 0.022 | 0.002 |
+| all | satellite NDVI | sos | 395 (62) | +0.04 | -1.9*** | -0.3 | -1.9*** | -0.2 | -1.8*** | 0.032 | 0.000 |
+| all | satellite NDVI | cal | 456 (69) | +0.01 | -1.1* | -0.3 | -1.1* | -0.3 | -0.8 | 0.009 | 0.001 |
+| all | satellite NIRv | sos | 650 (87) | +0.07 | -1.3** | +0.1 | -1.3** | +0.2 | -1.1* | 0.012 | 0.000 |
+| all | satellite NIRv | cal | 681 (88) | +0.03 | -1.5*** | +0.1 | -1.5*** | +0.1 | -1.2** | 0.015 | 0.000 |
+| all | all sources stacked | sos | 1524 (94) | -0.01 | -1.7*** | +0.4 | -1.6*** | +0.4 | -1.3** | 0.017 | 0.001 |
+| all | all sources stacked | cal | 1680 (94) | -0.05 | -1.6*** | +0.4 | -1.5*** | +0.3 | -1.2** | 0.014 | 0.001 |
+
+### C. Sink variables in place of GPP (60 days before / 45 days from the solstice)
+
+| sites | EOS source | variable | n (sites) | pre | post | R2 | R2 of GPP, same rows | r with GPP (pre) | variable next to GPP | GPP next to it |
+|---|---|---|---|---|---|---|---|---|---|---|
+| all | PhenoCam | GPP | 186 (25) | -1.3 | -0.0 | 0.008 | - | - | - | - |
+| all | PhenoCam | NPPd | 184 (25) | -1.2 | +0.5 | 0.008 | 0.010 | +0.65 | -0.4 | -1.1 |
+| all | PhenoCam | Ra | 184 (25) | -0.3 | -0.4 | 0.002 | 0.010 | +0.54 | +0.3 | -1.5 |
+| all | PhenoCam | Rg | 184 (25) | -2.6* | +0.9 | 0.037 | 0.010 | +0.65 | -2.8 | +0.4 |
+| all | PhenoCam | Rm | 184 (25) | +0.3 | -0.7 | 0.002 | 0.010 | +0.38 | +0.7 | -1.6 |
+| all | PhenoCam | SI | 207 (28) | +1.2 | -0.4 | 0.007 | 0.008 | -0.09 | +1.1 | -1.2 |
+| all | PhenoCam | fT | 207 (28) | -1.7* | -0.1 | 0.015 | 0.008 | +0.15 | -1.8 | -1.0 |
+| all | PhenoCam | fW | 207 (28) | +2.1* | -0.7 | 0.020 | 0.008 | -0.20 | +1.8 | -0.9 |
+| all | tower NDVI | GPP | 356 (41) | -2.8* | +0.8 | 0.028 | - | - | - | - |
+| all | tower NDVI | NPPd | 356 (41) | -1.7 | +0.8 | 0.011 | 0.028 | +0.68 | +0.6 | -2.9* |
+| all | tower NDVI | Ra | 356 (41) | -1.3 | +0.1 | 0.007 | 0.028 | +0.37 | -0.5 | -2.3 |
+| all | tower NDVI | Rg | 356 (41) | -2.0 | +0.1 | 0.016 | 0.028 | +0.65 | -0.6 | -2.1 |
+| all | tower NDVI | Rm | 356 (41) | -0.8 | +0.0 | 0.003 | 0.028 | +0.21 | -0.3 | -2.4* |
+| all | tower NDVI | SI | 385 (43) | -0.8 | +0.5 | 0.003 | 0.028 | +0.31 | -0.1 | -2.5* |
+| all | tower NDVI | fT | 385 (43) | -2.9** | +0.1 | 0.036 | 0.028 | +0.41 | -2.8** | -1.3 |
+| all | tower NDVI | fW | 385 (43) | +1.6 | -0.7 | 0.009 | 0.028 | -0.07 | +1.4 | -2.4* |
+| all | satellite NDVI | GPP | 446 (67) | -1.2 | -0.0 | 0.010 | - | - | - | - |
+| all | satellite NDVI | NPPd | 441 (66) | -1.0 | -0.4 | 0.010 | 0.012 | +0.78 | -0.2 | -1.1 |
+| all | satellite NDVI | Ra | 441 (66) | -0.5 | +0.5 | 0.002 | 0.012 | +0.39 | +0.2 | -1.4* |
+| all | satellite NDVI | Rg | 441 (66) | -0.7 | -1.1 | 0.014 | 0.012 | +0.76 | +0.1 | -1.4 |
+| all | satellite NDVI | Rm | 441 (66) | -0.2 | +0.6 | 0.002 | 0.012 | +0.17 | +0.1 | -1.3* |
+| all | satellite NDVI | SI | 497 (73) | -1.1* | -0.1 | 0.010 | 0.010 | +0.18 | -1.0* | -1.0* |
+| all | satellite NDVI | fT | 497 (73) | -1.3* | +0.4 | 0.014 | 0.010 | +0.24 | -1.0 | -0.9 |
+| all | satellite NDVI | fW | 497 (73) | -0.1 | -0.3 | 0.001 | 0.010 | -0.02 | -0.3 | -1.2* |
+| all | satellite NIRv | GPP | 675 (88) | -1.9*** | +1.1 | 0.022 | - | - | - | - |
+| all | satellite NIRv | NPPd | 672 (88) | -1.2* | +0.8 | 0.011 | 0.023 | +0.69 | +0.1 | -1.6* |
+| all | satellite NIRv | Ra | 672 (88) | -0.7 | +0.2 | 0.003 | 0.023 | +0.41 | -0.1 | -1.5*** |
+| all | satellite NIRv | Rg | 672 (88) | -1.1* | +0.5 | 0.008 | 0.023 | +0.68 | +0.2 | -1.6* |
+| all | satellite NIRv | Rm | 672 (88) | -0.4 | +0.1 | 0.001 | 0.023 | +0.24 | -0.1 | -1.5*** |
+| all | satellite NIRv | SI | 751 (94) | -1.5** | +0.4 | 0.015 | 0.022 | +0.23 | -1.3* | -1.2** |
+| all | satellite NIRv | fT | 751 (94) | -2.0*** | -0.5 | 0.030 | 0.022 | +0.17 | -1.8** | -1.2** |
+| all | satellite NIRv | fW | 751 (94) | -0.1 | +0.3 | 0.000 | 0.022 | +0.08 | -0.1 | -1.5*** |
+| deciduous | PhenoCam | GPP | 81 (9) | -0.0 | -2.3 | 0.031 | - | - | - | - |
+| deciduous | PhenoCam | NPPd | 81 (9) | -0.8 | -0.3 | 0.005 | 0.031 | +0.59 | -0.8 | -0.2 |
+| deciduous | PhenoCam | Ra | 81 (9) | +0.6 | -1.4 | 0.011 | 0.031 | +0.48 | +0.7 | -1.0 |
+| deciduous | PhenoCam | Rg | 81 (9) | -3.3 | +0.9 | 0.066 | 0.031 | +0.51 | -4.0 | +1.3 |
+| deciduous | PhenoCam | Rm | 81 (9) | +1.3 | -1.6 | 0.018 | 0.031 | +0.35 | +1.3 | -1.1 |
+| deciduous | PhenoCam | SI | 93 (10) | -1.6 | +1.3 | 0.017 | 0.031 | -0.04 | -1.4 | -0.7 |
+| deciduous | PhenoCam | fT | 93 (10) | +0.2 | +1.7** | 0.020 | 0.031 | +0.39 | +1.3 | -1.2 |
+| deciduous | PhenoCam | fW | 93 (10) | -1.4 | +0.9 | 0.009 | 0.031 | -0.32 | -1.6* | -1.2 |
+| deciduous | tower NDVI | GPP | 174 (17) | -1.2 | +3.1* | 0.059 | - | - | - | - |
+| deciduous | tower NDVI | NPPd | 174 (17) | -0.9 | +2.7** | 0.047 | 0.059 | +0.67 | +0.0 | -0.4 |
+| deciduous | tower NDVI | Ra | 174 (17) | -0.1 | -0.0 | 0.000 | 0.059 | +0.33 | -0.0 | -0.4 |
+| deciduous | tower NDVI | Rg | 174 (17) | -1.8 | +2.2* | 0.040 | 0.059 | +0.63 | -1.6 | +0.6 |
+| deciduous | tower NDVI | Rm | 174 (17) | +0.3 | -0.4 | 0.001 | 0.059 | +0.17 | +0.2 | -0.4 |
+| deciduous | tower NDVI | SI | 189 (18) | +0.5 | +2.5 | 0.048 | 0.059 | +0.20 | +1.4 | -0.7 |
+| deciduous | tower NDVI | fT | 189 (18) | -1.2 | +1.2 | 0.017 | 0.059 | +0.40 | -1.8 | +0.3 |
+| deciduous | tower NDVI | fW | 189 (18) | +1.5 | +1.3 | 0.038 | 0.059 | -0.17 | +2.6** | +0.0 |
+| deciduous | satellite NDVI | GPP | 170 (23) | -1.1 | +1.0 | 0.013 | - | - | - | - |
+| deciduous | satellite NDVI | NPPd | 169 (23) | -0.6 | +1.2 | 0.016 | 0.013 | +0.76 | +0.4 | -0.9 |
+| deciduous | satellite NDVI | Ra | 169 (23) | -0.4 | -0.6 | 0.006 | 0.013 | +0.43 | -0.3 | -0.5 |
+| deciduous | satellite NDVI | Rg | 169 (23) | -0.2 | -0.1 | 0.001 | 0.013 | +0.72 | +0.3 | -0.8 |
+| deciduous | satellite NDVI | Rm | 169 (23) | -0.3 | -0.5 | 0.005 | 0.013 | +0.23 | -0.3 | -0.5 |
+| deciduous | satellite NDVI | SI | 194 (26) | -2.0*** | +0.9 | 0.050 | 0.013 | +0.16 | -1.6** | -0.3 |
+| deciduous | satellite NDVI | fT | 194 (26) | -1.0 | +0.3 | 0.013 | 0.013 | +0.38 | -0.4 | -0.4 |
+| deciduous | satellite NDVI | fW | 194 (26) | -1.4 | +1.1* | 0.022 | 0.013 | -0.18 | -1.2 | -0.8 |
+| deciduous | satellite NIRv | GPP | 195 (25) | -2.1* | +2.3 | 0.044 | - | - | - | - |
+| deciduous | satellite NIRv | NPPd | 194 (25) | -1.0 | +2.0** | 0.036 | 0.044 | +0.73 | +0.4 | -1.4 |
+| deciduous | satellite NIRv | Ra | 194 (25) | -0.6 | -0.4 | 0.007 | 0.044 | +0.47 | -0.3 | -0.9 |
+| deciduous | satellite NIRv | Rg | 194 (25) | -1.6** | +1.5 | 0.030 | 0.044 | +0.72 | -0.9 | -0.4 |
+| deciduous | satellite NIRv | Rm | 194 (25) | -0.3 | -0.7 | 0.006 | 0.044 | +0.30 | -0.2 | -1.0 |
+| deciduous | satellite NIRv | SI | 224 (28) | -0.9 | +1.2 | 0.015 | 0.044 | +0.23 | -0.3 | -1.0 |
+| deciduous | satellite NIRv | fT | 224 (28) | -2.7*** | -0.3 | 0.064 | 0.044 | +0.39 | -2.7** | -0.0 |
+| deciduous | satellite NIRv | fW | 224 (28) | +1.6 | +0.4 | 0.028 | 0.044 | -0.10 | +1.5 | -0.9 |
+| evergreen | tower NDVI | GPP | 86 (12) | -5.1* | +0.7 | 0.070 | - | - | - | - |
+| evergreen | tower NDVI | NPPd | 86 (12) | -0.9 | -1.6 | 0.014 | 0.070 | +0.52 | +2.0 | -6.0*** |
+| evergreen | tower NDVI | Ra | 86 (12) | -3.5 | +1.5 | 0.035 | 0.070 | +0.44 | -1.7 | -4.2* |
+| evergreen | tower NDVI | Rg | 86 (12) | -0.1 | -2.3 | 0.016 | 0.070 | +0.47 | +2.7 | -6.3*** |
+| evergreen | tower NDVI | Rm | 86 (12) | -3.2 | +1.9 | 0.031 | 0.070 | +0.32 | -1.8 | -4.4* |
+| evergreen | tower NDVI | SI | 89 (12) | -3.9 | +0.8 | 0.043 | 0.070 | +0.47 | -2.3 | -3.8*** |
+| evergreen | tower NDVI | fT | 89 (12) | -5.6*** | +1.0 | 0.095 | 0.070 | +0.52 | -4.5 | -2.4 |
+| evergreen | tower NDVI | fW | 89 (12) | +2.1 | -1.1 | 0.013 | 0.070 | -0.00 | +1.7 | -4.7** |
+| evergreen | satellite NDVI | GPP | 82 (15) | -1.3 | -0.9 | 0.016 | - | - | - | - |
+| evergreen | satellite NDVI | NPPd | 82 (15) | +1.0 | -4.7* | 0.085 | 0.016 | +0.79 | +1.0 | -2.5 |
+| evergreen | satellite NDVI | Ra | 82 (15) | -2.6 | +3.8* | 0.060 | 0.016 | +0.37 | -0.7 | -1.5 |
+| evergreen | satellite NDVI | Rg | 82 (15) | +0.5 | -4.9** | 0.095 | 0.016 | +0.81 | -0.3 | -1.6 |
+| evergreen | satellite NDVI | Rm | 82 (15) | -2.1 | +4.2* | 0.071 | 0.016 | +0.14 | -0.5 | -1.7 |
+| evergreen | satellite NDVI | SI | 89 (17) | -1.3 | +1.2 | 0.009 | 0.016 | +0.32 | -0.7 | -1.5 |
+| evergreen | satellite NDVI | fT | 89 (17) | -1.0 | +1.1 | 0.011 | 0.016 | +0.16 | -0.9 | -1.6 |
+| evergreen | satellite NDVI | fW | 89 (17) | -0.4 | +0.3 | 0.001 | 0.016 | +0.23 | -0.1 | -1.7 |
+| evergreen | satellite NIRv | GPP | 211 (27) | -2.2** | +0.3 | 0.034 | - | - | - | - |
+| evergreen | satellite NIRv | NPPd | 211 (27) | -0.8 | -0.6 | 0.010 | 0.034 | +0.67 | +0.7 | -2.5* |
+| evergreen | satellite NIRv | Ra | 211 (27) | -1.4 | +0.8 | 0.015 | 0.034 | +0.31 | -0.5 | -1.9** |
+| evergreen | satellite NIRv | Rg | 211 (27) | -0.5 | -0.3 | 0.004 | 0.034 | +0.64 | +1.2 | -2.8** |
+| evergreen | satellite NIRv | Rm | 211 (27) | -1.1 | +0.7 | 0.010 | 0.034 | +0.15 | -0.6 | -1.9*** |
+| evergreen | satellite NIRv | SI | 217 (27) | -0.9 | +0.6 | 0.007 | 0.034 | +0.28 | -0.2 | -2.0** |
+| evergreen | satellite NIRv | fT | 217 (27) | -1.1 | -0.9 | 0.019 | 0.034 | +0.11 | -1.1 | -1.9** |
+| evergreen | satellite NIRv | fW | 217 (27) | -0.2 | +0.7 | 0.003 | 0.034 | +0.19 | +0.5 | -2.1** |
+
+![Deciduous forests: leaf-out date against early GPP (step 44)](../figure/mechanism/leafout_vs_gpp.png)
+
+*Deciduous forests: leaf-out date against early GPP (step 44)*
+
+![Pre-solstice GPP against the spring water balance, by season type (step 44)](../figure/mechanism/water.png)
+
+*Pre-solstice GPP against the spring water balance, by season type (step 44)*
+
+![GPP and sink variables in the same two-window model (step 44)](../figure/mechanism/sink.png)
+
+*GPP and sink variables in the same two-window model (step 44)*
 
 ---
 

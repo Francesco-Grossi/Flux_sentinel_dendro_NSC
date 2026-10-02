@@ -5,11 +5,16 @@ solstice (Notion D.1 test (b), after Zohner et al. 2023 Fig. S12).
 Question: which period of the season has the MOST NEGATIVE relationship
 between carbon uptake and EOS, and is it close to the summer solstice?
 
-For each window length L (15 / 30 d) and start offset k = -75 ... +75 d
+For each window length L (15 / 30 d) and start offset k = -120 ... +75 d
 relative to the solstice, take the mean daily flux over
-[SOL + k, SOL + k + L - 1] and regress EOS10 / EOS50 / EOS90 on it
-(site-random-intercept LME, predictor z-scored; beta = days per +1 SD).
-Windows do not depend on any EOS value, so there is no circularity.
+[SOL + k, SOL + k + L - 1] and regress EOS10 / EOS50 / EOS90 on it WITHIN
+SITES (year minus site mean, SE clustered by site; beta = days per +1
+within-site SD). Windows do not depend on any EOS value, so there is no
+circularity. The scan starts 120 days before the solstice (late February):
+with the earlier range of -75 days the most negative window sat on the edge.
+`at_edge` in the minima table flags a minimum on the first or last offset.
+Early windows fall before leaf-out at cold sites, where GPP is ~0 and hardly
+varies; such windows simply give a slope near zero.
 
 Input : data/phenology_double_logistic_by_site_year_index.csv (step 23)
         data/fluxnet_landsat_merged.csv                        (step 22)
@@ -25,7 +30,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import eos_common as ec
 
-OFFSETS = list(range(-75, 76, 5))
+OFFSETS = list(range(-120, 76, 5))
 LENGTHS = (15, 30)
 OUTPUT_CSV = ec.DATA_DIR / "eos_solstice_sliding_scan.csv"
 OUTPUT_MIN_CSV = ec.DATA_DIR / "eos_solstice_sliding_scan_minima.csv"
@@ -49,7 +54,7 @@ for cv in carbon_vars:
             for vi in sorted(pheno['vi_index'].unique()):
                 d = pheno[pheno['vi_index'] == vi].merge(xs, on=['site_id', 'year'], how='left')
                 for target in ec.TARGETS:
-                    res = ec.lme_slope(d, target, 'x')
+                    res = ec.site_slope(d, target, 'x', with_lme=False)
                     if res:
                         rows.append({'carbon': cv, 'vi_index': vi, 'target': target, 'length_days': L,
                                      'offset_from_solstice_days': k, **res})
@@ -65,6 +70,7 @@ minima = (scan.sort_values('beta_days_per_sd')
           [['carbon', 'vi_index', 'target', 'length_days', 'offset_from_solstice_days',
             'beta_days_per_sd', 'p_value', 'n_obs', 'n_sites']])
 minima['near_solstice_pm15d'] = minima['offset_from_solstice_days'].abs() <= 15
+minima['at_edge'] = minima['offset_from_solstice_days'].isin([OFFSETS[0], OFFSETS[-1]])
 minima.to_csv(OUTPUT_MIN_CSV, index=False)
 print("\nMost negative window per curve (offset in days from solstice; window START):")
 print(minima.round(3).to_string(index=False))

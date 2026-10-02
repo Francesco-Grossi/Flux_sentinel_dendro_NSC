@@ -15,8 +15,10 @@ relationship with EOS, sink activities via NPP):
                        Comparing the two shows how much of a "positive cGPP -
                        EOS" relationship is just season length.
 
-Each cell = site-random-intercept LME of EOS on the z-scored predictor
-(beta = days of EOS shift per +1 SD), plus pooled and within-site Pearson r.
+Each cell = WITHIN-SITE slope of EOS on the predictor (year minus site mean,
+SE clustered by site; beta = days of EOS shift per +1 within-site SD), plus
+the site-random-intercept mixed-model slope for comparison (lme_ columns;
+inflated by differences between sites) and pooled / within-site Pearson r.
 
 Input : data/eos_window_predictors_{fixed,year}_anchor.csv   (step 27)
 Output: data/eos_window_scan.csv
@@ -46,7 +48,7 @@ for mode, path in (('fixed', ec.WINDOW_FIXED_CSV), ('year', ec.WINDOW_YEAR_CSV))
                 windows = [c.split('__')[1] for c in w.columns if c.startswith(f'{cv}_mean__')]
                 for metric in (('mean',) if cv in ratio_vars else ('cum', 'mean')):
                     for win in windows:
-                        res = ec.lme_slope(wv, target, f'{cv}_{metric}__{win}')
+                        res = ec.site_slope(wv, target, f'{cv}_{metric}__{win}')
                         if res:
                             rows.append({'anchor': mode, 'vi_index': vi, 'target': target,
                                          'carbon': cv, 'metric': metric, 'window': win, **res})
@@ -58,6 +60,14 @@ if scan.empty:
     raise SystemExit("No cell had enough data (need >= "
                      f"{ec.MIN_OBS} obs / {ec.MIN_SITES} sites). Check step 27 output.")
 
+both = scan.dropna(subset=['lme_beta_days_per_sd']) if 'lme_beta_days_per_sd' in scan else scan.iloc[:0]
+if len(both):
+    ratio = (both['lme_beta_days_per_sd'].abs() / both['beta_days_per_sd'].abs().clip(lower=1e-9)).median()
+    print(f"Mixed model vs within-site: median |beta| {both['lme_beta_days_per_sd'].abs().median():.2f} vs "
+          f"{both['beta_days_per_sd'].abs().median():.2f} d/SD (median ratio {ratio:.1f}); "
+          f"p < 0.05 in {int((both['lme_p_value'] < 0.05).sum())} vs {int((both['p_value'] < 0.05).sum())} of {len(both)} cells; "
+          f"same sign in {100 * (np.sign(both['lme_beta_days_per_sd']) == np.sign(both['beta_days_per_sd'])).mean():.0f}%.")
+
 # ---- console summary: the "sign shift" of the Notion page, EOS10 & EOS50, GPP
 pd.set_option('display.width', 200)
 for mode in ('fixed', 'year'):
@@ -66,7 +76,7 @@ for mode in ('fixed', 'year'):
         if sub.empty:
             continue
         pv = sub.pivot_table(index='window', columns=['vi_index', 'metric'], values='beta_days_per_sd')
-        print(f"\n[{mode} anchors] GPP -> {target}: beta (days per +1 SD), rows = window")
+        print(f"\n[{mode} anchors] GPP -> {target}: within-site beta (days per +1 SD), rows = window")
         print(pv.round(2).to_string())
 
 # ---- figures: grouped bars (cum vs mean) with 95% CI, one panel per target
@@ -89,7 +99,7 @@ for (mode, vi, cv), sub in scan.groupby(['anchor', 'vi_index', 'carbon']):
         ax.set_xticks(x)
         ax.set_xticklabels([w_.replace('_to_', '→') for w_ in wins], rotation=40, ha='right', fontsize=8)
         ax.set_title(f'{target}')
-    axes[0][0].set_ylabel('EOS shift (days per +1 SD)')
+    axes[0][0].set_ylabel('EOS shift (days per +1 within-site SD)')
     axes[0][0].legend(fontsize=8)
     fig.suptitle(f'{cv} vs EOS - {vi} - {mode} anchors', y=1.02)
     fig.tight_layout()

@@ -44,6 +44,14 @@ Window versions ("anchor"):
             late the canopy keeps photosynthesising in those weeks - late EOS
             then CAUSES high post-solstice GPP, not the reverse. Ending the
             window before the decline starts removes that reverse path.
+    calendar   pre = the CAL_PRE days before the solstice, post = the CAL_POST
+            days from the solstice, total = both. The other versions start
+            at the year's leaf-out, so an early spring lengthens the pre
+            window: pre-solstice GPP then partly IS leaf-out date. Calendar
+            windows depend on neither leaf-out nor EOS.
+    rate    mean daily GPP over the 'fixed' windows instead of the sum:
+            uptake per day, free of window length (but still averaged from
+            the year's leaf-out).
 How large the built-in part is, is measured with a LENGTH-ONLY NULL: the
 year-anchored windows are filled with the site's average seasonal GPP curve
 instead of that year's GPP, so the predictor varies ONLY through window
@@ -70,7 +78,6 @@ import warnings
 
 import numpy as np
 import pandas as pd
-import statsmodels.api as sm
 import statsmodels.formula.api as smf
 import matplotlib
 matplotlib.use("Agg")
@@ -94,20 +101,25 @@ ALPHA = 0.05
 MIN_OBS, MIN_SITES = 30, 5
 MIN_YEARS_WITHIN = 3
 COVARS = ['SOS', 'TA_pre', 'TA_post']     # leaf-out date, air temperature before / after the solstice
+CAL_PRE, CAL_POST = 60, 45      # calendar windows: days before / from the solstice
 SPRING_PEAK_DOY = 152           # seasonal GPP peak before 1 June -> dry-summer site
 GROUPS = ['all', 'summer-green', 'dry-summer', 'deciduous', 'evergreen', 'grass/shrub']
 LEAF_HABIT = {'DBF': 'deciduous', 'DNF': 'deciduous', 'MF': 'deciduous', 'ENF': 'evergreen', 'EBF': 'evergreen'}
 
 
 def variants(target):
-    """(anchor name, description, window file, post column, total column)."""
-    v = [('fixed', f'windows end at the site mean {target}', ec.WINDOW_FIXED_CSV,
+    """(anchor name, description, window file, pre column, post column, total column)."""
+    v = [('fixed', f'windows end at the site mean {target}', ec.WINDOW_FIXED_CSV, PRE,
           f'GPP_cum__SOL_to_{target}', f'GPP_cum__SOS_to_{target}')]
     if target == 'EOS10':
         v.append(('fixed_before_senescence', 'windows end at the site mean EOS90 (before the decline starts)',
-                  ec.WINDOW_FIXED_CSV, 'GPP_cum__SOL_to_EOS90', 'GPP_cum__SOS_to_EOS90'))
+                  ec.WINDOW_FIXED_CSV, PRE, 'GPP_cum__SOL_to_EOS90', 'GPP_cum__SOS_to_EOS90'))
+    v.append(('calendar', f'calendar windows: {CAL_PRE} d before / {CAL_POST} d from the solstice (independent of leaf-out)',
+              ec.WINDOW_FIXED_CSV, 'GPP_cal__pre', 'GPP_cal__post', 'GPP_cal__total'))
+    v.append(('rate', f'mean daily GPP (rate) over the windows ending at the site mean {target}',
+              ec.WINDOW_FIXED_CSV, 'GPP_mean__SOS_to_SOL', f'GPP_mean__SOL_to_{target}', f'GPP_mean__SOS_to_{target}'))
     v.append(('year', f'windows end at the same-year {target} (as worded; positive post slope built in)',
-              ec.WINDOW_YEAR_CSV, f'GPP_cum__SOL_to_{target}', f'GPP_cum__SOS_to_{target}'))
+              ec.WINDOW_YEAR_CSV, PRE, f'GPP_cum__SOL_to_{target}', f'GPP_cum__SOS_to_{target}'))
     return v
 
 
@@ -127,20 +139,7 @@ def fe(fit, name):
 def within_fit(d, y, xs):
     """OLS on within-site anomalies (year minus site mean), predictors scaled to their
     within-site SD, SE clustered by site. Returns {x: (beta, se, p two-sided)}, n, n_sites."""
-    d = d[['site_id', y] + xs].dropna()
-    d = d[d.groupby('site_id')['site_id'].transform('size') >= MIN_YEARS_WITHIN]
-    if len(d) < MIN_OBS or d['site_id'].nunique() < MIN_SITES:
-        return None
-    dm = d[[y] + xs] - d.groupby('site_id')[[y] + xs].transform('mean')
-    sd = dm[xs].std()
-    if (sd == 0).any() or sd.isna().any():
-        return None
-    X = sm.add_constant((dm[xs] / sd).to_numpy(float))
-    with warnings.catch_warnings():
-        warnings.simplefilter('ignore')
-        f = sm.OLS(dm[y].to_numpy(float), X).fit(cov_type='cluster', cov_kwds={'groups': pd.factorize(d['site_id'])[0]})
-    return {x: (float(f.params[i + 1]), float(f.bse[i + 1]), float(f.pvalues[i + 1])) for i, x in enumerate(xs)}, \
-        len(d), d['site_id'].nunique()
+    return ec.within_fit(d, y, xs, MIN_YEARS_WITHIN, MIN_OBS, MIN_SITES)
 
 
 def one_sided(b, se, negative):
@@ -199,15 +198,22 @@ def in_group(w, group):
     return w[w[col] == group]
 
 
+lk = ec.FluxLookup(flux, ['GPP'])
 csv_cache, tables, anchors = {}, {}, {}
 for target in TARGETS:
-    for anchor, desc, path, post_col, total_col in variants(target):
+    for anchor, desc, path, pre_col, post_col, total_col in variants(target):
         if path not in csv_cache:
-            csv_cache[path] = pd.read_csv(path)
+            c = pd.read_csv(path)
+            c['GPP_cal__pre'] = [lk.window_mean(s, y, 'GPP', so - CAL_PRE, so - 1) * CAL_PRE
+                                 for s, y, so in zip(c['site_id'], c['year'], c['SOL'])]
+            c['GPP_cal__post'] = [lk.window_mean(s, y, 'GPP', so, so + CAL_POST - 1) * CAL_POST
+                                  for s, y, so in zip(c['site_id'], c['year'], c['SOL'])]
+            c['GPP_cal__total'] = c['GPP_cal__pre'] + c['GPP_cal__post']
+            csv_cache[path] = c
         w = csv_cache[path].copy()
         w['leaf_habit'] = w['igbp'].map(LEAF_HABIT).fillna('grass/shrub')
         w['season_type'] = w['site_id'].map(season_type)
-        w['pre'], w['post'], w['total'] = w[PRE] / UNIT, w[post_col] / UNIT, w[total_col] / UNIT
+        w['pre'], w['post'], w['total'] = w[pre_col] / UNIT, w[post_col] / UNIT, w[total_col] / UNIT
         w['TA_pre'], w['TA_post'] = w.get('TA_mean__SOS_to_SOL', np.nan), w.get('TA_mean__SOL_to_EOS10', np.nan)
         if anchor == 'year':
             w['post_len'] = [clim_sum(s, a, b) / UNIT for s, a, b in zip(w['site_id'], w['SOL'], w[f'{target}_anchor'])]
@@ -381,11 +387,12 @@ for target in TARGETS:
                     slope, icpt = np.polyfit(x, y, 1)
                     xs = np.linspace(x.min(), x.max(), 50)
                     ax.plot(xs, slope * xs + icpt, color='#c53030', lw=1.5)
-                    ax.set_title(f"{anchor} - {lab}\nr = {np.corrcoef(x, y)[0, 1]:.2f}, "
-                                 f"{slope * 100:+.1f} d per 100 gC m-2, n = {len(x)}", fontsize=9)
+                    per = (f"{slope:+.1f} d per gC m-2 d-1" if anchor == 'rate' else f"{slope * 100:+.1f} d per 100 gC m-2")
+                    ax.set_title(f"{anchor} - {lab}\nr = {np.corrcoef(x, y)[0, 1]:.2f}, {per}, n = {len(x)}", fontsize=9)
                     if i == 0 and j == 0:
                         ax.legend(fontsize=7)
-                ax.set_xlabel('GPP anomaly (gC m-2, year minus site mean)')
+                ax.set_xlabel('GPP anomaly (gC m-2 d-1, year minus site mean)' if anchor == 'rate'
+                              else 'GPP anomaly (gC m-2, year minus site mean)')
                 if j == 0:
                     ax.set_ylabel(f'{target} anomaly (days)')
         fig.suptitle(f"{src}: {target} vs cumulative GPP, within-site anomalies (one row per window version)", fontsize=10)

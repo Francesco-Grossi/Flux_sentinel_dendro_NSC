@@ -1,8 +1,9 @@
 """
 PIPELINE STEP 40 - Scatter + best-fit line for every (autumn_parameter x
-predictor) pair from step 28's correlation table, NDVI and NIRv side by
-side, so the correlation strength can actually be looked at rather than
-just read off a table of r/p values.
+predictor) pair from step 28's correlation table, one panel per EOS source
+(satellite NDVI and NIRv, tower NDVI, PhenoCam GCC), so the correlation
+strength can actually be looked at rather than just read off a table of
+r/p values.
 
 For the split-GPP effect, compare the pairs of figures
     <EOS>_vs_gpp_solstice_to_eos90.png   and   <EOS>_vs_gpp_solstice_to_eos90_fixed.png
@@ -42,8 +43,9 @@ MIN_YEARS = 3
 SITEYEAR_CSV = DATA_DIR / "phenology_flux_predictors_by_site_year_index.csv"  # step 28
 CORR_CSV = DATA_DIR / "autumn_phenology_correlations.csv"                    # step 28
 
-VI_INDICES = ['NDVI', 'NIRv']
-VI_COLORS = {'NDVI': '#2b6cb0', 'NIRv': '#38a169'}
+VI_INDICES = ['NDVI', 'NIRv', 'NDVI_tower', 'GCC']
+VI_COLORS = {'NDVI': '#2b6cb0', 'NIRv': '#38a169', 'NDVI_tower': '#dd6b20', 'GCC': '#805ad5'}
+VI_LABELS = {'NDVI': 'Satellite NDVI', 'NIRv': 'Satellite NIRv', 'NDVI_tower': 'Tower NDVI', 'GCC': 'PhenoCam (GCC)'}
 
 for p in (SITEYEAR_CSV, CORR_CSV):
     if not os.path.exists(p):
@@ -90,33 +92,46 @@ def plot_panel(ax, vi, autumn_p, pred, within=False):
     if within:
         ax.axhline(0, color='0.8', lw=0.8, zorder=0)
         ax.axvline(0, color='0.8', lw=0.8, zorder=0)
-    ax.set_title(f"{vi}\nr = {r_value:.2f}, p = {p_value:.3g}, n = {len(pair)}")
+    ax.set_title(f"{VI_LABELS.get(vi, vi)}\nr = {r_value:.2f}, p = {p_value:.3g}, n = {len(pair)}")
     ax.legend(loc='best', fontsize=8)
     ax.grid(True, linestyle='--', alpha=0.4)
 
 
+VI_INDICES = [v for v in VI_INDICES if v in set(analysis_df['vi_index'])]
+
+
+def new_figure():
+    """One panel per EOS source, two per row."""
+    n_rows = int(np.ceil(len(VI_INDICES) / 2))
+    fig, axes = plt.subplots(n_rows, 2, figsize=(11, 4.8 * n_rows), sharey=True, squeeze=False)
+    axes = axes.ravel()
+    for extra in axes[len(VI_INDICES):]:
+        extra.axis('off')
+    return fig, axes
+
+
 pairs = corr_df[['autumn_parameter', 'predictor']].drop_duplicates()
 print(f"Plotting {len(pairs)} autumn-parameter x predictor pairs "
-      f"(NDVI and NIRv side by side) to '{FIGURE_DIR}'...")
+      f"(one panel per EOS source: {', '.join(VI_INDICES)}) to '{FIGURE_DIR}'...")
 
 n_plotted = 0
 for _, prow in pairs.iterrows():
     autumn_p, pred = prow['autumn_parameter'], prow['predictor']
-    fig, axes = plt.subplots(1, 2, figsize=(11, 5), sharey=True)
+    fig, axes = new_figure()
     for ax, vi in zip(axes, VI_INDICES):
         plot_panel(ax, vi, autumn_p, pred)
     fig.suptitle(f"{autumn_p} vs {pred}", fontsize=13, fontweight='bold')
-    fig.tight_layout(rect=[0, 0, 1, 0.94])
+    fig.tight_layout(rect=[0, 0, 1, 0.96])
     out_path = FIGURE_DIR / f"{safe_filename(autumn_p)}_vs_{safe_filename(pred)}.png"
     fig.savefig(out_path, dpi=150)
     plt.close(fig)
     n_plotted += 1
 
-    fig, axes = plt.subplots(1, 2, figsize=(11, 5), sharey=True)
+    fig, axes = new_figure()
     for ax, vi in zip(axes, VI_INDICES):
         plot_panel(ax, vi, autumn_p, pred, within=True)
     fig.suptitle(f"{autumn_p} vs {pred} - within-site anomalies", fontsize=13, fontweight='bold')
-    fig.tight_layout(rect=[0, 0, 1, 0.94])
+    fig.tight_layout(rect=[0, 0, 1, 0.96])
     fig.savefig(WITHIN_DIR / f"{safe_filename(autumn_p)}_vs_{safe_filename(pred)}.png", dpi=150)
     plt.close(fig)
 

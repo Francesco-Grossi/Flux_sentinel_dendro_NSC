@@ -7,13 +7,13 @@
 # Steps are numbered by stage:
 #   1x  raw downloads            (network; slow)
 #   2x  filtering and fitting    (QC, merge, phenology, CUE / NPP, predictors)
-#   3x-42  analysis              (results, figures, summaries)
+#   3x-45  analysis              (results, figures, summaries)
 #
 # Usage:
 #   ./run_pipeline.sh              run everything, from scratch
 #   ./run_pipeline.sh 21           resume from step 21 to the end
 #   ./run_pipeline.sh 21 27        run steps 21 through 27
-#   ./run_pipeline.sh 30 42        only the analysis
+#   ./run_pipeline.sh 30 45        only the analysis
 #   ./run_pipeline.sh --list       show the steps and exit
 #
 # Logs: each step's stdout+stderr goes to logs/<step>.log AND the console at
@@ -39,7 +39,7 @@ STEPS=(
   "25_phenology_phenocam.py"            # leaf-out / EOS from PhenoCam GCC
   "26_cue_npp_luo2025.py"               # CUE (annual, seasonal, daily) and daily NPP
   "27_window_predictors.py"             # carbon / climate window predictors per site-year
-  "28_autumn_phenology_predictors.py"   # satellite EOS + split-GPP windows, for the 1:1 plots
+  "28_autumn_phenology_predictors.py"   # every EOS source + split-GPP windows, for the 1:1 plots
   # ---- 3x analysis
   "30_eos_satellite_vs_gpp.py"          # GPP-derived EOS10; each EOS source against it
   "31_compare_eos_sources.py"           # agreement between EOS sources
@@ -53,7 +53,10 @@ STEPS=(
   "39_anomaly_timing_drought.py"        # timing of anomalies; drought vs non-drought years
   "40_plot_predictor_correlations.py"   # 1:1 scatter of every EOS x predictor pair (split-GPP effect)
   "41_split_gpp_cancellation_test.py"   # formal test: pre negative, post positive, total none
-  "42_results_report.py"                # one Markdown report with all results and figures
+  "42_compare_phenocam_satellite.py"    # PhenoCam vs satellite EOS on the same site-years
+  "43_presolstice_robustness.py"        # leave-one-site-out, QC thresholds, power
+  "44_mechanism_tests.py"               # leaf-out, water, sink variables against GPP
+  "45_results_report.py"                # one Markdown report with all results and figures
 )
 
 step_number() { echo "${1%%_*}"; }

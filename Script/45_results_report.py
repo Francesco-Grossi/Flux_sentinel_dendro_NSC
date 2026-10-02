@@ -1,13 +1,13 @@
 """
-PIPELINE STEP 42 - Build one Markdown report with the results of every
+PIPELINE STEP 45 - Build one Markdown report with the results of every
 analysis step and the corresponding figures: Output/results_report.md.
 
-The report only reads the tables and figures written by steps 21-41, so it
+The report only reads the tables and figures written by steps 21-44, so it
 is always in line with the last pipeline run. Tables are cut to the rows
 that matter (the full tables are the CSV files named in each section);
 figures are linked, not copied (paths relative to Output/).
 
-Input : data/*.csv and figure/**/*.png of steps 21-41
+Input : data/*.csv and figure/**/*.png of steps 21-44, Output/*_summary.md of steps 43-44
 Output: Output/results_report.md
 """
 import os
@@ -72,8 +72,11 @@ def stars(p):
 
 
 add("# Phenology - carbon pipeline: results", "",
-    f"Generated on {date.today().isoformat()} by `Script/42_results_report.py` from the outputs of the last pipeline run.",
-    "", "Effects are days of shift in the end of season (EOS) per +1 SD of the predictor unless stated otherwise; "
+    f"Generated on {date.today().isoformat()} by `Script/45_results_report.py` from the outputs of the last pipeline run. "
+    "A written interpretation of these results, with the analyses still to do, is in "
+    "[findings_and_next_steps.md](findings_and_next_steps.md).",
+    "", "Effects are days of shift in the end of season (EOS) per +1 within-site SD of the predictor (within-site "
+    "models: each year minus its site's mean, standard errors clustered by site) unless stated otherwise; "
     "negative = earlier senescence. EOS90 / EOS50 / EOS10 = day of year when greenness has fallen to 90 / 50 / 10 % "
     "of its seasonal amplitude (onset, middle, end of senescence).", "")
 
@@ -143,6 +146,8 @@ if h is not None:
                                               all_three=('hypothesis_supported', 'sum')).reset_index()
     cnt['window version'] = cnt['anchor'].map({'fixed': 'ends at site mean EOS (unbiased)',
                                                'fixed_before_senescence': 'ends at site mean EOS90, before senescence',
+                                               'calendar': 'calendar windows around the solstice (independent of leaf-out)',
+                                               'rate': 'mean daily GPP instead of the sum',
                                                'year': 'ends at same-year EOS (window-length effect built in)'})
     add("**In how many tests does each part hold?** (EOS sources x site groups)", "")
     table(cnt[['target', 'window version', 'tests', 'H1', 'H2', 'H3', 'all_three']].astype({c: int for c in ['tests', 'H1', 'H2', 'H3', 'all_three']}))
@@ -176,10 +181,19 @@ if h is not None:
     for src in ['NDVI', 'NIRv', 'GCC', 'NDVI_tower']:
         figure(f"split_gpp_cancellation/scatter_EOS90_{src}.png",
                f"{SRC_NAME[src]}: EOS90 anomaly against GPP anomaly, within sites (rows: window versions)")
-    add("### 3.2 End of senescence (EOS10), windows ending at the site mean EOS10", "")
+    add("### 3.2 EOS90 with predictors that do not depend on leaf-out", "",
+        "The windows above start at the year's leaf-out, so an early spring lengthens the pre-solstice window. "
+        "**Calendar windows** (60 days before / 45 days from the solstice) and the **GPP rate** (mean daily GPP "
+        "over the same windows) remove that.", "", "**Calendar windows**", "")
+    h_table('EOS90', 'calendar', groups)
+    add("**GPP rate**", "")
+    h_table('EOS90', 'rate', groups)
+    add("### 3.3 End of senescence (EOS10), windows ending at the site mean EOS10", "")
     h_table('EOS10', 'fixed', groups)
+    add("**EOS10, calendar windows**", "")
+    h_table('EOS10', 'calendar', ['all', 'summer-green', 'deciduous'])
     figure("split_gpp_cancellation/coefficients_EOS10_all.png", "EOS10, all sites")
-    add("### 3.3 Same-year windows and the window-length effect", "",
+    add("### 3.4 Same-year windows and the window-length effect", "",
         "When the post-solstice window ends at the same year's EOS, a later EOS makes the window longer and its "
         "cumulative GPP larger by construction. The last column is the post-solstice slope produced by window length "
         "alone (the site's average GPP curve, no year-specific GPP).", "")
@@ -193,7 +207,8 @@ if h is not None:
 # =============================================================== 4. 1:1 plots
 add("## 4. One-to-one plots: pooled vs within-site (step 40)", "",
     "The same pairs drawn twice. Pooled plots mix differences between sites with year-to-year changes; the "
-    "within-site plots keep only the latter and correspond to the tests of section 3. "
+    "within-site plots keep only the latter and correspond to the tests of section 3. Growing-season totals "
+    "and means run from the year's leaf-out to the site's mean EOS10 (not the same-year EOS10). "
     "All pairs: `figure/predictor_correlations/` and `figure/predictor_correlations_within_site/`.", "")
 corr = read("autumn_phenology_correlations.csv")
 if corr is not None:
@@ -230,7 +245,7 @@ figure("cue_seasonal/annual_vs_seasonal.png", "Annual CUE against pre- and post-
 
 # =============================================================== 6. window scan
 add("## 6. Which carbon window relates to which EOS? (step 33)", "",
-    "Single-predictor mixed models, windows ending at the site mean EOS (fixed anchors). "
+    "Single-predictor within-site models, windows ending at the site mean EOS (fixed anchors). "
     "Table: `data/eos_window_scan.csv`.", "")
 scan = read("eos_window_scan.csv")
 if scan is not None:
@@ -245,35 +260,46 @@ if scan is not None:
             t.columns = [SRC_NAME.get(c, c) for c in t.columns]
             add(f"**{target}, window {lab}** (days per +1 SD; * p<0.05, ** p<0.01, *** p<0.001, uncorrected)", "")
             table(t.fillna('-'))
+    b = scan.dropna(subset=['lme_beta_days_per_sd']) if 'lme_beta_days_per_sd' in scan.columns else scan.iloc[:0]
+    if len(b):
+        add(f"**Within-site model vs the random-intercept mixed model used before** ({len(b)} cells): median absolute "
+            f"effect {b['beta_days_per_sd'].abs().median():.2f} vs {b['lme_beta_days_per_sd'].abs().median():.2f} days per SD; "
+            f"p < 0.05 in {int((b['p_value'] < 0.05).sum())} vs {int((b['lme_p_value'] < 0.05).sum())} cells; same sign in "
+            f"{100 * (np.sign(b['beta_days_per_sd']) == np.sign(b['lme_beta_days_per_sd'])).mean():.0f}% of cells.", "")
 for src in ['GCC', 'NDVI']:
     figure(f"eos_window_scan/fixed_{src}_GPP.png", f"{SRC_NAME[src]}: GPP windows against EOS, fixed anchors (step 33)")
     figure(f"eos_window_scan/fixed_{src}_NPPd.png", f"{SRC_NAME[src]}: NPP (daily CUE) windows against EOS, fixed anchors (step 33)")
 
 # =============================================================== 7. sliding scan
 add("## 7. When around the solstice is the relation strongest? (step 34)", "",
-    "Mean flux in 15- and 30-day windows starting 75 days before to 75 days after the solstice. "
+    "Mean flux in 15- and 30-day windows starting 120 days before to 75 days after the solstice, within-site "
+    "models. `at edge` = the minimum is on the first or last window of the scan. "
     "Table: `data/eos_solstice_sliding_scan.csv`; the most negative window per case:", "")
 mins = read("eos_solstice_sliding_scan_minima.csv")
 if mins is not None:
-    t = mins[(mins['length_days'] == 30) & (mins['target'] == 'EOS10')][
-        ['carbon', 'vi_index', 'offset_from_solstice_days', 'beta_days_per_sd', 'p_value', 'n_obs']]
-    t = t.rename(columns={'vi_index': 'EOS source', 'offset_from_solstice_days': 'window start (days from solstice)'})
-    t['EOS source'] = t['EOS source'].map(SRC_NAME)
-    table(t, {'window start (days from solstice)': '.0f', 'p_value': '.3f', 'n_obs': '.0f', 'beta_days_per_sd': '+.1f'})
+    for target in ['EOS90', 'EOS10']:
+        t = mins[(mins['length_days'] == 30) & (mins['target'] == target)][
+            [c for c in ['carbon', 'vi_index', 'offset_from_solstice_days', 'beta_days_per_sd', 'p_value', 'n_obs', 'at_edge']
+             if c in mins.columns]]
+        t = t.rename(columns={'vi_index': 'EOS source', 'offset_from_solstice_days': 'window start (days from solstice)',
+                              'at_edge': 'at edge'})
+        t['EOS source'] = t['EOS source'].map(SRC_NAME)
+        add(f"**{target}, 30-day windows**", "")
+        table(t, {'window start (days from solstice)': '.0f', 'p_value': '.3f', 'n_obs': '.0f', 'beta_days_per_sd': '+.1f'})
 for cv in ['GPP', 'NPPd', 'CUEd']:
     figure(f"eos_solstice_sliding_scan/{cv}_L30.png", f"{cv}: effect on EOS of 30-day windows by start date relative to the solstice (step 34)")
 
 # =============================================================== 8. env vs carbon
 add("## 8. Does carbon explain EOS beyond climate? (step 35)", "",
-    "Nested mixed models on identical rows. M0 climate only; + leaf-out date (SOS); + source (GPP); + sink (NPP). "
+    "Nested within-site models on identical rows. M0 climate only; + leaf-out date (SOS); + source (GPP); + sink (NPP). "
     "Tables: `data/eos_env_vs_carbon_comparison.csv`, `..._cv.csv`, `..._lrt.csv`.", "")
 cmp_, cv = read("eos_env_vs_carbon_comparison.csv"), read("eos_env_vs_carbon_cv.csv")
 if cmp_ is not None and cv is not None:
     m = cmp_.merge(cv, on=['vi_index', 'target', 'model'])
     for target in ['EOS10', 'EOS50']:
-        t = m[m['target'] == target][['vi_index', 'model', 'n_obs', 'aic', 'r2_marginal', 'delta_r2_marginal_vs_env', 'loso_r2']]
-        t = order_src(t, 'vi_index').rename(columns={'vi_index': 'EOS source', 'r2_marginal': 'R2 (fixed effects)',
-                                                      'delta_r2_marginal_vs_env': 'gain over climate',
+        t = m[m['target'] == target][['vi_index', 'model', 'n_obs', 'aic', 'r2_within', 'delta_r2_within_vs_env', 'loso_r2']]
+        t = order_src(t, 'vi_index').rename(columns={'vi_index': 'EOS source', 'r2_within': 'R2 (within sites)',
+                                                      'delta_r2_within_vs_env': 'gain over climate',
                                                       'loso_r2': 'R2 leave-one-site-out'})
         t['EOS source'] = t['EOS source'].map(SRC_NAME)
         add(f"**{target}**", "")
@@ -329,6 +355,70 @@ if eff is not None:
         + ", ".join(f"{k} years {v}" for k, v in eff[eff['p_fdr'] < 0.05].groupby('subset').size().items()) + ".", "")
 for src in ['NDVI', 'GCC']:
     figure(f"anomaly_timing/{src}_EOS10.png", f"{SRC_NAME[src]}: effect on EOS10 of positive (+) and negative (-) anomalies by time of year (step 39)")
+
+# =============================================================== 12. PhenoCam vs satellite
+add("## 12. PhenoCam vs satellite EOS on equal terms (step 42)", "",
+    "The same within-site model on each source's own site-years, on the PhenoCam sites only, and on the shared "
+    "site-years; predictors are calendar windows, identical for every source. "
+    "Tables: `data/phenocam_vs_satellite_models.csv`, `..._difference.csv`, `..._levels.csv`.", "")
+pm, pdf, plv = read("phenocam_vs_satellite_models.csv"), read("phenocam_vs_satellite_difference.csv"), read("phenocam_vs_satellite_levels.csv")
+
+
+def ci(b, se, p):
+    return f"{b:+.1f}{stars(p)} [{b - 1.96 * se:+.1f}, {b + 1.96 * se:+.1f}]"
+
+
+if pm is not None:
+    for target in ['EOS90', 'EOS10']:
+        d = pm[(pm['target'] == target) & (pm['group'] == 'all')].sort_values(['pair', 'sample', 'eos_source'])
+        t = pd.DataFrame({'pair': d['pair'], 'sample': d['sample'], 'EOS source': d['eos_source'].map(SRC_NAME),
+                          'n (sites)': [f"{int(a)} ({int(b)})" for a, b in zip(d['n_obs'], d['n_sites'])],
+                          'pre': [ci(*x) for x in zip(d['b_pre'], d['se_pre'], d['p_pre'])],
+                          'post': [ci(*x) for x in zip(d['b_post'], d['se_post'], d['p_post'])],
+                          'total': [ci(*x) for x in zip(d['b_total'], d['se_total'], d['p_total'])]})
+        add(f"**{target}: days per +1 within-site SD of GPP [95% CI]** (two-sided stars)", "")
+        table(t)
+if pdf is not None and len(pdf):
+    t = pd.DataFrame({'difference': pdf['difference'], 'level': pdf['level'],
+                      'n (sites)': [f"{int(a)} ({int(b)})" for a, b in zip(pdf['n_obs'], pdf['n_sites'])],
+                      'mean difference (days)': pdf['mean_difference_days'],
+                      'pre': [ci(*x) for x in zip(pdf['b_pre'], pdf['se_pre'], pdf['p_pre'])],
+                      'post': [ci(*x) for x in zip(pdf['b_post'], pdf['se_post'], pdf['p_post'])]})
+    add("**Does GPP shift the two EOS measures differently?** Satellite EOS minus PhenoCam EOS, regressed on GPP "
+        "(shared site-years). A slope different from zero would mean the sources respond differently.", "")
+    table(t, {'mean difference (days)': '+.1f'})
+figure("phenocam_vs_satellite/models_EOS90.png", "EOS90: the same model on three samples (step 42)")
+figure("phenocam_vs_satellite/levels_NDVI.png", "Which PhenoCam stage corresponds to which satellite NDVI stage (step 42)")
+figure("phenocam_vs_satellite/scatter_NDVI.png", "PhenoCam vs satellite NDVI EOS anomalies on shared site-years (step 42)")
+
+# =============================================================== 13, 14. robustness, mechanism
+def include(md_name, level='###'):
+    """Body of a per-step summary file, with its headings moved one level down."""
+    p = ec.ROOT / "Output" / md_name
+    if not os.path.exists(p):
+        add(f"_Not found: Output/{md_name}_", "")
+        return
+    for ln in p.read_text(encoding='utf-8').splitlines()[1:]:
+        if ln.startswith('Generated by'):
+            continue
+        add(level + ln[2:] if ln.startswith('## ') else ln)
+    add("")
+
+
+add("## 13. How solid is the pre-solstice effect on EOS90? (step 43)", "",
+    "One-predictor within-site model, two versions of pre-solstice GPP: `sos` = cumulative from leaf-out to the "
+    "solstice, `cal` = the 60 days before the solstice. Tables: `data/presolstice_loso*.csv`, "
+    "`data/presolstice_qc_sensitivity.csv`, `data/presolstice_power.csv`.")
+include("presolstice_robustness_summary.md")
+figure("presolstice_robustness/loso.png", "Slope with each site left out in turn (step 43)")
+figure("presolstice_robustness/qc_sensitivity.png", "Slope under other phenology QC thresholds (step 43)")
+
+add("## 14. Why? Leaf-out, water and sink variables (step 44)", "",
+    "Tables: `data/mechanism_leafout_vs_gpp.csv`, `data/mechanism_water.csv`, `data/mechanism_sink.csv`.")
+include("mechanism_summary.md")
+figure("mechanism/leafout_vs_gpp.png", "Deciduous forests: leaf-out date against early GPP (step 44)")
+figure("mechanism/water.png", "Pre-solstice GPP against the spring water balance, by season type (step 44)")
+figure("mechanism/sink.png", "GPP and sink variables in the same two-window model (step 44)")
 
 add("---", "", "Per-step logs are in `logs/`. Method notes are in `README.md` and in the docstring of each script.", "")
 OUT_MD.write_text("\n".join(lines) + "\n", encoding='utf-8')

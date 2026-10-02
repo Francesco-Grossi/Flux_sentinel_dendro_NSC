@@ -1,209 +1,209 @@
 leaf_habit,target,window,predictor,model,n_sources,n_sources_same_sign,direction,median_beta,min_beta,max_beta,n_sources_p05,n_sources_fdr05,independent_sources_agree,sources,robust
-all,EOS10,cal60,CUE seasonal mean,adj_T,4,2,later EOS,-0.35109670898143824,-4.537653228690676,1.2917991354912957,1,0,False,"GCC:-4.5, NDVI:-0.9, NDVI_tower:+1.3, NIRv:+0.2",False
-all,EOS10,cal60,CUE seasonal mean,raw,4,2,later EOS,-0.4717200359470338,-2.695283674883884,0.8611560410728478,0,0,False,"GCC:-2.7, NDVI:-1.1, NDVI_tower:+0.9, NIRv:+0.1",False
-all,EOS10,cal60,GPP rate (mean),adj_T,4,4,later EOS,2.2320357961496295,1.6272423263137412,3.4189992329699637,1,0,True,"GCC:+2.7, NDVI:+1.6, NDVI_tower:+1.8, NIRv:+3.4",False
-all,EOS10,cal60,GPP rate (mean),raw,4,4,later EOS,2.935796748823541,1.6409502250125383,5.493760204425309,1,0,True,"GCC:+5.5, NDVI:+2.1, NDVI_tower:+1.6, NIRv:+3.7",False
-all,EOS10,cal60,"NPP rate, daily CUE",adj_T,4,3,later EOS,1.3491815475836928,-0.9584087242890565,1.8820236756967292,1,0,False,"GCC:+0.9, NDVI:+1.8, NDVI_tower:-1.0, NIRv:+1.9",False
-all,EOS10,cal60,"NPP rate, daily CUE",raw,4,3,later EOS,2.3787862124925714,-0.461416095936614,4.040278613681974,1,0,False,"GCC:+4.0, NDVI:+2.1, NDVI_tower:-0.5, NIRv:+2.6",False
-all,EOS10,post,CUE seasonal mean,adj_T,4,3,earlier EOS,-0.28404382430018404,-0.3581491825035486,0.04490650143655483,0,0,False,"GCC:+0.0, NDVI:-0.3, NDVI_tower:-0.3, NIRv:-0.4",False
-all,EOS10,post,CUE seasonal mean,raw,4,4,earlier EOS,-0.7458523232892744,-1.0023076343992559,-0.09913457985573734,0,0,True,"GCC:-0.1, NDVI:-0.6, NDVI_tower:-1.0, NIRv:-0.8",False
-all,EOS10,post,GPP cumulative (source),adj_T,4,4,later EOS,5.0891851672878445,1.7835319694079546,8.248637993193093,3,1,True,"GCC:+1.8, NDVI:+4.4, NDVI_tower:+8.2, NIRv:+5.8",True
-all,EOS10,post,GPP cumulative (source),raw,4,4,later EOS,6.4211930602417695,3.3294246975228257,9.573543191651284,3,0,True,"GCC:+3.3, NDVI:+6.6, NDVI_tower:+9.6, NIRv:+6.2",False
-all,EOS10,post,GPP rate (mean),adj_T,4,3,later EOS,4.080358194427246,-0.4020809766450078,6.284058656352442,3,1,False,"GCC:-0.4, NDVI:+3.5, NDVI_tower:+6.3, NIRv:+4.7",False
-all,EOS10,post,GPP rate (mean),raw,4,4,later EOS,4.837360794091607,1.1473696954271684,7.410354805268398,3,0,True,"GCC:+1.1, NDVI:+5.0, NDVI_tower:+7.4, NIRv:+4.7",False
-all,EOS10,post,"NPP cumulative, annual CUE",adj_T,4,3,earlier EOS,-0.8687547265732657,-2.855983473686309,0.7103886824204015,0,0,True,"GCC:-2.9, NDVI:-0.3, NDVI_tower:-1.5, NIRv:+0.7",False
-all,EOS10,post,"NPP cumulative, annual CUE",raw,4,2,later EOS,-0.1150652420723771,-1.7407839390433941,0.5243344116265253,0,0,False,"GCC:-1.7, NDVI:-0.4, NDVI_tower:+0.2, NIRv:+0.5",False
-all,EOS10,post,"NPP cumulative, daily CUE",adj_T,4,2,later EOS,0.29055367871994,-2.8063012534839524,1.0898666536990327,0,0,False,"GCC:+0.9, NDVI:-0.3, NDVI_tower:-2.8, NIRv:+1.1",False
-all,EOS10,post,"NPP cumulative, daily CUE",raw,4,4,later EOS,0.8069302756211325,0.5977148160431239,4.573381743358123,0,0,True,"GCC:+4.6, NDVI:+0.6, NDVI_tower:+0.8, NIRv:+0.8",False
-all,EOS10,pre,CUE seasonal mean,adj_T,4,2,later EOS,-0.4971850867640071,-4.681184260162037,0.5233504902163156,1,0,False,"GCC:-4.7, NDVI:-1.1, NDVI_tower:+0.5, NIRv:+0.1",False
-all,EOS10,pre,CUE seasonal mean,raw,4,3,earlier EOS,-0.44000856618865863,-4.112475387672071,0.3787712243138667,1,0,True,"GCC:-4.1, NDVI:-0.8, NDVI_tower:-0.0, NIRv:+0.4",False
-all,EOS10,pre,GPP cumulative (source),adj_T,4,3,later EOS,2.6451555946526364,-0.9733022674767793,4.208283688795255,1,0,False,"GCC:+2.7, NDVI:+2.6, NDVI_tower:-1.0, NIRv:+4.2",False
-all,EOS10,pre,GPP cumulative (source),raw,4,3,later EOS,1.8810860569294003,-0.10494551116110268,3.954913584441827,1,0,False,"GCC:+1.5, NDVI:+2.3, NDVI_tower:-0.1, NIRv:+4.0",False
-all,EOS10,pre,GPP rate (mean),adj_T,4,3,earlier EOS,-1.9868187816526999,-2.5759151529586717,2.711780664332268,1,0,True,"GCC:-2.3, NDVI:-1.7, NDVI_tower:-2.6, NIRv:+2.7",False
-all,EOS10,pre,GPP rate (mean),raw,4,3,earlier EOS,-1.0111463708096728,-4.102853990247817,1.2978535381134813,0,0,True,"GCC:-0.0, NDVI:-2.0, NDVI_tower:-4.1, NIRv:+1.3",False
-all,EOS10,pre,"NPP cumulative, annual CUE",adj_T,4,3,later EOS,0.9623433752382811,-1.3040637065452207,2.189375446772762,1,0,False,"GCC:+0.6, NDVI:+1.3, NDVI_tower:-1.3, NIRv:+2.2",False
-all,EOS10,pre,"NPP cumulative, annual CUE",raw,4,3,later EOS,0.9485508808038056,-1.5866631019612845,2.5948258303258793,2,0,False,"GCC:+0.1, NDVI:+1.8, NDVI_tower:-1.6, NIRv:+2.6",False
-all,EOS10,pre,"NPP cumulative, daily CUE",adj_T,4,3,later EOS,1.6968278239299446,-1.1590628845623945,2.2725659624633794,1,0,False,"GCC:+1.7, NDVI:+1.7, NDVI_tower:-1.2, NIRv:+2.3",False
-all,EOS10,pre,"NPP cumulative, daily CUE",raw,4,3,later EOS,1.7430403997428596,-1.3121527225867367,2.6909527506434263,2,0,False,"GCC:+1.3, NDVI:+2.2, NDVI_tower:-1.3, NIRv:+2.7",False
-all,EOS50,cal60,CUE seasonal mean,adj_T,4,2,later EOS,-0.24586387572759028,-2.975369016946253,1.0332824093329716,1,0,False,"GCC:-3.0, NDVI:-0.7, NDVI_tower:+1.0, NIRv:+0.2",False
-all,EOS50,cal60,CUE seasonal mean,raw,4,2,later EOS,-0.2268215266062592,-1.1438961609752507,1.4030193068383487,0,0,False,"GCC:-1.1, NDVI:-0.7, NDVI_tower:+1.4, NIRv:+0.2",False
-all,EOS50,cal60,GPP rate (mean),adj_T,4,4,earlier EOS,-1.318853930771594,-3.1688168797915965,-0.839265651721857,0,0,True,"GCC:-1.2, NDVI:-0.8, NDVI_tower:-3.2, NIRv:-1.4",False
-all,EOS50,cal60,GPP rate (mean),raw,4,2,later EOS,-0.4319190841561527,-1.5754223252869952,0.4315785595603277,0,0,False,"GCC:+0.4, NDVI:+0.1, NDVI_tower:-1.6, NIRv:-0.9",False
-all,EOS50,cal60,"NPP rate, daily CUE",adj_T,4,3,later EOS,0.7261528690502543,-0.5188136172115444,1.5698745593447374,1,0,False,"GCC:-0.5, NDVI:+1.1, NDVI_tower:+0.3, NIRv:+1.6",False
-all,EOS50,cal60,"NPP rate, daily CUE",raw,4,3,later EOS,1.272967449960456,-0.11489494594704133,1.702828291752459,1,0,False,"GCC:+1.6, NDVI:+0.9, NDVI_tower:-0.1, NIRv:+1.7",False
-all,EOS50,post,CUE seasonal mean,adj_T,4,3,earlier EOS,-0.06433767404946569,-0.4734621628016104,0.3646513778618992,0,0,True,"GCC:-0.1, NDVI:-0.5, NDVI_tower:-0.1, NIRv:+0.4",False
-all,EOS50,post,CUE seasonal mean,raw,4,2,later EOS,0.015595054867576563,-0.41108013052136455,0.6054667710922857,0,0,False,"GCC:+0.6, NDVI:-0.3, NDVI_tower:-0.4, NIRv:+0.3",False
-all,EOS50,post,GPP cumulative (source),adj_T,4,4,later EOS,3.6165741049085636,2.9667658919093802,4.19829529110997,3,1,True,"GCC:+3.1, NDVI:+3.0, NDVI_tower:+4.2, NIRv:+4.1",True
-all,EOS50,post,GPP cumulative (source),raw,4,4,later EOS,4.770462231552111,3.2717738636938685,5.079197783879064,3,0,True,"GCC:+3.3, NDVI:+5.1, NDVI_tower:+5.1, NIRv:+4.5",False
-all,EOS50,post,GPP rate (mean),adj_T,4,4,later EOS,3.0490752416953653,2.184365458678636,3.6034215778395184,3,1,True,"GCC:+2.2, NDVI:+2.6, NDVI_tower:+3.6, NIRv:+3.5",True
-all,EOS50,post,GPP rate (mean),raw,4,4,later EOS,3.722905175265973,2.3403058114340753,4.333215937163125,3,0,True,"GCC:+2.3, NDVI:+3.7, NDVI_tower:+4.3, NIRv:+3.7",False
-all,EOS50,post,"NPP cumulative, annual CUE",adj_T,4,3,earlier EOS,-0.28122366033746315,-3.020320953077303,1.686107969515729,1,0,True,"GCC:-3.0, NDVI:-0.5, NDVI_tower:-0.0, NIRv:+1.7",False
-all,EOS50,post,"NPP cumulative, annual CUE",raw,4,2,later EOS,0.14885158677190274,-3.2327229938921924,1.2960435768297391,1,0,False,"GCC:-3.2, NDVI:-0.8, NDVI_tower:+1.1, NIRv:+1.3",False
-all,EOS50,post,"NPP cumulative, daily CUE",adj_T,4,2,later EOS,-0.11776286003203884,-0.9891706209489621,1.2590138602395349,0,0,False,"GCC:+1.3, NDVI:-0.7, NDVI_tower:-1.0, NIRv:+0.5",False
-all,EOS50,post,"NPP cumulative, daily CUE",raw,4,3,later EOS,1.3820728601698664,-0.21689866225211202,2.2794318476066904,0,0,True,"GCC:+2.3, NDVI:-0.2, NDVI_tower:+2.2, NIRv:+0.5",False
-all,EOS50,pre,CUE seasonal mean,adj_T,4,3,earlier EOS,-0.336217686298908,-2.362239154688017,0.3713537451790654,0,0,False,"GCC:-2.4, NDVI:-0.6, NDVI_tower:+0.4, NIRv:-0.0",False
-all,EOS50,pre,CUE seasonal mean,raw,4,2,later EOS,-0.16306250894005841,-1.8201646888681866,0.5907684291549617,0,0,False,"GCC:-1.8, NDVI:-0.6, NDVI_tower:+0.6, NIRv:+0.2",False
-all,EOS50,pre,GPP cumulative (source),adj_T,4,4,earlier EOS,-1.2402824456719288,-3.7043475937675976,-1.0745594133618357,0,0,True,"GCC:-1.1, NDVI:-1.1, NDVI_tower:-3.7, NIRv:-1.3",False
-all,EOS50,pre,GPP cumulative (source),raw,4,4,earlier EOS,-1.7300394122242695,-2.4984458804799097,-0.8876711341875473,0,0,True,"GCC:-2.5, NDVI:-1.3, NDVI_tower:-2.2, NIRv:-0.9",False
-all,EOS50,pre,GPP rate (mean),adj_T,4,4,earlier EOS,-1.1635165589001821,-3.0223688696108284,-0.29254314451881414,0,0,True,"GCC:-1.9, NDVI:-0.3, NDVI_tower:-3.0, NIRv:-0.4",False
-all,EOS50,pre,GPP rate (mean),raw,4,4,earlier EOS,-0.8306724236200074,-3.260638577037761,-0.5120803679256757,0,0,True,"GCC:-0.8, NDVI:-0.5, NDVI_tower:-3.3, NIRv:-0.8",False
-all,EOS50,pre,"NPP cumulative, annual CUE",adj_T,4,2,later EOS,0.22401958023227206,-0.34327652912268664,2.357503902162178,1,1,False,"GCC:-0.3, NDVI:+0.7, NDVI_tower:-0.3, NIRv:+2.4",False
-all,EOS50,pre,"NPP cumulative, annual CUE",raw,4,2,later EOS,0.07011502599531166,-0.6740468011283222,2.404453755503551,1,0,False,"GCC:-0.6, NDVI:+0.8, NDVI_tower:-0.7, NIRv:+2.4",False
-all,EOS50,pre,"NPP cumulative, daily CUE",adj_T,4,4,later EOS,1.0075396914861794,0.15041079662272724,1.6955731822518423,1,0,True,"GCC:+1.2, NDVI:+0.8, NDVI_tower:+0.2, NIRv:+1.7",False
-all,EOS50,pre,"NPP cumulative, daily CUE",raw,4,3,later EOS,0.9312869137698423,-0.1140222125806645,1.7479201134434121,1,0,False,"GCC:+1.0, NDVI:+0.8, NDVI_tower:-0.1, NIRv:+1.7",False
-deciduous,EOS10,cal60,CUE seasonal mean,adj_T,4,2,later EOS,-0.08868516294693973,-5.294627405675724,0.23071511676939901,1,0,False,"GCC:-5.3, NDVI:-0.3, NDVI_tower:+0.1, NIRv:+0.2",False
-deciduous,EOS10,cal60,CUE seasonal mean,raw,4,4,earlier EOS,-0.8208249325010976,-5.099079321820343,-0.06320104127669304,1,0,True,"GCC:-5.1, NDVI:-0.3, NDVI_tower:-1.4, NIRv:-0.1",False
-deciduous,EOS10,cal60,GPP rate (mean),adj_T,4,3,later EOS,2.032988869307097,-2.3405857265928014,2.6243879146021105,0,0,False,"GCC:+2.6, NDVI:+1.9, NDVI_tower:-2.3, NIRv:+2.2",False
-deciduous,EOS10,cal60,GPP rate (mean),raw,4,3,later EOS,2.3055584667633244,-2.3244653368593977,3.9699633137979973,0,0,False,"GCC:+4.0, NDVI:+2.4, NDVI_tower:-2.3, NIRv:+2.2",False
-deciduous,EOS10,cal60,"NPP rate, daily CUE",adj_T,4,3,earlier EOS,-1.7242455653398452,-3.07766324174244,0.8912816505076746,0,0,True,"GCC:-3.1, NDVI:+0.9, NDVI_tower:-2.6, NIRv:-0.9",False
-deciduous,EOS10,cal60,"NPP rate, daily CUE",raw,4,2,later EOS,-0.25261002392351484,-1.890379630781721,0.8972938684261799,0,0,False,"GCC:+0.2, NDVI:+0.9, NDVI_tower:-1.9, NIRv:-0.7",False
-deciduous,EOS10,post,CUE seasonal mean,adj_T,4,3,earlier EOS,-0.5849409279818916,-1.3794907659281799,0.8115115103750444,0,0,False,"GCC:-0.6, NDVI:-1.4, NDVI_tower:+0.8, NIRv:-0.6",False
-deciduous,EOS10,post,CUE seasonal mean,raw,4,4,earlier EOS,-0.7031480846953582,-1.9352659032232828,-0.39085762494676984,0,0,True,"GCC:-0.4, NDVI:-1.9, NDVI_tower:-0.5, NIRv:-0.9",False
-deciduous,EOS10,post,GPP cumulative (source),adj_T,4,4,later EOS,2.1699141125810537,0.7896727524270862,5.536925717794329,1,0,True,"GCC:+5.5, NDVI:+0.8, NDVI_tower:+2.0, NIRv:+2.4",False
-deciduous,EOS10,post,GPP cumulative (source),raw,4,4,later EOS,2.50577826771432,0.892752462317507,4.913164274993029,2,0,True,"GCC:+4.9, NDVI:+0.9, NDVI_tower:+2.8, NIRv:+2.2",False
-deciduous,EOS10,post,GPP rate (mean),adj_T,4,3,later EOS,1.4431934194374567,-0.20469206644830895,5.029681319706796,1,0,True,"GCC:+5.0, NDVI:-0.2, NDVI_tower:+1.5, NIRv:+1.4",False
-deciduous,EOS10,post,GPP rate (mean),raw,4,3,later EOS,1.6837411002659513,-0.1158399187061287,3.611298876458807,0,0,True,"GCC:+3.6, NDVI:-0.1, NDVI_tower:+2.2, NIRv:+1.1",False
-deciduous,EOS10,post,"NPP cumulative, annual CUE",adj_T,4,2,later EOS,-0.8954591296332839,-4.681978087333143,1.5904987949090275,0,0,False,"GCC:-4.7, NDVI:+1.6, NDVI_tower:-2.5, NIRv:+0.7",False
-deciduous,EOS10,post,"NPP cumulative, annual CUE",raw,4,3,later EOS,0.6752148293366994,-0.10696608452823161,3.61848247344359,1,0,False,"GCC:-0.1, NDVI:+3.6, NDVI_tower:+0.9, NIRv:+0.4",False
-deciduous,EOS10,post,"NPP cumulative, daily CUE",adj_T,4,4,earlier EOS,-1.1548328289425054,-4.6684271602445,-0.13723998768581055,0,0,True,"GCC:-4.7, NDVI:-0.1, NDVI_tower:-1.9, NIRv:-0.4",False
-deciduous,EOS10,post,"NPP cumulative, daily CUE",raw,4,2,later EOS,0.18762800440599403,-0.8273373092231788,2.1302429893968466,0,0,False,"GCC:-0.2, NDVI:+2.1, NDVI_tower:+0.6, NIRv:-0.8",False
-deciduous,EOS10,pre,CUE seasonal mean,adj_T,4,3,earlier EOS,-0.4120889441283653,-4.404565189362322,0.4330551556962091,1,0,True,"GCC:-4.4, NDVI:-0.2, NDVI_tower:-0.6, NIRv:+0.4",False
-deciduous,EOS10,pre,CUE seasonal mean,raw,4,3,earlier EOS,-1.3454631600233184,-4.608128750133672,0.05497362737014978,2,0,True,"GCC:-4.6, NDVI:-0.3, NDVI_tower:-2.4, NIRv:+0.1",False
-deciduous,EOS10,pre,GPP cumulative (source),adj_T,4,3,later EOS,2.9971717872733072,-2.077769277721918,3.3542752577958197,0,0,False,"GCC:+3.4, NDVI:+2.7, NDVI_tower:-2.1, NIRv:+3.3",False
-deciduous,EOS10,pre,GPP cumulative (source),raw,4,3,later EOS,3.5303119995139407,-1.3910520217571618,4.347709159523937,2,0,False,"GCC:+4.3, NDVI:+3.7, NDVI_tower:-1.4, NIRv:+3.3",False
-deciduous,EOS10,pre,GPP rate (mean),adj_T,4,3,earlier EOS,-1.0576367252708656,-3.68575039130602,0.03815047666926791,0,0,True,"GCC:-1.0, NDVI:-1.1, NDVI_tower:-3.7, NIRv:+0.0",False
-deciduous,EOS10,pre,GPP rate (mean),raw,4,4,earlier EOS,-0.863959867978633,-5.205769380394088,-0.24498002961151677,1,0,True,"GCC:-0.4, NDVI:-1.3, NDVI_tower:-5.2, NIRv:-0.2",False
-deciduous,EOS10,pre,"NPP cumulative, annual CUE",adj_T,4,2,later EOS,-0.6053125631180856,-2.5795491549127427,1.1774587937369216,1,0,False,"GCC:-1.6, NDVI:+1.2, NDVI_tower:-2.6, NIRv:+0.4",False
-deciduous,EOS10,pre,"NPP cumulative, annual CUE",raw,4,3,later EOS,0.5686872544143791,-3.2406647910844,1.4454101879289913,1,0,False,"GCC:+0.6, NDVI:+1.4, NDVI_tower:-3.2, NIRv:+0.5",False
-deciduous,EOS10,pre,"NPP cumulative, daily CUE",adj_T,4,3,earlier EOS,-1.5614665020343228,-1.9941949190230706,0.4654180234264929,0,0,True,"GCC:-2.0, NDVI:+0.5, NDVI_tower:-1.9, NIRv:-1.2",False
-deciduous,EOS10,pre,"NPP cumulative, daily CUE",raw,4,2,later EOS,-0.49669993977585203,-2.067784817728129,0.5143059301470329,0,0,False,"GCC:+0.5, NDVI:+0.4, NDVI_tower:-2.1, NIRv:-1.3",False
-deciduous,EOS50,cal60,CUE seasonal mean,adj_T,4,3,later EOS,0.22807638677142597,-2.1002777157802064,0.6050767559755462,0,0,False,"GCC:-2.1, NDVI:+0.1, NDVI_tower:+0.3, NIRv:+0.6",False
-deciduous,EOS50,cal60,CUE seasonal mean,raw,4,2,later EOS,-0.17877571829232722,-2.1414483136379645,0.5327217314279654,0,0,False,"GCC:-2.1, NDVI:+0.0, NDVI_tower:-0.4, NIRv:+0.5",False
-deciduous,EOS50,cal60,GPP rate (mean),adj_T,4,4,earlier EOS,-0.6906999613753734,-1.6333049403427033,-0.08468287585614838,0,0,True,"GCC:-0.1, NDVI:-0.1, NDVI_tower:-1.6, NIRv:-1.2",False
-deciduous,EOS50,cal60,GPP rate (mean),raw,4,3,earlier EOS,-0.9002170558792044,-1.701993495249741,0.3690915266533539,0,0,True,"GCC:-0.6, NDVI:+0.4, NDVI_tower:-1.7, NIRv:-1.2",False
-deciduous,EOS50,cal60,"NPP rate, daily CUE",adj_T,4,3,later EOS,0.3116269003097004,-0.3184392084393888,0.5452104065100929,0,0,False,"GCC:-0.3, NDVI:+0.5, NDVI_tower:+0.3, NIRv:+0.3",False
-deciduous,EOS50,cal60,"NPP rate, daily CUE",raw,4,3,later EOS,0.25992988030295394,-1.5265802874219667,0.5444063015581656,0,0,False,"GCC:-1.5, NDVI:+0.5, NDVI_tower:+0.2, NIRv:+0.3",False
-deciduous,EOS50,post,CUE seasonal mean,adj_T,4,3,later EOS,0.7324178301262255,-0.15245668071614615,1.871280803258398,1,0,True,"GCC:+0.7, NDVI:-0.2, NDVI_tower:+1.9, NIRv:+0.7",False
-deciduous,EOS50,post,CUE seasonal mean,raw,4,3,later EOS,0.8017075965749791,-0.41765692318444597,1.2055941338203482,0,0,True,"GCC:+1.0, NDVI:-0.4, NDVI_tower:+1.2, NIRv:+0.6",False
-deciduous,EOS50,post,GPP cumulative (source),adj_T,4,4,later EOS,2.066536225255648,1.0872134001249252,2.468596066894519,3,0,True,"GCC:+1.1, NDVI:+1.9, NDVI_tower:+2.5, NIRv:+2.2",False
-deciduous,EOS50,post,GPP cumulative (source),raw,4,4,later EOS,1.8685893349626013,1.3449994261513807,2.9158239419181227,3,0,True,"GCC:+1.3, NDVI:+1.6, NDVI_tower:+2.9, NIRv:+2.2",False
-deciduous,EOS50,post,GPP rate (mean),adj_T,4,4,later EOS,1.728037196813139,0.8717230207599808,2.254487090802048,2,0,True,"GCC:+0.9, NDVI:+1.5, NDVI_tower:+2.3, NIRv:+2.0",False
-deciduous,EOS50,post,GPP rate (mean),raw,4,4,later EOS,1.549120551026367,1.1516264408298715,2.7279358127167357,2,0,True,"GCC:+1.2, NDVI:+1.2, NDVI_tower:+2.7, NIRv:+1.9",False
-deciduous,EOS50,post,"NPP cumulative, annual CUE",adj_T,4,3,later EOS,0.7910956349247419,-1.1949769099155154,1.9816906282613929,1,0,False,"GCC:+1.6, NDVI:+0.0, NDVI_tower:-1.2, NIRv:+2.0",False
-deciduous,EOS50,post,"NPP cumulative, annual CUE",raw,4,3,later EOS,1.2551071811551395,-1.6094051255942268,2.2673153170685985,1,0,False,"GCC:-1.6, NDVI:+1.3, NDVI_tower:+1.2, NIRv:+2.3",False
-deciduous,EOS50,post,"NPP cumulative, daily CUE",adj_T,4,3,earlier EOS,-0.7409688272768855,-0.9316125652327476,1.6692058664757525,0,0,False,"GCC:+1.7, NDVI:-0.7, NDVI_tower:-0.7, NIRv:-0.9",False
-deciduous,EOS50,post,"NPP cumulative, daily CUE",raw,4,2,later EOS,0.3411735845346579,-1.129426723765583,1.1115945571148056,0,0,False,"GCC:-1.1, NDVI:+0.8, NDVI_tower:+1.1, NIRv:-0.1",False
-deciduous,EOS50,pre,CUE seasonal mean,adj_T,4,2,later EOS,-0.0002948556037017172,-1.3473388418710488,0.7270326192232315,0,0,False,"GCC:-1.3, NDVI:+0.1, NDVI_tower:-0.1, NIRv:+0.7",False
-deciduous,EOS50,pre,CUE seasonal mean,raw,4,3,earlier EOS,-0.49973360254748517,-1.1791900102461026,0.5987775934580746,0,0,True,"GCC:-1.2, NDVI:-0.0, NDVI_tower:-1.0, NIRv:+0.6",False
-deciduous,EOS50,pre,GPP cumulative (source),adj_T,4,3,earlier EOS,-0.5417399499364834,-0.8000797978612988,0.310388116923342,0,0,False,"GCC:+0.3, NDVI:-0.3, NDVI_tower:-0.8, NIRv:-0.8",False
-deciduous,EOS50,pre,GPP cumulative (source),raw,4,3,earlier EOS,-0.4498059239489909,-0.6477859522511027,0.20297013997868704,0,0,True,"GCC:-0.4, NDVI:+0.2, NDVI_tower:-0.5, NIRv:-0.6",False
-deciduous,EOS50,pre,GPP rate (mean),adj_T,4,2,later EOS,-0.3898537865664656,-0.9666139039207864,0.18296645075305173,0,0,False,"GCC:-1.0, NDVI:+0.0, NDVI_tower:+0.2, NIRv:-0.8",False
-deciduous,EOS50,pre,GPP rate (mean),raw,4,3,earlier EOS,-0.6273207868663053,-1.5539971862380377,0.3563528276410242,0,0,True,"GCC:-0.4, NDVI:+0.4, NDVI_tower:-1.6, NIRv:-0.9",False
-deciduous,EOS50,pre,"NPP cumulative, annual CUE",adj_T,4,3,later EOS,0.8366843102105983,-0.3476737011286999,2.393571568203463,1,0,False,"GCC:+1.0, NDVI:+0.6, NDVI_tower:-0.3, NIRv:+2.4",False
-deciduous,EOS50,pre,"NPP cumulative, annual CUE",raw,4,3,later EOS,0.5358630290266196,-1.0009878825069132,2.4135056374067463,1,0,False,"GCC:+0.3, NDVI:+0.7, NDVI_tower:-1.0, NIRv:+2.4",False
-deciduous,EOS50,pre,"NPP cumulative, daily CUE",adj_T,4,3,later EOS,0.31589391499410874,-0.09040918984404188,1.4859487215180494,0,0,True,"GCC:+1.5, NDVI:-0.1, NDVI_tower:+0.6, NIRv:+0.1",False
-deciduous,EOS50,pre,"NPP cumulative, daily CUE",raw,4,3,later EOS,0.0962368188736418,-0.1280401338381765,0.6454751179986501,0,0,True,"GCC:+0.6, NDVI:-0.1, NDVI_tower:+0.2, NIRv:+0.0",False
-evergreen,EOS10,cal60,CUE seasonal mean,adj_T,3,3,earlier EOS,-0.17873566335637414,-2.1214108157423843,-0.11670174582457005,0,0,False,"NDVI:-2.1, NDVI_tower:-0.2, NIRv:-0.1",False
-evergreen,EOS10,cal60,CUE seasonal mean,raw,3,2,earlier EOS,-0.14702544120938957,-1.338259425128959,5.30126114649083,0,0,False,"NDVI:-1.3, NDVI_tower:+5.3, NIRv:-0.1",False
-evergreen,EOS10,cal60,GPP rate (mean),adj_T,3,3,later EOS,1.8978831649465935,0.43225687534218726,6.488436006261768,0,0,False,"NDVI:+0.4, NDVI_tower:+6.5, NIRv:+1.9",False
-evergreen,EOS10,cal60,GPP rate (mean),raw,3,2,later EOS,1.6406739073648038,-0.27793412255793193,10.264969476187922,1,0,False,"NDVI:-0.3, NDVI_tower:+10.3, NIRv:+1.6",False
-evergreen,EOS10,cal60,"NPP rate, daily CUE",adj_T,3,2,earlier EOS,-0.00449831884409722,-1.0216639021260783,0.6763672196791758,0,0,False,"NDVI:-1.0, NDVI_tower:+0.7, NIRv:-0.0",False
-evergreen,EOS10,cal60,"NPP rate, daily CUE",raw,3,2,later EOS,0.36125078521641774,-0.993919186743225,0.5961510994180492,0,0,False,"NDVI:-1.0, NDVI_tower:+0.6, NIRv:+0.4",False
-evergreen,EOS10,post,CUE seasonal mean,adj_T,3,2,later EOS,0.3953830525863403,-4.717952527764161,0.5532839836986392,0,0,False,"NDVI:+0.4, NDVI_tower:-4.7, NIRv:+0.6",False
-evergreen,EOS10,post,CUE seasonal mean,raw,3,2,later EOS,0.3213611011484169,-4.486174035883756,0.46308334726344097,0,0,False,"NDVI:+0.5, NDVI_tower:-4.5, NIRv:+0.3",False
-evergreen,EOS10,post,GPP cumulative (source),adj_T,3,3,later EOS,4.603827542191435,4.517590016147952,5.422314795737706,1,0,False,"NDVI:+4.5, NDVI_tower:+5.4, NIRv:+4.6",False
-evergreen,EOS10,post,GPP cumulative (source),raw,3,3,later EOS,4.436850276494435,4.136383542497345,6.905182995139164,2,0,False,"NDVI:+4.4, NDVI_tower:+6.9, NIRv:+4.1",False
-evergreen,EOS10,post,GPP rate (mean),adj_T,3,3,later EOS,2.282726275679314,0.41913415925704306,3.2076434724064176,0,0,False,"NDVI:+0.4, NDVI_tower:+2.3, NIRv:+3.2",False
-evergreen,EOS10,post,GPP rate (mean),raw,3,3,later EOS,2.7226315069251332,0.7556676539811392,3.0693961922940254,0,0,False,"NDVI:+0.8, NDVI_tower:+3.1, NIRv:+2.7",False
-evergreen,EOS10,post,"NPP cumulative, annual CUE",adj_T,3,2,earlier EOS,-1.9107544161891612,-3.5912827808059333,0.43170533584487575,0,0,False,"NDVI:-1.9, NDVI_tower:-3.6, NIRv:+0.4",False
-evergreen,EOS10,post,"NPP cumulative, annual CUE",raw,3,2,later EOS,0.48635785582868335,-1.884651501929709,1.246428662100615,0,0,False,"NDVI:-1.9, NDVI_tower:+1.2, NIRv:+0.5",False
-evergreen,EOS10,post,"NPP cumulative, daily CUE",adj_T,3,2,earlier EOS,-1.206913501067065,-3.574787870548298,0.12466328107044272,0,0,False,"NDVI:-1.2, NDVI_tower:-3.6, NIRv:+0.1",False
-evergreen,EOS10,post,"NPP cumulative, daily CUE",raw,3,2,later EOS,0.21300832237099865,-1.2144056332777224,1.037863746051082,0,0,False,"NDVI:-1.2, NDVI_tower:+1.0, NIRv:+0.2",False
-evergreen,EOS10,pre,CUE seasonal mean,adj_T,3,2,earlier EOS,-0.4670253974409077,-1.966529551786789,0.9236436335232009,0,0,False,"NDVI:-2.0, NDVI_tower:+0.9, NIRv:-0.5",False
-evergreen,EOS10,pre,CUE seasonal mean,raw,3,2,earlier EOS,-0.350287623489478,-1.7679082782167437,5.273998476463428,0,0,False,"NDVI:-1.8, NDVI_tower:+5.3, NIRv:-0.4",False
-evergreen,EOS10,pre,GPP cumulative (source),adj_T,3,3,later EOS,3.3520702699760774,2.7384079549588063,6.435399948694614,0,0,False,"NDVI:+2.7, NDVI_tower:+6.4, NIRv:+3.4",False
-evergreen,EOS10,pre,GPP cumulative (source),raw,3,3,later EOS,4.268868152960913,1.678617275637885,8.370819351666746,1,0,False,"NDVI:+1.7, NDVI_tower:+8.4, NIRv:+4.3",False
-evergreen,EOS10,pre,GPP rate (mean),adj_T,3,2,later EOS,1.1050276019850285,-3.7639648042227902,1.8867224237990365,0,0,False,"NDVI:-3.8, NDVI_tower:+1.9, NIRv:+1.1",False
-evergreen,EOS10,pre,GPP rate (mean),raw,3,2,earlier EOS,-0.15087272136158553,-3.430784806001498,1.9904121991257948,0,0,False,"NDVI:-3.4, NDVI_tower:+2.0, NIRv:-0.2",False
-evergreen,EOS10,pre,"NPP cumulative, annual CUE",adj_T,3,2,later EOS,0.18535980602448926,-1.1685236071180807,0.4769772979148738,0,0,False,"NDVI:-1.2, NDVI_tower:+0.2, NIRv:+0.5",False
-evergreen,EOS10,pre,"NPP cumulative, annual CUE",raw,3,2,later EOS,0.3482868864480015,-1.1658106662454424,0.8171927297718629,0,0,False,"NDVI:-1.2, NDVI_tower:+0.3, NIRv:+0.8",False
-evergreen,EOS10,pre,"NPP cumulative, daily CUE",adj_T,3,2,earlier EOS,-0.12245983732405773,-1.0549001256100556,0.4813444350723046,0,0,False,"NDVI:-1.1, NDVI_tower:+0.5, NIRv:-0.1",False
-evergreen,EOS10,pre,"NPP cumulative, daily CUE",raw,3,2,later EOS,0.22518580137149868,-1.0542328902202944,0.5511616841363409,0,0,False,"NDVI:-1.1, NDVI_tower:+0.6, NIRv:+0.2",False
-evergreen,EOS50,cal60,CUE seasonal mean,adj_T,3,2,earlier EOS,-0.18593860832335643,-0.9688271795223561,1.3663729042042259,0,0,False,"NDVI:-1.0, NDVI_tower:+1.4, NIRv:-0.2",False
-evergreen,EOS50,cal60,CUE seasonal mean,raw,3,2,later EOS,0.07305242897032867,-0.1776798554478695,5.894309195082151,0,0,False,"NDVI:+0.1, NDVI_tower:+5.9, NIRv:-0.2",False
-evergreen,EOS50,cal60,GPP rate (mean),adj_T,3,3,earlier EOS,-1.2558439648154742,-2.489553263290215,-0.09666468575913992,0,0,False,"NDVI:-0.1, NDVI_tower:-2.5, NIRv:-1.3",False
-evergreen,EOS50,cal60,GPP rate (mean),raw,3,2,earlier EOS,-0.9411061957692948,-1.3422459861420764,2.5371085842880166,0,0,False,"NDVI:-0.9, NDVI_tower:+2.5, NIRv:-1.3",False
-evergreen,EOS50,cal60,"NPP rate, daily CUE",adj_T,3,3,earlier EOS,-0.20794496492780234,-1.1194825115181115,-0.04295708155717177,0,0,False,"NDVI:-1.1, NDVI_tower:-0.2, NIRv:-0.0",False
-evergreen,EOS50,cal60,"NPP rate, daily CUE",raw,3,2,earlier EOS,-0.20167382164170577,-1.0235566610590114,0.019405252659099103,0,0,False,"NDVI:-1.0, NDVI_tower:-0.2, NIRv:+0.0",False
-evergreen,EOS50,post,CUE seasonal mean,adj_T,3,3,earlier EOS,-0.9927196442907421,-5.344064410202618,-0.26766247574950475,1,0,False,"NDVI:-1.0, NDVI_tower:-5.3, NIRv:-0.3",False
-evergreen,EOS50,post,CUE seasonal mean,raw,3,3,earlier EOS,-0.7568428841850099,-5.532088381150802,-0.24461878643383256,1,0,False,"NDVI:-0.8, NDVI_tower:-5.5, NIRv:-0.2",False
-evergreen,EOS50,post,GPP cumulative (source),adj_T,3,2,later EOS,1.8285357989179065,-0.08215499337369352,3.277182210037407,0,0,False,"NDVI:+3.3, NDVI_tower:-0.1, NIRv:+1.8",False
-evergreen,EOS50,post,GPP cumulative (source),raw,3,2,later EOS,1.7638573770283883,-1.8536181793970825,3.496096143123413,0,0,False,"NDVI:+3.5, NDVI_tower:-1.9, NIRv:+1.8",False
-evergreen,EOS50,post,GPP rate (mean),adj_T,3,2,later EOS,0.22236955363135769,-0.9452054870883243,0.5638586723640479,0,0,False,"NDVI:+0.2, NDVI_tower:-0.9, NIRv:+0.6",False
-evergreen,EOS50,post,GPP rate (mean),raw,3,2,earlier EOS,-0.00407298998407556,-2.6111326286370184,0.5218421730536243,0,0,False,"NDVI:-0.0, NDVI_tower:-2.6, NIRv:+0.5",False
-evergreen,EOS50,post,"NPP cumulative, annual CUE",adj_T,3,2,earlier EOS,-1.3029697684537453,-2.01757418787952,0.15539590962793495,0,0,False,"NDVI:-2.0, NDVI_tower:-1.3, NIRv:+0.2",False
-evergreen,EOS50,post,"NPP cumulative, annual CUE",raw,3,2,later EOS,0.2181147828980485,-1.965631051859977,2.393792938527436,0,0,False,"NDVI:-2.0, NDVI_tower:+2.4, NIRv:+0.2",False
-evergreen,EOS50,post,"NPP cumulative, daily CUE",adj_T,3,2,earlier EOS,-1.3258954267479417,-1.5059887368529286,0.1888727994732111,0,0,False,"NDVI:-1.5, NDVI_tower:-1.3, NIRv:+0.2",False
-evergreen,EOS50,post,"NPP cumulative, daily CUE",raw,3,2,later EOS,0.23515787235517813,-1.4808391971167938,2.2095611369688903,0,0,False,"NDVI:-1.5, NDVI_tower:+2.2, NIRv:+0.2",False
-evergreen,EOS50,pre,CUE seasonal mean,adj_T,3,2,earlier EOS,-0.5978318444206752,-0.9943150611171035,1.4087216932962563,0,0,False,"NDVI:-1.0, NDVI_tower:+1.4, NIRv:-0.6",False
-evergreen,EOS50,pre,CUE seasonal mean,raw,3,2,earlier EOS,-0.5841621497922769,-0.6047985103312531,4.944384728486695,0,0,False,"NDVI:-0.6, NDVI_tower:+4.9, NIRv:-0.6",False
-evergreen,EOS50,pre,GPP cumulative (source),adj_T,3,3,earlier EOS,-0.8294447599034889,-2.5521687213973707,-0.6259440343223209,0,0,False,"NDVI:-0.6, NDVI_tower:-2.6, NIRv:-0.8",False
-evergreen,EOS50,pre,GPP cumulative (source),raw,3,2,earlier EOS,-0.5535493314548886,-1.2924141035128716,3.4266410372625535,0,0,False,"NDVI:-1.3, NDVI_tower:+3.4, NIRv:-0.6",False
-evergreen,EOS50,pre,GPP rate (mean),adj_T,3,3,earlier EOS,-2.363341700617155,-2.8370219904344465,-1.75223283226271,0,0,False,"NDVI:-2.4, NDVI_tower:-2.8, NIRv:-1.8",False
-evergreen,EOS50,pre,GPP rate (mean),raw,3,3,earlier EOS,-2.679556832769529,-2.860693654876167,-1.7636663886007815,0,0,False,"NDVI:-2.7, NDVI_tower:-2.9, NIRv:-1.8",False
-evergreen,EOS50,pre,"NPP cumulative, annual CUE",adj_T,3,3,earlier EOS,-0.7258767307659211,-1.2358208784729037,-0.07763954223704266,0,0,False,"NDVI:-1.2, NDVI_tower:-0.7, NIRv:-0.1",False
-evergreen,EOS50,pre,"NPP cumulative, annual CUE",raw,3,3,earlier EOS,-0.7670308634148685,-1.1505542624465184,-0.010137615348738374,0,0,False,"NDVI:-1.2, NDVI_tower:-0.8, NIRv:-0.0",False
-evergreen,EOS50,pre,"NPP cumulative, daily CUE",adj_T,3,3,earlier EOS,-0.4503144281584659,-1.1454224525356163,-0.0608833381745399,0,0,False,"NDVI:-1.1, NDVI_tower:-0.5, NIRv:-0.1",False
-evergreen,EOS50,pre,"NPP cumulative, daily CUE",raw,3,3,earlier EOS,-0.48280171787326603,-1.0624802678724865,-0.000309326650807523,0,0,False,"NDVI:-1.1, NDVI_tower:-0.5, NIRv:-0.0",False
-grass/shrub,EOS10,cal60,CUE seasonal mean,adj_T,4,3,earlier EOS,-0.3063549667790067,-1.5839210885911625,6.266597842005602,0,0,False,"GCC:-1.6, NDVI:-0.6, NDVI_tower:+6.3, NIRv:-0.0",False
-grass/shrub,EOS10,cal60,CUE seasonal mean,raw,4,2,later EOS,0.010912796153786306,-1.7843264282564222,2.6211069358594434,0,0,False,"GCC:-0.1, NDVI:-1.8, NDVI_tower:+2.6, NIRv:+0.1",False
-grass/shrub,EOS10,cal60,GPP rate (mean),adj_T,4,3,later EOS,2.3435965486654706,-0.18119181627570877,4.689791074778913,0,0,False,"GCC:+3.0, NDVI:+1.7, NDVI_tower:-0.2, NIRv:+4.7",False
-grass/shrub,EOS10,cal60,GPP rate (mean),raw,4,3,later EOS,3.0380530461258717,-1.9111934561196224,7.580163112444067,1,0,False,"GCC:+3.1, NDVI:+3.0, NDVI_tower:-1.9, NIRv:+7.6",False
-grass/shrub,EOS10,cal60,"NPP rate, daily CUE",adj_T,4,3,later EOS,1.7614741547826547,-0.6700802527595654,4.374375665102273,2,0,False,"GCC:-0.7, NDVI:+3.3, NDVI_tower:+0.3, NIRv:+4.4",False
-grass/shrub,EOS10,cal60,"NPP rate, daily CUE",raw,4,4,later EOS,4.316701689494341,3.134798882292105,5.423957539853458,2,0,True,"GCC:+5.4, NDVI:+3.3, NDVI_tower:+3.1, NIRv:+5.3",False
-grass/shrub,EOS10,post,CUE seasonal mean,adj_T,4,2,later EOS,0.33210475279434315,-1.4345786721264768,2.085853904249005,0,0,False,"GCC:-0.5, NDVI:+1.1, NDVI_tower:+2.1, NIRv:-1.4",False
-grass/shrub,EOS10,post,CUE seasonal mean,raw,4,2,later EOS,-0.443398208964222,-1.9744560436743939,1.0250409313234026,0,0,False,"GCC:-1.1, NDVI:+0.2, NDVI_tower:+1.0, NIRv:-2.0",False
-grass/shrub,EOS10,post,GPP cumulative (source),adj_T,4,3,later EOS,10.578247755400817,-14.929037919453908,15.552759925694417,3,1,False,"GCC:-14.9, NDVI:+12.1, NDVI_tower:+15.6, NIRv:+9.1",False
-grass/shrub,EOS10,post,GPP cumulative (source),raw,4,3,later EOS,12.350095002398044,-7.488242528534593,15.636654016125686,3,0,False,"GCC:-7.5, NDVI:+15.6, NDVI_tower:+15.1, NIRv:+9.6",False
-grass/shrub,EOS10,post,GPP rate (mean),adj_T,4,3,later EOS,9.158534702437919,-13.770076311731735,11.018533183665593,3,1,False,"GCC:-13.8, NDVI:+10.2, NDVI_tower:+11.0, NIRv:+8.1",False
-grass/shrub,EOS10,post,GPP rate (mean),raw,4,3,later EOS,10.229562958680146,-8.222899184859257,13.26158133957271,2,0,False,"GCC:-8.2, NDVI:+13.3, NDVI_tower:+12.2, NIRv:+8.3",False
-grass/shrub,EOS10,post,"NPP cumulative, annual CUE",adj_T,4,2,later EOS,-0.05185098509539354,-2.253787628452322,5.428312134138698,0,0,False,"GCC:-2.3, NDVI:-1.0, NDVI_tower:+5.4, NIRv:+0.9",False
-grass/shrub,EOS10,post,"NPP cumulative, annual CUE",raw,4,3,earlier EOS,-1.9198273145260587,-2.1460977946472126,0.642306252016257,0,0,True,"GCC:-2.1, NDVI:-1.8, NDVI_tower:-2.1, NIRv:+0.6",False
-grass/shrub,EOS10,post,"NPP cumulative, daily CUE",adj_T,4,3,later EOS,0.5236345672484575,-7.58453501532472,5.972544417715701,1,0,False,"GCC:-7.6, NDVI:+0.7, NDVI_tower:+0.4, NIRv:+6.0",False
-grass/shrub,EOS10,post,"NPP cumulative, daily CUE",raw,4,3,later EOS,2.6836488639094633,-3.9412965317957407,7.83796532854379,1,0,False,"GCC:+7.8, NDVI:+0.9, NDVI_tower:-3.9, NIRv:+4.4",False
-grass/shrub,EOS10,pre,CUE seasonal mean,adj_T,4,3,earlier EOS,-0.6007461195899777,-3.2607939119533853,3.0226017821219173,0,0,False,"GCC:-3.3, NDVI:-0.8, NDVI_tower:+3.0, NIRv:-0.4",False
-grass/shrub,EOS10,pre,CUE seasonal mean,raw,4,2,later EOS,0.19154398119850974,-3.2243024058073226,1.7337395411982282,0,0,False,"GCC:-3.2, NDVI:-0.7, NDVI_tower:+1.7, NIRv:+1.1",False
-grass/shrub,EOS10,pre,GPP cumulative (source),adj_T,4,3,later EOS,2.4158460605501304,-8.595046305042748,5.122537879898589,0,0,False,"GCC:+2.4, NDVI:+2.4, NDVI_tower:-8.6, NIRv:+5.1",False
-grass/shrub,EOS10,pre,GPP cumulative (source),raw,4,2,later EOS,-0.005030794897260993,-5.94383167131515,6.855404613768491,1,0,False,"GCC:-2.6, NDVI:+2.6, NDVI_tower:-5.9, NIRv:+6.9",False
-grass/shrub,EOS10,pre,GPP rate (mean),adj_T,4,3,earlier EOS,-2.876300349784673,-5.70138948016011,5.030301190471429,0,0,True,"GCC:-5.1, NDVI:-0.6, NDVI_tower:-5.7, NIRv:+5.0",False
-grass/shrub,EOS10,pre,GPP rate (mean),raw,4,3,earlier EOS,-2.7123113664674774,-6.453684464204988,4.8802556728193185,0,0,True,"GCC:-3.2, NDVI:-2.2, NDVI_tower:-6.5, NIRv:+4.9",False
-grass/shrub,EOS10,pre,"NPP cumulative, annual CUE",adj_T,4,3,later EOS,2.425870145054742,-0.49106597541943536,3.7281844239589623,1,0,False,"GCC:-0.5, NDVI:+1.4, NDVI_tower:+3.5, NIRv:+3.7",False
-grass/shrub,EOS10,pre,"NPP cumulative, annual CUE",raw,4,3,later EOS,2.9323358243928337,-0.8486271952535048,4.016594188504723,1,0,False,"GCC:-0.8, NDVI:+2.0, NDVI_tower:+3.9, NIRv:+4.0",False
-grass/shrub,EOS10,pre,"NPP cumulative, daily CUE",adj_T,4,3,later EOS,1.3981471713612583,-3.6708824684364583,4.644131571847159,2,1,False,"GCC:-3.7, NDVI:+2.8, NDVI_tower:+0.0, NIRv:+4.6",False
-grass/shrub,EOS10,pre,"NPP cumulative, daily CUE",raw,4,3,later EOS,1.5839305311233567,-5.029604268429245,4.908679967987617,2,0,False,"GCC:-5.0, NDVI:+3.0, NDVI_tower:+0.2, NIRv:+4.9",False
-grass/shrub,EOS50,cal60,CUE seasonal mean,adj_T,4,2,later EOS,-0.6229044830743529,-2.6737655961978537,3.459702549793805,0,0,False,"GCC:-2.7, NDVI:-1.3, NDVI_tower:+3.5, NIRv:+0.1",False
-grass/shrub,EOS50,cal60,CUE seasonal mean,raw,4,3,later EOS,0.15626135164289473,-1.8306952681357025,2.516994833515869,0,0,True,"GCC:+0.3, NDVI:-1.8, NDVI_tower:+2.5, NIRv:+0.0",False
-grass/shrub,EOS50,cal60,GPP rate (mean),adj_T,4,4,earlier EOS,-6.300175725378902,-9.286745065264293,-3.387390937170359,0,0,True,"GCC:-8.6, NDVI:-4.0, NDVI_tower:-9.3, NIRv:-3.4",False
-grass/shrub,EOS50,cal60,GPP rate (mean),raw,4,4,earlier EOS,-2.7003415049399178,-6.280575835142182,-0.5127360299409146,0,0,True,"GCC:-4.6, NDVI:-0.8, NDVI_tower:-6.3, NIRv:-0.5",False
-grass/shrub,EOS50,cal60,"NPP rate, daily CUE",adj_T,4,2,later EOS,-1.0008577519423354,-6.043518605860036,3.059911508951061,2,0,False,"GCC:-6.0, NDVI:+2.3, NDVI_tower:-4.3, NIRv:+3.1",False
-grass/shrub,EOS50,cal60,"NPP rate, daily CUE",raw,4,3,later EOS,2.1879991327999213,-2.2643040962153487,3.1883767917808474,1,0,False,"GCC:+2.9, NDVI:+1.5, NDVI_tower:-2.3, NIRv:+3.2",False
-grass/shrub,EOS50,post,CUE seasonal mean,adj_T,4,3,earlier EOS,-0.506790540130707,-0.942126653368267,0.1858720947616188,0,0,True,"GCC:-0.6, NDVI:-0.5, NDVI_tower:-0.9, NIRv:+0.2",False
-grass/shrub,EOS50,post,CUE seasonal mean,raw,4,4,later EOS,0.2054212439380183,0.009001405265462259,0.5757981833185577,0,0,True,"GCC:+0.6, NDVI:+0.0, NDVI_tower:+0.2, NIRv:+0.2",False
-grass/shrub,EOS50,post,GPP cumulative (source),adj_T,4,4,later EOS,3.067875057632571,1.5265494207108223,7.701584305106177,1,0,True,"GCC:+1.5, NDVI:+4.6, NDVI_tower:+1.6, NIRv:+7.7",False
-grass/shrub,EOS50,post,GPP cumulative (source),raw,4,4,later EOS,5.354582789628735,1.244470962160347,8.485251075947515,2,0,True,"GCC:+1.2, NDVI:+8.5, NDVI_tower:+2.8, NIRv:+7.9",False
-grass/shrub,EOS50,post,GPP rate (mean),adj_T,4,4,later EOS,3.706068612776691,1.6715815530107068,6.724845422117972,2,0,True,"GCC:+1.7, NDVI:+4.3, NDVI_tower:+3.1, NIRv:+6.7",False
-grass/shrub,EOS50,post,GPP rate (mean),raw,4,4,later EOS,4.789689459714309,1.0380047976636186,6.810610230597535,2,0,True,"GCC:+1.0, NDVI:+6.0, NDVI_tower:+3.6, NIRv:+6.8",False
-grass/shrub,EOS50,post,"NPP cumulative, annual CUE",adj_T,4,2,later EOS,0.9017745642289381,-2.3180134126300413,3.874844837895071,0,0,False,"GCC:-2.3, NDVI:-0.4, NDVI_tower:+3.9, NIRv:+2.2",False
-grass/shrub,EOS50,post,"NPP cumulative, annual CUE",raw,4,3,earlier EOS,-1.6919163649829119,-2.9037535155009278,1.0734638751786845,0,0,True,"GCC:-2.9, NDVI:-1.3, NDVI_tower:-2.1, NIRv:+1.1",False
-grass/shrub,EOS50,post,"NPP cumulative, daily CUE",adj_T,4,3,later EOS,0.4124415900664609,-2.3362260031231656,3.441743357654261,0,0,False,"GCC:+0.1, NDVI:+0.7, NDVI_tower:-2.3, NIRv:+3.4",False
-grass/shrub,EOS50,post,"NPP cumulative, daily CUE",raw,4,3,later EOS,1.1747890285485314,-1.701389661461521,3.8600475467009594,0,0,False,"GCC:+3.9, NDVI:+0.5, NDVI_tower:-1.7, NIRv:+1.9",False
-grass/shrub,EOS50,pre,CUE seasonal mean,adj_T,4,3,earlier EOS,-0.6364688506328358,-2.342765313681658,0.9439716991268288,0,0,False,"GCC:-2.3, NDVI:-1.1, NDVI_tower:+0.9, NIRv:-0.1",False
-grass/shrub,EOS50,pre,CUE seasonal mean,raw,4,2,later EOS,-0.22107352197398672,-1.6809856059782335,1.77385748664492,0,0,False,"GCC:-1.7, NDVI:-1.1, NDVI_tower:+1.8, NIRv:+0.7",False
-grass/shrub,EOS50,pre,GPP cumulative (source),adj_T,4,4,earlier EOS,-6.172951910731445,-14.623866780174541,-2.559966216976339,1,0,True,"GCC:-8.5, NDVI:-2.6, NDVI_tower:-14.6, NIRv:-3.8",False
-grass/shrub,EOS50,pre,GPP cumulative (source),raw,4,4,earlier EOS,-5.676637815689245,-11.686112512265813,-0.9968921902536972,1,0,True,"GCC:-9.1, NDVI:-2.3, NDVI_tower:-11.7, NIRv:-1.0",False
-grass/shrub,EOS50,pre,GPP rate (mean),adj_T,4,4,earlier EOS,-3.955033560578553,-8.539296484970583,-0.10616339747450577,0,0,True,"GCC:-7.6, NDVI:-0.1, NDVI_tower:-8.5, NIRv:-0.3",False
-grass/shrub,EOS50,pre,GPP rate (mean),raw,4,4,earlier EOS,-3.4427819511224453,-6.268572075680836,-0.04383624817844252,0,0,True,"GCC:-6.3, NDVI:-1.1, NDVI_tower:-5.8, NIRv:-0.0",False
-grass/shrub,EOS50,pre,"NPP cumulative, annual CUE",adj_T,4,3,later EOS,0.9744785134923062,-0.9416077066549102,3.2350186369685403,1,0,False,"GCC:-0.9, NDVI:+0.9, NDVI_tower:+1.0, NIRv:+3.2",False
-grass/shrub,EOS50,pre,"NPP cumulative, annual CUE",raw,4,3,later EOS,0.9989234977106697,-1.1364269599110894,3.095987944616046,1,0,False,"GCC:-1.1, NDVI:+0.9, NDVI_tower:+1.1, NIRv:+3.1",False
-grass/shrub,EOS50,pre,"NPP cumulative, daily CUE",adj_T,4,2,later EOS,-1.3930768801942275,-7.87973402410639,3.165278491751701,3,0,False,"GCC:-7.9, NDVI:+1.8, NDVI_tower:-4.6, NIRv:+3.2",False
-grass/shrub,EOS50,pre,"NPP cumulative, daily CUE",raw,4,2,later EOS,-1.1219056673634644,-7.200332350610541,2.9608180430750366,2,0,False,"GCC:-7.2, NDVI:+1.4, NDVI_tower:-3.6, NIRv:+3.0",False
+all,EOS10,cal60,CUE seasonal mean,adj_T,4,2,later EOS,-0.3516833644886104,-3.2126315792069344,0.906892267385334,0,0,False,"GCC:-3.2, NDVI:-0.8, NDVI_tower:+0.9, NIRv:+0.1",False
+all,EOS10,cal60,CUE seasonal mean,raw,4,3,earlier EOS,-0.4812312849289262,-2.4980145841665955,0.3294468749800654,0,0,False,"GCC:-2.5, NDVI:-1.0, NDVI_tower:+0.3, NIRv:-0.0",False
+all,EOS10,cal60,GPP rate (mean),adj_T,4,3,later EOS,0.5038073838427631,-0.6105850985208485,1.213683235208053,0,0,False,"GCC:+1.2, NDVI:+0.3, NDVI_tower:-0.6, NIRv:+0.7",False
+all,EOS10,cal60,GPP rate (mean),raw,4,3,later EOS,0.7204702411137864,-0.49115206455566984,1.0046634212693126,0,0,False,"GCC:+1.0, NDVI:+0.5, NDVI_tower:-0.5, NIRv:+1.0",False
+all,EOS10,cal60,"NPP rate, daily CUE",adj_T,4,2,later EOS,-0.030408098532661493,-1.725944216785833,0.37660682216459535,0,0,False,"GCC:-1.7, NDVI:-0.3, NDVI_tower:+0.4, NIRv:+0.2",False
+all,EOS10,cal60,"NPP rate, daily CUE",raw,4,2,later EOS,0.06311882544018015,-1.693810270336684,0.41379665780703856,0,0,False,"GCC:-1.7, NDVI:-0.1, NDVI_tower:+0.2, NIRv:+0.4",False
+all,EOS10,post,CUE seasonal mean,adj_T,4,3,earlier EOS,-0.1901423374202673,-0.2854703624207329,0.3618144161660723,0,0,False,"GCC:+0.4, NDVI:-0.3, NDVI_tower:-0.1, NIRv:-0.3",False
+all,EOS10,post,CUE seasonal mean,raw,4,3,earlier EOS,-0.5985994079900354,-0.8910836215407731,0.1309201383328833,0,0,False,"GCC:+0.1, NDVI:-0.6, NDVI_tower:-0.9, NIRv:-0.6",False
+all,EOS10,post,GPP cumulative (source),adj_T,4,4,later EOS,0.8918788620965787,0.4240015888399692,1.209229613200507,1,0,True,"GCC:+0.4, NDVI:+0.8, NDVI_tower:+1.0, NIRv:+1.2",False
+all,EOS10,post,GPP cumulative (source),raw,4,4,later EOS,1.2911047935026583,0.5703713019229818,1.3539184175343435,1,0,True,"GCC:+0.6, NDVI:+1.3, NDVI_tower:+1.4, NIRv:+1.3",False
+all,EOS10,post,GPP rate (mean),adj_T,4,4,later EOS,1.3359080342527476,0.2798420389469486,1.636488952870012,1,0,True,"GCC:+0.3, NDVI:+1.6, NDVI_tower:+1.1, NIRv:+1.6",False
+all,EOS10,post,GPP rate (mean),raw,4,4,later EOS,1.5771105168611295,0.5034646753218606,1.941047267604972,2,0,True,"GCC:+0.5, NDVI:+1.9, NDVI_tower:+1.5, NIRv:+1.7",False
+all,EOS10,post,"NPP cumulative, annual CUE",adj_T,4,3,later EOS,0.8002556317877798,-0.15092156724522254,0.9732093899349727,0,0,True,"GCC:+1.0, NDVI:-0.2, NDVI_tower:+0.9, NIRv:+0.7",False
+all,EOS10,post,"NPP cumulative, annual CUE",raw,4,4,later EOS,0.507141871983598,0.07002857242897606,1.0172761643679589,0,0,True,"GCC:+1.0, NDVI:+0.1, NDVI_tower:+0.5, NIRv:+0.5",False
+all,EOS10,post,"NPP cumulative, daily CUE",adj_T,4,2,later EOS,0.15966251693319347,-0.1035448784761711,0.4341451655933264,0,0,False,"GCC:+0.4, NDVI:-0.0, NDVI_tower:-0.1, NIRv:+0.4",False
+all,EOS10,post,"NPP cumulative, daily CUE",raw,4,3,later EOS,0.20460282813194897,-0.34774891561554233,0.3051631502781071,0,0,False,"GCC:+0.3, NDVI:+0.2, NDVI_tower:-0.3, NIRv:+0.2",False
+all,EOS10,pre,CUE seasonal mean,adj_T,4,2,later EOS,-0.41429035137101705,-2.911384315224205,0.4338162639274166,0,0,False,"GCC:-2.9, NDVI:-0.8, NDVI_tower:+0.4, NIRv:+0.0",False
+all,EOS10,pre,CUE seasonal mean,raw,4,3,earlier EOS,-0.4272550743589151,-2.8688152179189688,0.24593858196531634,0,0,True,"GCC:-2.9, NDVI:-0.7, NDVI_tower:-0.2, NIRv:+0.2",False
+all,EOS10,pre,GPP cumulative (source),adj_T,4,3,later EOS,0.742427112012995,-0.7983072871473378,1.1215207523717408,0,0,False,"GCC:+1.1, NDVI:+0.7, NDVI_tower:-0.8, NIRv:+0.8",False
+all,EOS10,pre,GPP cumulative (source),raw,4,3,later EOS,1.0141942671803212,-0.599507802156905,1.603334123460387,1,0,False,"GCC:+1.0, NDVI:+1.0, NDVI_tower:-0.6, NIRv:+1.6",False
+all,EOS10,pre,GPP rate (mean),adj_T,4,3,earlier EOS,-0.7233057238097313,-2.396207983267252,0.8050310823943105,0,0,True,"GCC:-0.7, NDVI:-0.8, NDVI_tower:-2.4, NIRv:+0.8",False
+all,EOS10,pre,GPP rate (mean),raw,4,3,earlier EOS,-0.8162528599501717,-2.8939953870806643,0.245225734492509,2,0,True,"GCC:-0.6, NDVI:-1.1, NDVI_tower:-2.9, NIRv:+0.2",False
+all,EOS10,pre,"NPP cumulative, annual CUE",adj_T,4,2,later EOS,0.23564717300106292,-0.40805075789283324,0.8243180444940825,0,0,False,"GCC:+0.8, NDVI:-0.0, NDVI_tower:-0.4, NIRv:+0.5",False
+all,EOS10,pre,"NPP cumulative, annual CUE",raw,4,3,later EOS,0.4432408243652717,-0.3964497993943463,0.8898009297247667,0,0,False,"GCC:+0.8, NDVI:+0.1, NDVI_tower:-0.4, NIRv:+0.9",False
+all,EOS10,pre,"NPP cumulative, daily CUE",adj_T,4,2,later EOS,0.09061483795993279,-1.9980800423625131,0.25389542613846827,0,0,False,"GCC:-2.0, NDVI:-0.0, NDVI_tower:+0.2, NIRv:+0.3",False
+all,EOS10,pre,"NPP cumulative, daily CUE",raw,4,3,later EOS,0.18780078145429063,-2.013315854573722,0.8418208006944611,0,0,False,"GCC:-2.0, NDVI:+0.3, NDVI_tower:+0.0, NIRv:+0.8",False
+all,EOS50,cal60,CUE seasonal mean,adj_T,4,2,later EOS,-0.27437311701309874,-2.1517667218513705,0.6753994795904021,0,0,False,"GCC:-2.2, NDVI:-0.6, NDVI_tower:+0.7, NIRv:+0.0",False
+all,EOS50,cal60,CUE seasonal mean,raw,4,2,later EOS,-0.277059471252316,-1.3060303907570217,0.5801520842670523,0,0,False,"GCC:-1.3, NDVI:-0.6, NDVI_tower:+0.6, NIRv:+0.1",False
+all,EOS50,cal60,GPP rate (mean),adj_T,4,4,earlier EOS,-0.6712951948568129,-1.8482989362535498,-0.5194495741928663,1,0,True,"GCC:-0.8, NDVI:-0.5, NDVI_tower:-1.8, NIRv:-0.5",False
+all,EOS50,cal60,GPP rate (mean),raw,4,4,earlier EOS,-0.4412142507543194,-1.6867298325152045,-0.27904965953574223,1,0,True,"GCC:-0.5, NDVI:-0.3, NDVI_tower:-1.7, NIRv:-0.4",False
+all,EOS50,cal60,"NPP rate, daily CUE",adj_T,4,4,earlier EOS,-0.7376253484006186,-2.0711861522358723,-0.5928660555941769,1,0,True,"GCC:-2.1, NDVI:-0.7, NDVI_tower:-0.7, NIRv:-0.6",False
+all,EOS50,cal60,"NPP rate, daily CUE",raw,4,4,earlier EOS,-0.6263420439810599,-1.6973995412411487,-0.3804363214204285,0,0,True,"GCC:-1.7, NDVI:-0.5, NDVI_tower:-0.7, NIRv:-0.4",False
+all,EOS50,post,CUE seasonal mean,adj_T,4,3,earlier EOS,-0.044415262428091046,-0.4037299882383315,0.21159900517776337,0,0,True,"GCC:-0.0, NDVI:-0.4, NDVI_tower:-0.1, NIRv:+0.2",False
+all,EOS50,post,CUE seasonal mean,raw,4,2,later EOS,-0.06630542401629201,-0.4871134965113496,0.34752357308380866,0,0,False,"GCC:+0.3, NDVI:-0.3, NDVI_tower:-0.5, NIRv:+0.2",False
+all,EOS50,post,GPP cumulative (source),adj_T,4,4,later EOS,0.573234846977811,0.4070805275274893,1.152119952643626,1,0,True,"GCC:+0.5, NDVI:+0.6, NDVI_tower:+0.4, NIRv:+1.2",False
+all,EOS50,post,GPP cumulative (source),raw,4,4,later EOS,0.6046063052730896,0.3436397968289871,1.2875076823881957,1,0,True,"GCC:+0.4, NDVI:+0.8, NDVI_tower:+0.3, NIRv:+1.3",False
+all,EOS50,post,GPP rate (mean),adj_T,4,4,later EOS,0.8468579122146289,0.5188508986568955,1.375376410347023,2,0,True,"GCC:+0.7, NDVI:+1.0, NDVI_tower:+0.5, NIRv:+1.4",False
+all,EOS50,post,GPP rate (mean),raw,4,4,later EOS,0.8352101519736292,0.45113625911658395,1.5092787663676985,2,0,True,"GCC:+0.5, NDVI:+1.2, NDVI_tower:+0.5, NIRv:+1.5",False
+all,EOS50,post,"NPP cumulative, annual CUE",adj_T,4,3,later EOS,0.4386660647847661,-0.08105725939490842,0.8042288059919513,1,0,True,"GCC:+0.6, NDVI:-0.1, NDVI_tower:+0.3, NIRv:+0.8",False
+all,EOS50,post,"NPP cumulative, annual CUE",raw,4,4,later EOS,0.35571900166871295,0.0696829291134704,0.8475699350255442,1,0,True,"GCC:+0.6, NDVI:+0.1, NDVI_tower:+0.1, NIRv:+0.8",False
+all,EOS50,post,"NPP cumulative, daily CUE",adj_T,4,3,later EOS,0.15538272663561117,-0.03556573617973045,0.9665983461498584,1,0,True,"GCC:+0.3, NDVI:-0.0, NDVI_tower:+0.0, NIRv:+1.0",False
+all,EOS50,post,"NPP cumulative, daily CUE",raw,4,3,later EOS,0.16784720499369876,-0.2004119351796221,1.0003716047425109,1,0,False,"GCC:+0.2, NDVI:+0.1, NDVI_tower:-0.2, NIRv:+1.0",False
+all,EOS50,pre,CUE seasonal mean,adj_T,4,3,earlier EOS,-0.34540875425488615,-1.5491062246030898,0.22933974893480527,0,0,False,"GCC:-1.5, NDVI:-0.6, NDVI_tower:+0.2, NIRv:-0.1",False
+all,EOS50,pre,CUE seasonal mean,raw,4,3,earlier EOS,-0.2599993941617199,-1.490056442377037,0.1448485446246674,0,0,True,"GCC:-1.5, NDVI:-0.5, NDVI_tower:-0.0, NIRv:+0.1",False
+all,EOS50,pre,GPP cumulative (source),adj_T,4,4,earlier EOS,-0.70617850586877,-1.4765952968084186,-0.6254260941734113,0,0,True,"GCC:-0.7, NDVI:-0.6, NDVI_tower:-1.5, NIRv:-0.7",False
+all,EOS50,pre,GPP cumulative (source),raw,4,4,earlier EOS,-0.6645733752380991,-1.3567273435388876,-0.14921359688718014,0,0,True,"GCC:-0.9, NDVI:-0.5, NDVI_tower:-1.4, NIRv:-0.1",False
+all,EOS50,pre,GPP rate (mean),adj_T,4,3,earlier EOS,-0.6766035713429646,-1.9390561265661956,0.015614812484856438,1,0,True,"GCC:-1.0, NDVI:-0.3, NDVI_tower:-1.9, NIRv:+0.0",False
+all,EOS50,pre,GPP rate (mean),raw,4,4,earlier EOS,-0.6632960973169263,-2.1553520016547556,-0.3305167349544731,1,0,True,"GCC:-1.0, NDVI:-0.4, NDVI_tower:-2.2, NIRv:-0.3",False
+all,EOS50,pre,"NPP cumulative, annual CUE",adj_T,4,4,earlier EOS,-0.9633095817767283,-1.2028294435282048,-0.7209796008983529,2,0,True,"GCC:-0.9, NDVI:-1.0, NDVI_tower:-1.2, NIRv:-0.7",False
+all,EOS50,pre,"NPP cumulative, annual CUE",raw,4,4,earlier EOS,-0.9455483775847953,-1.118205185756344,-0.3657439753696715,1,0,True,"GCC:-0.9, NDVI:-1.0, NDVI_tower:-1.1, NIRv:-0.4",False
+all,EOS50,pre,"NPP cumulative, daily CUE",adj_T,4,4,earlier EOS,-0.7607854191901013,-2.301531296109004,-0.5955447369596248,1,0,True,"GCC:-2.3, NDVI:-0.8, NDVI_tower:-0.6, NIRv:-0.7",False
+all,EOS50,pre,"NPP cumulative, daily CUE",raw,4,4,earlier EOS,-0.6271134574804087,-2.308766317048236,-0.26095922981467345,2,0,True,"GCC:-2.3, NDVI:-0.6, NDVI_tower:-0.6, NIRv:-0.3",False
+deciduous,EOS10,cal60,CUE seasonal mean,adj_T,4,2,later EOS,-0.07407268876846085,-4.312772465441594,0.2399850484134911,0,0,False,"GCC:-4.3, NDVI:-0.3, NDVI_tower:+0.1, NIRv:+0.2",False
+deciduous,EOS10,cal60,CUE seasonal mean,raw,4,4,earlier EOS,-0.7357019319163757,-4.184809817200101,-0.021579203288478666,0,0,True,"GCC:-4.2, NDVI:-0.3, NDVI_tower:-1.2, NIRv:-0.0",False
+deciduous,EOS10,cal60,GPP rate (mean),adj_T,4,2,later EOS,-0.07037187200986987,-0.5467422531157365,0.19153626295443935,0,0,False,"GCC:+0.2, NDVI:+0.1, NDVI_tower:-0.5, NIRv:-0.2",False
+deciduous,EOS10,cal60,GPP rate (mean),raw,4,2,later EOS,0.012714677480108655,-0.7977908179667279,0.4220116662533652,0,0,False,"GCC:+0.0, NDVI:+0.4, NDVI_tower:-0.8, NIRv:-0.0",False
+deciduous,EOS10,cal60,"NPP rate, daily CUE",adj_T,4,4,earlier EOS,-0.18004550997294966,-3.741329042820835,-0.13315607644486624,0,0,True,"GCC:-3.7, NDVI:-0.1, NDVI_tower:-0.2, NIRv:-0.1",False
+deciduous,EOS10,cal60,"NPP rate, daily CUE",raw,4,3,earlier EOS,-0.6373166746385032,-3.7705312540640885,0.14434762388848033,0,0,True,"GCC:-3.8, NDVI:+0.1, NDVI_tower:-1.0, NIRv:-0.3",False
+deciduous,EOS10,post,CUE seasonal mean,adj_T,4,2,later EOS,0.05933660023349832,-1.0370018175556304,0.5551043114432892,0,0,True,"GCC:+0.5, NDVI:-1.0, NDVI_tower:+0.6, NIRv:-0.4",False
+deciduous,EOS10,post,CUE seasonal mean,raw,4,3,earlier EOS,-0.6141244073842753,-1.4337146296406356,0.5451642386503815,0,0,False,"GCC:+0.5, NDVI:-1.4, NDVI_tower:-0.6, NIRv:-0.6",False
+deciduous,EOS10,post,GPP cumulative (source),adj_T,4,3,later EOS,1.2641012101599978,-0.009529273490001433,4.706103876017152,1,0,True,"GCC:+4.7, NDVI:-0.0, NDVI_tower:+1.7, NIRv:+0.8",False
+deciduous,EOS10,post,GPP cumulative (source),raw,4,4,later EOS,1.179349206141358,0.05419315625087609,3.9955470759257974,1,0,True,"GCC:+4.0, NDVI:+0.1, NDVI_tower:+1.8, NIRv:+0.6",False
+deciduous,EOS10,post,GPP rate (mean),adj_T,4,4,later EOS,1.422441523112742,0.04080435409269548,4.525228386212718,2,0,True,"GCC:+4.5, NDVI:+0.0, NDVI_tower:+1.8, NIRv:+1.0",False
+deciduous,EOS10,post,GPP rate (mean),raw,4,4,later EOS,1.3318221762496607,0.09939975204913065,3.8628209906074056,1,0,True,"GCC:+3.9, NDVI:+0.1, NDVI_tower:+1.9, NIRv:+0.8",False
+deciduous,EOS10,post,"NPP cumulative, annual CUE",adj_T,4,3,later EOS,1.037878554496738,-0.47941184299177014,3.509935561578565,1,0,True,"GCC:+3.5, NDVI:-0.5, NDVI_tower:+1.7, NIRv:+0.4",False
+deciduous,EOS10,post,"NPP cumulative, annual CUE",raw,4,2,later EOS,0.23580546102561706,-0.6953566971998184,3.0259820691580415,0,0,True,"GCC:+3.0, NDVI:-0.7, NDVI_tower:+0.7, NIRv:-0.2",False
+deciduous,EOS10,post,"NPP cumulative, daily CUE",adj_T,4,2,later EOS,0.30885883087613075,-1.1272631801720716,2.4683228085034474,0,0,True,"GCC:+2.5, NDVI:-1.1, NDVI_tower:+0.7, NIRv:-0.1",False
+deciduous,EOS10,post,"NPP cumulative, daily CUE",raw,4,3,earlier EOS,-0.2862284249919275,-1.2468002490714547,2.124358193377336,0,0,False,"GCC:+2.1, NDVI:-1.2, NDVI_tower:-0.1, NIRv:-0.5",False
+deciduous,EOS10,pre,CUE seasonal mean,adj_T,4,3,earlier EOS,-0.2868265596632854,-3.420770526608355,0.45456838281836437,0,0,True,"GCC:-3.4, NDVI:-0.1, NDVI_tower:-0.5, NIRv:+0.5",False
+deciduous,EOS10,pre,CUE seasonal mean,raw,4,3,earlier EOS,-1.1665871327546529,-3.3669324681855297,0.1212773244300814,0,0,True,"GCC:-3.4, NDVI:-0.3, NDVI_tower:-2.1, NIRv:+0.1",False
+deciduous,EOS10,pre,GPP cumulative (source),adj_T,4,3,later EOS,0.3409167189981517,-0.4815134469280728,0.6385547002549163,0,0,False,"GCC:+0.6, NDVI:+0.4, NDVI_tower:-0.5, NIRv:+0.3",False
+deciduous,EOS10,pre,GPP cumulative (source),raw,4,3,later EOS,0.5266894315216909,-0.34426694014527287,0.871697858803555,0,0,False,"GCC:+0.5, NDVI:+0.9, NDVI_tower:-0.3, NIRv:+0.5",False
+deciduous,EOS10,pre,GPP rate (mean),adj_T,4,4,earlier EOS,-0.8260954605530793,-1.6432346672001445,-0.6114973373330371,0,0,True,"GCC:-0.6, NDVI:-0.9, NDVI_tower:-1.6, NIRv:-0.8",False
+deciduous,EOS10,pre,GPP rate (mean),raw,4,4,earlier EOS,-0.9546876526111838,-2.6786066727989133,-0.7431820865993014,1,0,True,"GCC:-1.0, NDVI:-0.9, NDVI_tower:-2.7, NIRv:-0.7",False
+deciduous,EOS10,pre,"NPP cumulative, annual CUE",adj_T,4,3,later EOS,0.19181315688399275,-0.22764565530592795,1.0208207872275292,0,0,False,"GCC:+1.0, NDVI:+0.0, NDVI_tower:-0.2, NIRv:+0.4",False
+deciduous,EOS10,pre,"NPP cumulative, annual CUE",raw,4,3,later EOS,0.12170112291685048,-0.8312494458841897,0.9100502973372478,0,0,False,"GCC:+0.9, NDVI:+0.0, NDVI_tower:-0.8, NIRv:+0.2",False
+deciduous,EOS10,pre,"NPP cumulative, daily CUE",adj_T,4,2,later EOS,-0.06442711641766061,-3.212829329509636,0.3139723168456197,0,0,False,"GCC:-3.2, NDVI:+0.2, NDVI_tower:-0.3, NIRv:+0.3",False
+deciduous,EOS10,pre,"NPP cumulative, daily CUE",raw,4,2,later EOS,-0.30965246113732453,-3.2017454043982427,0.5235576951777297,0,0,False,"GCC:-3.2, NDVI:+0.5, NDVI_tower:-0.8, NIRv:+0.2",False
+deciduous,EOS50,cal60,CUE seasonal mean,adj_T,4,3,later EOS,0.10242338970366266,-1.9179177663817237,0.48815272791406294,0,0,False,"GCC:-1.9, NDVI:+0.1, NDVI_tower:+0.1, NIRv:+0.5",False
+deciduous,EOS50,cal60,CUE seasonal mean,raw,4,2,later EOS,-0.23383598101475414,-1.914158470414278,0.4615966231391443,0,0,False,"GCC:-1.9, NDVI:+0.0, NDVI_tower:-0.5, NIRv:+0.5",False
+deciduous,EOS50,cal60,GPP rate (mean),adj_T,4,4,earlier EOS,-0.43563908922168243,-0.7059541683411326,-0.12907134185457778,0,0,True,"GCC:-0.1, NDVI:-0.4, NDVI_tower:-0.7, NIRv:-0.5",False
+deciduous,EOS50,cal60,GPP rate (mean),raw,4,4,earlier EOS,-0.34708888286474554,-0.641733001315812,-0.07407986445918666,0,0,True,"GCC:-0.2, NDVI:-0.1, NDVI_tower:-0.6, NIRv:-0.5",False
+deciduous,EOS50,cal60,"NPP rate, daily CUE",adj_T,4,4,earlier EOS,-0.34391533768761273,-2.2948924655533482,-0.206347734961121,0,0,True,"GCC:-2.3, NDVI:-0.2, NDVI_tower:-0.5, NIRv:-0.2",False
+deciduous,EOS50,cal60,"NPP rate, daily CUE",raw,4,4,earlier EOS,-0.451222772123705,-2.271186583486264,-0.062231904598264096,0,0,True,"GCC:-2.3, NDVI:-0.1, NDVI_tower:-0.6, NIRv:-0.3",False
+deciduous,EOS50,post,CUE seasonal mean,adj_T,4,3,later EOS,0.5922592998874437,-0.11749839412479,1.212341123779355,0,0,True,"GCC:+0.6, NDVI:-0.1, NDVI_tower:+1.2, NIRv:+0.6",False
+deciduous,EOS50,post,CUE seasonal mean,raw,4,3,later EOS,0.5508381014754341,-0.28339190651227114,0.7033097310219205,0,0,True,"GCC:+0.7, NDVI:-0.3, NDVI_tower:+0.6, NIRv:+0.5",False
+deciduous,EOS50,post,GPP cumulative (source),adj_T,4,4,later EOS,1.0707030609244583,0.6734446419465292,1.7758370694386734,0,0,True,"GCC:+0.7, NDVI:+0.8, NDVI_tower:+1.8, NIRv:+1.3",False
+deciduous,EOS50,post,GPP cumulative (source),raw,4,4,later EOS,1.0156953327228928,0.678660363846731,1.8009876709227193,1,0,True,"GCC:+0.8, NDVI:+0.7, NDVI_tower:+1.8, NIRv:+1.3",False
+deciduous,EOS50,post,GPP rate (mean),adj_T,4,4,later EOS,1.1746198358567113,0.5320778636774088,1.8450138004521612,0,0,True,"GCC:+0.5, NDVI:+0.9, NDVI_tower:+1.8, NIRv:+1.5",False
+deciduous,EOS50,post,GPP rate (mean),raw,4,4,later EOS,1.0796843430118725,0.6259339152233138,1.8709461574509398,1,0,True,"GCC:+0.6, NDVI:+0.7, NDVI_tower:+1.9, NIRv:+1.4",False
+deciduous,EOS50,post,"NPP cumulative, annual CUE",adj_T,4,4,later EOS,1.2659477854109014,0.6865261365738081,1.7975038378329256,2,0,True,"GCC:+0.9, NDVI:+0.7, NDVI_tower:+1.8, NIRv:+1.6",False
+deciduous,EOS50,post,"NPP cumulative, annual CUE",raw,4,4,later EOS,1.188204127706252,0.42653568013406296,1.3612919318474677,2,0,True,"GCC:+1.0, NDVI:+0.4, NDVI_tower:+1.4, NIRv:+1.3",False
+deciduous,EOS50,post,"NPP cumulative, daily CUE",adj_T,4,4,later EOS,1.0201624302231136,0.4157642494646488,1.6717801043622582,1,0,True,"GCC:+0.6, NDVI:+0.4, NDVI_tower:+1.7, NIRv:+1.5",False
+deciduous,EOS50,post,"NPP cumulative, daily CUE",raw,4,4,later EOS,0.9934735179193066,0.20123526264542704,1.335022618071063,1,0,True,"GCC:+0.7, NDVI:+0.2, NDVI_tower:+1.3, NIRv:+1.3",False
+deciduous,EOS50,pre,CUE seasonal mean,adj_T,4,2,later EOS,-0.07782927583579355,-1.214765961611267,0.5713632664046681,0,0,False,"GCC:-1.2, NDVI:+0.1, NDVI_tower:-0.3, NIRv:+0.6",False
+deciduous,EOS50,pre,CUE seasonal mean,raw,4,3,earlier EOS,-0.5127750740839542,-1.1250150562938914,0.5008266521868693,0,0,True,"GCC:-1.1, NDVI:-0.0, NDVI_tower:-1.0, NIRv:+0.5",False
+deciduous,EOS50,pre,GPP cumulative (source),adj_T,4,3,earlier EOS,-0.2897539257741275,-0.4678062822341177,0.20393381990396886,0,0,False,"GCC:+0.2, NDVI:-0.5, NDVI_tower:-0.2, NIRv:-0.4",False
+deciduous,EOS50,pre,GPP cumulative (source),raw,4,3,earlier EOS,-0.11959061075393583,-0.2960405320845765,0.050105555167843714,0,0,False,"GCC:+0.1, NDVI:-0.2, NDVI_tower:-0.0, NIRv:-0.3",False
+deciduous,EOS50,pre,GPP rate (mean),adj_T,4,3,earlier EOS,-0.16933560734484687,-0.9737265379584105,0.17281825945820103,0,0,False,"GCC:-1.0, NDVI:-0.1, NDVI_tower:+0.2, NIRv:-0.2",False
+deciduous,EOS50,pre,GPP rate (mean),raw,4,3,earlier EOS,-0.3391402692404174,-0.6478151101489033,0.15828166045850095,0,0,True,"GCC:-0.3, NDVI:+0.2, NDVI_tower:-0.6, NIRv:-0.4",False
+deciduous,EOS50,pre,"NPP cumulative, annual CUE",adj_T,4,3,earlier EOS,-0.036114355470395806,-0.3232402459900465,0.9672959198900746,0,0,False,"GCC:+1.0, NDVI:-0.3, NDVI_tower:-0.0, NIRv:-0.0",False
+deciduous,EOS50,pre,"NPP cumulative, annual CUE",raw,4,3,earlier EOS,-0.18937263362810722,-0.309353158570775,0.9806829223922426,0,0,False,"GCC:+1.0, NDVI:-0.3, NDVI_tower:-0.3, NIRv:-0.1",False
+deciduous,EOS50,pre,"NPP cumulative, daily CUE",adj_T,4,3,earlier EOS,-0.2500898439775352,-1.9544705972894958,0.06152876813533375,0,0,False,"GCC:-2.0, NDVI:-0.3, NDVI_tower:+0.1, NIRv:-0.2",False
+deciduous,EOS50,pre,"NPP cumulative, daily CUE",raw,4,4,earlier EOS,-0.17805786683946664,-1.9717316695702989,-0.14238011439655388,0,0,True,"GCC:-2.0, NDVI:-0.2, NDVI_tower:-0.2, NIRv:-0.1",False
+evergreen,EOS10,cal60,CUE seasonal mean,adj_T,3,2,earlier EOS,-0.2475153166531847,-2.0921032295200153,0.6789401683319795,0,0,False,"NDVI:-2.1, NDVI_tower:+0.7, NIRv:-0.2",False
+evergreen,EOS10,cal60,CUE seasonal mean,raw,3,2,later EOS,0.01248561943281152,-1.6142959633515874,1.8022802528696795,0,0,False,"NDVI:-1.6, NDVI_tower:+1.8, NIRv:+0.0",False
+evergreen,EOS10,cal60,GPP rate (mean),adj_T,3,2,later EOS,0.6320741885589977,-0.07615794078660837,0.8255813973486712,0,0,False,"NDVI:-0.1, NDVI_tower:+0.8, NIRv:+0.6",False
+evergreen,EOS10,cal60,GPP rate (mean),raw,3,2,later EOS,0.5018160818877703,-0.2609485126447769,0.5076982801833959,0,0,False,"NDVI:-0.3, NDVI_tower:+0.5, NIRv:+0.5",False
+evergreen,EOS10,cal60,"NPP rate, daily CUE",adj_T,3,2,later EOS,0.22144480210837006,-1.1858115684317514,2.1410997524728903,0,0,False,"NDVI:-1.2, NDVI_tower:+2.1, NIRv:+0.2",False
+evergreen,EOS10,cal60,"NPP rate, daily CUE",raw,3,2,later EOS,0.3399064394588482,-1.110964055862134,2.5768289496879446,0,0,False,"NDVI:-1.1, NDVI_tower:+2.6, NIRv:+0.3",False
+evergreen,EOS10,post,CUE seasonal mean,adj_T,3,2,earlier EOS,-0.31614421444607077,-3.8595019585883787,0.5662818275218051,1,0,False,"NDVI:-0.3, NDVI_tower:-3.9, NIRv:+0.6",False
+evergreen,EOS10,post,CUE seasonal mean,raw,3,2,earlier EOS,-0.2424425714978047,-4.19746990889442,0.46041077752219417,1,0,False,"NDVI:-0.2, NDVI_tower:-4.2, NIRv:+0.5",False
+evergreen,EOS10,post,GPP cumulative (source),adj_T,3,3,later EOS,0.5198625610334505,0.26179011539520025,1.4536368235259691,0,0,False,"NDVI:+0.3, NDVI_tower:+0.5, NIRv:+1.5",False
+evergreen,EOS10,post,GPP cumulative (source),raw,3,2,later EOS,0.47377112551081374,-0.637760117486597,1.232972434361459,0,0,False,"NDVI:+0.5, NDVI_tower:-0.6, NIRv:+1.2",False
+evergreen,EOS10,post,GPP rate (mean),adj_T,3,3,later EOS,0.49892262747256655,0.48086280892447975,1.6371707321463718,0,0,False,"NDVI:+0.5, NDVI_tower:+0.5, NIRv:+1.6",False
+evergreen,EOS10,post,GPP rate (mean),raw,3,2,later EOS,0.6946499980227147,-0.6776341609301815,1.45525754834082,0,0,False,"NDVI:+0.7, NDVI_tower:-0.7, NIRv:+1.5",False
+evergreen,EOS10,post,"NPP cumulative, annual CUE",adj_T,3,2,earlier EOS,-0.5275277696369022,-0.8875753773590886,1.0447731267511868,0,0,False,"NDVI:-0.9, NDVI_tower:-0.5, NIRv:+1.0",False
+evergreen,EOS10,post,"NPP cumulative, annual CUE",raw,3,2,earlier EOS,-0.4806259148773458,-1.1447858719424364,1.0106008840114107,0,0,False,"NDVI:-0.5, NDVI_tower:-1.1, NIRv:+1.0",False
+evergreen,EOS10,post,"NPP cumulative, daily CUE",adj_T,3,2,later EOS,0.2102015271895819,-2.051183743152462,0.9618592949158055,0,0,False,"NDVI:+0.2, NDVI_tower:-2.1, NIRv:+1.0",False
+evergreen,EOS10,post,"NPP cumulative, daily CUE",raw,3,2,later EOS,0.20233075548679502,-2.277513557380969,0.7553137280479431,0,0,False,"NDVI:+0.2, NDVI_tower:-2.3, NIRv:+0.8",False
+evergreen,EOS10,pre,CUE seasonal mean,adj_T,3,2,earlier EOS,-0.41289142359072734,-1.9485186852353558,1.2592997861814221,0,0,False,"NDVI:-1.9, NDVI_tower:+1.3, NIRv:-0.4",False
+evergreen,EOS10,pre,CUE seasonal mean,raw,3,2,earlier EOS,-0.16738195833630434,-1.869660593304813,2.377097202809698,0,0,False,"NDVI:-1.9, NDVI_tower:+2.4, NIRv:-0.2",False
+evergreen,EOS10,pre,GPP cumulative (source),adj_T,3,3,later EOS,0.4155582626936105,0.3915210905533951,0.7082646863796729,0,0,False,"NDVI:+0.4, NDVI_tower:+0.4, NIRv:+0.7",False
+evergreen,EOS10,pre,GPP cumulative (source),raw,3,3,later EOS,0.5767458437389134,0.4403963675880329,1.2620941122324436,0,0,False,"NDVI:+0.4, NDVI_tower:+0.6, NIRv:+1.3",False
+evergreen,EOS10,pre,GPP rate (mean),adj_T,3,2,earlier EOS,-1.1985767913216738,-1.8717269466951936,0.5809547828140981,0,0,False,"NDVI:-1.9, NDVI_tower:-1.2, NIRv:+0.6",False
+evergreen,EOS10,pre,GPP rate (mean),raw,3,3,earlier EOS,-1.7128169531201118,-2.914531661005644,-0.09177691214227851,0,0,False,"NDVI:-1.7, NDVI_tower:-2.9, NIRv:-0.1",False
+evergreen,EOS10,pre,"NPP cumulative, annual CUE",adj_T,3,2,earlier EOS,-0.027651203003794672,-0.7915448760490723,0.5826721855058101,0,0,False,"NDVI:-0.8, NDVI_tower:-0.0, NIRv:+0.6",False
+evergreen,EOS10,pre,"NPP cumulative, annual CUE",raw,3,2,later EOS,0.9861120674081464,-0.7036293850846721,0.9944322336777456,0,0,False,"NDVI:-0.7, NDVI_tower:+1.0, NIRv:+1.0",False
+evergreen,EOS10,pre,"NPP cumulative, daily CUE",adj_T,3,2,later EOS,0.2567565174873653,-0.6157081380924972,2.2947310955695444,0,0,False,"NDVI:-0.6, NDVI_tower:+2.3, NIRv:+0.3",False
+evergreen,EOS10,pre,"NPP cumulative, daily CUE",raw,3,2,later EOS,0.7903525738663097,-0.5376247402766154,2.8762720612066666,0,0,False,"NDVI:-0.5, NDVI_tower:+2.9, NIRv:+0.8",False
+evergreen,EOS50,cal60,CUE seasonal mean,adj_T,3,2,earlier EOS,-0.423396796240785,-1.0516699659674975,1.0807960289417469,0,0,False,"NDVI:-1.1, NDVI_tower:+1.1, NIRv:-0.4",False
+evergreen,EOS50,cal60,CUE seasonal mean,raw,3,2,earlier EOS,-0.1763579435114314,-0.4646794833699785,1.9107752729463905,0,0,False,"NDVI:-0.5, NDVI_tower:+1.9, NIRv:-0.2",False
+evergreen,EOS50,cal60,GPP rate (mean),adj_T,3,3,earlier EOS,-0.6995838330920396,-2.358967594463305,-0.3034934453568007,0,0,False,"NDVI:-0.3, NDVI_tower:-2.4, NIRv:-0.7",False
+evergreen,EOS50,cal60,GPP rate (mean),raw,3,3,earlier EOS,-0.7756055466982013,-2.8811988312218766,-0.696838988414241,1,0,False,"NDVI:-0.7, NDVI_tower:-2.9, NIRv:-0.8",False
+evergreen,EOS50,cal60,"NPP rate, daily CUE",adj_T,3,2,earlier EOS,-0.44701097135235596,-0.6306888505607052,0.08641759754510835,0,0,False,"NDVI:-0.6, NDVI_tower:+0.1, NIRv:-0.4",False
+evergreen,EOS50,cal60,"NPP rate, daily CUE",raw,3,2,earlier EOS,-0.3712906311704146,-0.7176497928953594,0.2951905490162021,0,0,False,"NDVI:-0.7, NDVI_tower:+0.3, NIRv:-0.4",False
+evergreen,EOS50,post,CUE seasonal mean,adj_T,3,3,earlier EOS,-1.1755536935962645,-3.414509506780162,-0.1491680187179693,1,0,False,"NDVI:-1.2, NDVI_tower:-3.4, NIRv:-0.1",False
+evergreen,EOS50,post,CUE seasonal mean,raw,3,3,earlier EOS,-1.1081756548076962,-3.98889927132168,-0.10145922681046733,1,0,False,"NDVI:-1.1, NDVI_tower:-4.0, NIRv:-0.1",False
+evergreen,EOS50,post,GPP cumulative (source),adj_T,3,2,earlier EOS,-0.13637175312649163,-1.907686988032705,0.38934813396550705,0,0,False,"NDVI:-0.1, NDVI_tower:-1.9, NIRv:+0.4",False
+evergreen,EOS50,post,GPP cumulative (source),raw,3,2,later EOS,0.03619737722112611,-2.715580772547172,0.494993601361575,1,0,False,"NDVI:+0.0, NDVI_tower:-2.7, NIRv:+0.5",False
+evergreen,EOS50,post,GPP rate (mean),adj_T,3,2,earlier EOS,-0.10115077923704341,-1.797839523939894,0.4021176081993289,0,0,False,"NDVI:-0.1, NDVI_tower:-1.8, NIRv:+0.4",False
+evergreen,EOS50,post,GPP rate (mean),raw,3,2,later EOS,0.0876241142871328,-2.6198056660469775,0.520837054496235,1,0,False,"NDVI:+0.1, NDVI_tower:-2.6, NIRv:+0.5",False
+evergreen,EOS50,post,"NPP cumulative, annual CUE",adj_T,3,3,earlier EOS,-1.2236773287729168,-2.037538857587673,-0.19805975168066564,0,0,False,"NDVI:-1.2, NDVI_tower:-2.0, NIRv:-0.2",False
+evergreen,EOS50,post,"NPP cumulative, annual CUE",raw,3,2,earlier EOS,-0.7183619011429192,-2.417026646349277,0.0035331278078787956,0,0,False,"NDVI:-0.7, NDVI_tower:-2.4, NIRv:+0.0",False
+evergreen,EOS50,post,"NPP cumulative, daily CUE",adj_T,3,2,earlier EOS,-1.4380085675617582,-2.570146011025883,0.18995362110441577,0,0,False,"NDVI:-1.4, NDVI_tower:-2.6, NIRv:+0.2",False
+evergreen,EOS50,post,"NPP cumulative, daily CUE",raw,3,2,earlier EOS,-1.4571615745302138,-2.957101769537057,0.24829046795472393,1,0,False,"NDVI:-1.5, NDVI_tower:-3.0, NIRv:+0.2",False
+evergreen,EOS50,pre,CUE seasonal mean,adj_T,3,2,earlier EOS,-0.7187512911496272,-1.016131063938754,0.9312243106175586,0,0,False,"NDVI:-1.0, NDVI_tower:+0.9, NIRv:-0.7",False
+evergreen,EOS50,pre,CUE seasonal mean,raw,3,2,earlier EOS,-0.5320046768926204,-0.7902986415021028,1.7415043553631062,0,0,False,"NDVI:-0.8, NDVI_tower:+1.7, NIRv:-0.5",False
+evergreen,EOS50,pre,GPP cumulative (source),adj_T,3,3,earlier EOS,-0.9665979212618113,-2.0215195899050555,-0.7616289519695045,0,0,False,"NDVI:-1.0, NDVI_tower:-2.0, NIRv:-0.8",False
+evergreen,EOS50,pre,GPP cumulative (source),raw,3,3,earlier EOS,-1.0238472567887538,-1.5777090333188477,-0.6087062327986841,0,0,False,"NDVI:-1.0, NDVI_tower:-1.6, NIRv:-0.6",False
+evergreen,EOS50,pre,GPP rate (mean),adj_T,3,3,earlier EOS,-1.2063789914460878,-3.569501510829971,-0.7456410774900152,1,0,False,"NDVI:-1.2, NDVI_tower:-3.6, NIRv:-0.7",False
+evergreen,EOS50,pre,GPP rate (mean),raw,3,3,earlier EOS,-1.3586638331269985,-4.200443072412254,-0.8549113718712458,1,0,False,"NDVI:-1.4, NDVI_tower:-4.2, NIRv:-0.9",False
+evergreen,EOS50,pre,"NPP cumulative, annual CUE",adj_T,3,3,earlier EOS,-1.8678322034423032,-2.227484638234167,-1.080821453591755,1,0,False,"NDVI:-1.9, NDVI_tower:-2.2, NIRv:-1.1",False
+evergreen,EOS50,pre,"NPP cumulative, annual CUE",raw,3,3,earlier EOS,-1.1256491643893132,-1.9456085121599607,-0.9303516646066151,0,0,False,"NDVI:-1.9, NDVI_tower:-1.1, NIRv:-0.9",False
+evergreen,EOS50,pre,"NPP cumulative, daily CUE",adj_T,3,2,earlier EOS,-0.5409593173306072,-0.8610559987018309,0.06351705001083913,0,0,False,"NDVI:-0.9, NDVI_tower:+0.1, NIRv:-0.5",False
+evergreen,EOS50,pre,"NPP cumulative, daily CUE",raw,3,2,earlier EOS,-0.34687750821195695,-0.816480560040873,0.6152486897805487,0,0,False,"NDVI:-0.8, NDVI_tower:+0.6, NIRv:-0.3",False
+grass/shrub,EOS10,cal60,CUE seasonal mean,adj_T,4,2,later EOS,-0.142799331849176,-1.0286103720552793,4.173861731345704,0,0,False,"GCC:-1.0, NDVI:-0.3, NDVI_tower:+4.2, NIRv:+0.0",False
+grass/shrub,EOS10,cal60,CUE seasonal mean,raw,4,3,earlier EOS,-0.3263772655447511,-1.3148508747566867,2.158621177943138,0,0,False,"GCC:-0.6, NDVI:-1.3, NDVI_tower:+2.2, NIRv:-0.0",False
+grass/shrub,EOS10,cal60,GPP rate (mean),adj_T,4,3,later EOS,0.9071353825439226,-2.0796029059140797,1.2309564824169903,0,0,False,"GCC:+1.2, NDVI:+0.6, NDVI_tower:-2.1, NIRv:+1.2",False
+grass/shrub,EOS10,cal60,GPP rate (mean),raw,4,3,later EOS,0.8581317784461753,-0.572944643705172,2.502845150317326,1,0,False,"GCC:+0.6, NDVI:+1.1, NDVI_tower:-0.6, NIRv:+2.5",False
+grass/shrub,EOS10,cal60,"NPP rate, daily CUE",adj_T,4,2,later EOS,0.18794191736046167,-0.07939269236146099,0.5492958860834658,0,0,False,"GCC:-0.1, NDVI:-0.0, NDVI_tower:+0.5, NIRv:+0.4",False
+grass/shrub,EOS10,cal60,"NPP rate, daily CUE",raw,4,3,later EOS,0.6635752726754053,-0.48359536106296697,1.302024371684479,0,0,False,"GCC:-0.5, NDVI:+0.4, NDVI_tower:+0.9, NIRv:+1.3",False
+grass/shrub,EOS10,post,CUE seasonal mean,adj_T,4,2,later EOS,0.3781973433213019,-0.9950979377527338,2.0810370011914068,0,0,False,"GCC:-0.1, NDVI:+0.9, NDVI_tower:+2.1, NIRv:-1.0",False
+grass/shrub,EOS10,post,CUE seasonal mean,raw,4,2,later EOS,-0.18977853890327986,-1.3221830721939725,0.9561327553454829,0,0,False,"GCC:-0.4, NDVI:+0.1, NDVI_tower:+1.0, NIRv:-1.3",False
+grass/shrub,EOS10,post,GPP cumulative (source),adj_T,4,2,later EOS,-0.03261382684755176,-5.928693564922565,2.919896429556488,2,0,False,"GCC:-5.9, NDVI:+2.9, NDVI_tower:-1.8, NIRv:+1.7",False
+grass/shrub,EOS10,post,GPP cumulative (source),raw,4,3,later EOS,2.16870748024947,-3.9669052902205912,3.9329744590407008,3,0,False,"GCC:-4.0, NDVI:+3.9, NDVI_tower:+2.1, NIRv:+2.3",False
+grass/shrub,EOS10,post,GPP rate (mean),adj_T,4,2,later EOS,0.7035971054261447,-5.483803322717379,4.700622984621354,3,0,False,"GCC:-5.5, NDVI:+4.7, NDVI_tower:-1.1, NIRv:+2.5",False
+grass/shrub,EOS10,post,GPP rate (mean),raw,4,3,later EOS,2.661837728227988,-3.489252736839381,5.069362468834108,2,1,False,"GCC:-3.5, NDVI:+5.1, NDVI_tower:+2.3, NIRv:+3.1",False
+grass/shrub,EOS10,post,"NPP cumulative, annual CUE",adj_T,4,3,later EOS,0.8885877416745218,-3.8018851515507155,1.6665595889992353,0,0,False,"GCC:-3.8, NDVI:+1.0, NDVI_tower:+1.7, NIRv:+0.8",False
+grass/shrub,EOS10,post,"NPP cumulative, annual CUE",raw,4,3,later EOS,1.2553600197510928,-2.2287557552514445,1.6672900269293007,0,0,False,"GCC:-2.2, NDVI:+1.5, NDVI_tower:+1.7, NIRv:+1.0",False
+grass/shrub,EOS10,post,"NPP cumulative, daily CUE",adj_T,4,2,later EOS,0.11547051536382433,-3.852422037022114,2.1930126126412395,0,0,False,"GCC:-3.9, NDVI:+2.2, NDVI_tower:-0.3, NIRv:+0.5",False
+grass/shrub,EOS10,post,"NPP cumulative, daily CUE",raw,4,3,later EOS,0.5654269999062804,-3.1673394584646744,2.6149080521000476,1,0,False,"GCC:-3.2, NDVI:+2.6, NDVI_tower:+0.4, NIRv:+0.7",False
+grass/shrub,EOS10,pre,CUE seasonal mean,adj_T,4,3,earlier EOS,-0.3246936233192683,-1.9797120133251207,2.0556076257562768,0,0,False,"GCC:-2.0, NDVI:-0.4, NDVI_tower:+2.1, NIRv:-0.2",False
+grass/shrub,EOS10,pre,CUE seasonal mean,raw,4,2,later EOS,0.2256505841490263,-2.119165750345488,1.932803327737326,0,0,False,"GCC:-2.1, NDVI:-0.4, NDVI_tower:+1.9, NIRv:+0.8",False
+grass/shrub,EOS10,pre,GPP cumulative (source),adj_T,4,3,later EOS,0.8401359488470135,-3.159714564048712,1.1764631032751822,0,0,False,"GCC:+0.8, NDVI:+0.8, NDVI_tower:-3.2, NIRv:+1.2",False
+grass/shrub,EOS10,pre,GPP cumulative (source),raw,4,3,later EOS,0.9652114096624125,-2.319683791989875,3.110668510364455,1,0,False,"GCC:+0.4, NDVI:+1.6, NDVI_tower:-2.3, NIRv:+3.1",False
+grass/shrub,EOS10,pre,GPP rate (mean),adj_T,4,2,later EOS,-0.7593594565125891,-4.955230665055858,1.632295809628586,0,0,False,"GCC:-1.7, NDVI:+0.2, NDVI_tower:-5.0, NIRv:+1.6",False
+grass/shrub,EOS10,pre,GPP rate (mean),raw,4,3,earlier EOS,-1.1687041019167697,-3.4612603734995697,1.7179759930131548,0,0,True,"GCC:-1.5, NDVI:-0.9, NDVI_tower:-3.5, NIRv:+1.7",False
+grass/shrub,EOS10,pre,"NPP cumulative, annual CUE",adj_T,4,3,later EOS,0.12075358047768042,-0.7226266754911486,0.1691889086747259,0,0,False,"GCC:+0.1, NDVI:+0.1, NDVI_tower:-0.7, NIRv:+0.2",False
+grass/shrub,EOS10,pre,"NPP cumulative, annual CUE",raw,4,2,later EOS,0.3095493213113333,-0.6854658287817952,1.5402805833689797,0,0,False,"GCC:-0.1, NDVI:+0.7, NDVI_tower:-0.7, NIRv:+1.5",False
+grass/shrub,EOS10,pre,"NPP cumulative, daily CUE",adj_T,4,3,earlier EOS,-0.30454594071200036,-1.4686654784225193,0.019860909578204685,0,0,True,"GCC:-1.5, NDVI:-0.0, NDVI_tower:-0.6, NIRv:+0.0",False
+grass/shrub,EOS10,pre,"NPP cumulative, daily CUE",raw,4,2,later EOS,0.2356732618947043,-1.7008126408810569,1.6064080903784976,0,0,False,"GCC:-1.7, NDVI:+0.7, NDVI_tower:-0.3, NIRv:+1.6",False
+grass/shrub,EOS50,cal60,CUE seasonal mean,adj_T,4,2,later EOS,-0.4509521472750445,-1.9977897575100791,2.2809950367625262,0,0,False,"GCC:-2.0, NDVI:-1.1, NDVI_tower:+2.3, NIRv:+0.2",False
+grass/shrub,EOS50,cal60,CUE seasonal mean,raw,4,3,earlier EOS,-0.16184209856352952,-1.3926347879986574,1.611288087313824,0,0,False,"GCC:-0.3, NDVI:-1.4, NDVI_tower:+1.6, NIRv:-0.0",False
+grass/shrub,EOS50,cal60,GPP rate (mean),adj_T,4,4,earlier EOS,-2.0375421172308523,-4.589013794920699,-0.8641331170252495,2,0,True,"GCC:-2.9, NDVI:-1.2, NDVI_tower:-4.6, NIRv:-0.9",False
+grass/shrub,EOS50,cal60,GPP rate (mean),raw,4,3,earlier EOS,-0.9633982199796955,-3.03897744429939,0.21385385159704812,0,0,True,"GCC:-1.6, NDVI:-0.3, NDVI_tower:-3.0, NIRv:+0.2",False
+grass/shrub,EOS50,cal60,"NPP rate, daily CUE",adj_T,4,4,earlier EOS,-2.0866946104889466,-2.575649748404036,-1.340658095231042,1,0,True,"GCC:-2.6, NDVI:-1.7, NDVI_tower:-2.4, NIRv:-1.3",False
+grass/shrub,EOS50,cal60,"NPP rate, daily CUE",raw,4,4,earlier EOS,-1.3057118278546356,-1.8127038537879208,-0.5449713528446032,1,0,True,"GCC:-1.5, NDVI:-1.1, NDVI_tower:-1.8, NIRv:-0.5",False
+grass/shrub,EOS50,post,CUE seasonal mean,adj_T,4,3,earlier EOS,-0.3099608153248215,-0.540064605929592,0.08074134227788851,0,0,True,"GCC:-0.3, NDVI:-0.3, NDVI_tower:-0.5, NIRv:+0.1",False
+grass/shrub,EOS50,post,CUE seasonal mean,raw,4,3,later EOS,0.09864543271167782,-0.0796298561953099,0.4811827265083442,0,0,True,"GCC:+0.5, NDVI:-0.1, NDVI_tower:+0.0, NIRv:+0.2",False
+grass/shrub,EOS50,post,GPP cumulative (source),adj_T,4,2,later EOS,0.5444964767363538,-2.5466604413242355,1.924456630725587,1,0,False,"GCC:-0.1, NDVI:+1.2, NDVI_tower:-2.5, NIRv:+1.9",False
+grass/shrub,EOS50,post,GPP cumulative (source),raw,4,2,later EOS,0.6819909464457283,-1.1817556983873672,2.1730865213844224,1,0,False,"GCC:-0.3, NDVI:+1.6, NDVI_tower:-1.2, NIRv:+2.2",False
+grass/shrub,EOS50,post,GPP rate (mean),adj_T,4,3,later EOS,1.3205414399394795,-1.1572534930948317,2.3478485913994005,2,0,False,"GCC:+0.5, NDVI:+2.2, NDVI_tower:-1.2, NIRv:+2.3",False
+grass/shrub,EOS50,post,GPP rate (mean),raw,4,3,later EOS,1.268331260040141,-0.498654068341313,2.591436639386899,2,0,False,"GCC:+0.2, NDVI:+2.3, NDVI_tower:-0.5, NIRv:+2.6",False
+grass/shrub,EOS50,post,"NPP cumulative, annual CUE",adj_T,4,3,earlier EOS,-0.26596399035098506,-0.9253200832982204,0.9444331831285828,0,0,True,"GCC:-0.2, NDVI:-0.4, NDVI_tower:-0.9, NIRv:+0.9",False
+grass/shrub,EOS50,post,"NPP cumulative, annual CUE",raw,4,2,later EOS,0.02652902707905873,-0.7709276989452302,1.1687830379455733,0,0,False,"GCC:+0.1, NDVI:-0.0, NDVI_tower:-0.8, NIRv:+1.2",False
+grass/shrub,EOS50,post,"NPP cumulative, daily CUE",adj_T,4,2,later EOS,0.06466761824716796,-2.3057550827286053,1.249944767091299,0,0,False,"GCC:-0.3, NDVI:+0.4, NDVI_tower:-2.3, NIRv:+1.2",False
+grass/shrub,EOS50,post,"NPP cumulative, daily CUE",raw,4,2,later EOS,0.12415451666559593,-1.8992031277051873,1.4027035944788553,0,0,False,"GCC:-0.5, NDVI:+0.7, NDVI_tower:-1.9, NIRv:+1.4",False
+grass/shrub,EOS50,pre,CUE seasonal mean,adj_T,4,3,earlier EOS,-0.497370187033047,-1.545688235948254,0.5969401068416571,0,0,False,"GCC:-1.5, NDVI:-1.0, NDVI_tower:+0.6, NIRv:-0.0",False
+grass/shrub,EOS50,pre,CUE seasonal mean,raw,4,2,later EOS,-0.20942925128507933,-1.3815722721752426,0.5807012908243732,0,0,False,"GCC:-1.4, NDVI:-0.9, NDVI_tower:+0.5, NIRv:+0.6",False
+grass/shrub,EOS50,pre,GPP cumulative (source),adj_T,4,4,earlier EOS,-2.1184280087985385,-4.749570592322754,-0.8242607146493706,1,0,True,"GCC:-2.9, NDVI:-0.8, NDVI_tower:-4.7, NIRv:-1.3",False
+grass/shrub,EOS50,pre,GPP cumulative (source),raw,4,3,earlier EOS,-1.511404333953094,-4.4571771031547875,0.49334990928643313,2,0,True,"GCC:-2.6, NDVI:-0.5, NDVI_tower:-4.5, NIRv:+0.5",False
+grass/shrub,EOS50,pre,GPP rate (mean),adj_T,4,3,earlier EOS,-1.3768411798324511,-4.65473910317595,0.3121048723254999,1,0,True,"GCC:-2.6, NDVI:-0.1, NDVI_tower:-4.7, NIRv:+0.3",False
+grass/shrub,EOS50,pre,GPP rate (mean),raw,4,3,earlier EOS,-1.5389886055404094,-3.7334036817721703,0.3034000104663236,1,0,True,"GCC:-2.6, NDVI:-0.5, NDVI_tower:-3.7, NIRv:+0.3",False
+grass/shrub,EOS50,pre,"NPP cumulative, annual CUE",adj_T,4,4,earlier EOS,-2.3971301630794146,-3.52709699003377,-1.4211754919079012,1,0,True,"GCC:-3.5, NDVI:-1.6, NDVI_tower:-3.2, NIRv:-1.4",False
+grass/shrub,EOS50,pre,"NPP cumulative, annual CUE",raw,4,4,earlier EOS,-2.2263379692389864,-3.2046002485928713,-0.02181534178497593,1,0,True,"GCC:-3.2, NDVI:-1.2, NDVI_tower:-3.2, NIRv:-0.0",False
+grass/shrub,EOS50,pre,"NPP cumulative, daily CUE",adj_T,4,4,earlier EOS,-2.535083391599516,-3.793261588597678,-1.5634345805740635,3,0,True,"GCC:-3.4, NDVI:-1.7, NDVI_tower:-3.8, NIRv:-1.6",False
+grass/shrub,EOS50,pre,"NPP cumulative, daily CUE",raw,4,4,earlier EOS,-2.169951471824613,-3.6948179974405644,-0.2894608821961113,2,0,True,"GCC:-3.1, NDVI:-1.2, NDVI_tower:-3.7, NIRv:-0.3",False

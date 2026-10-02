@@ -1,4 +1,4 @@
-# Python packages for the phenology - carbon pipeline (Script/11-42). Python >= 3.10.
+# Python packages for the phenology - carbon pipeline (Script/11-43). Python >= 3.10.
 #   python -m venv .venv
 #   .venv\Scripts\activate          (Git Bash: source .venv/Scripts/activate; Linux/macOS: source .venv/bin/activate)
 #   pip install -r requirements.txt

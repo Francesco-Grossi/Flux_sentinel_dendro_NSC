@@ -7,9 +7,10 @@ For a window, cumulative = rate x duration (cum = mean x len). So:
     R   : EOS ~ rate
     C   : EOS ~ cum
     RD  : EOS ~ rate + duration      <- separates the two ingredients of cum
-Compared by AIC (ML, identical rows), marginal R2, leave-one-site-out CV R2
-(LOSO only for group ALL / fixed anchors, as it is slow), and the standardized
-betas in RD. "Growth rate matters more" is supported if
+All three are fitted WITHIN SITES (year minus site mean, sites with >= 3
+years, SE clustered by site) and compared by AIC (identical rows), within-site
+R2, leave-one-site-out CV R2, and the betas in RD (days per +1 within-site
+SD). "Growth rate matters more" is supported if
 |beta_rate| >> |beta_duration| in RD and R beats C out-of-sample.
 `rate_negative` flags the Notion hypothesis "rate is always negative".
 
@@ -37,7 +38,6 @@ import eos_common as ec
 
 OUT_CSV = ec.DATA_DIR / "eos_rate_vs_cumulative.csv"
 TARGETS_17 = ['EOS10']          # Notion: focus on EOS10 first; add 'EOS50' here if wanted
-LOSO_ONLY_FOR = ('ALL', 'fixed')  # leave-one-site-out refits are slow; run them only for the headline comparison
 STRATEGY_CSV = ec.DATA_DIR / "site_leafout_strategy.csv"
 WINDOWS = ['SOS_to_SOL', 'SOS_to_EOS90', 'SOS_to_EOS50', 'SOS_to_EOS10', 'SOL_to_EOS90', 'SOL_to_EOS10']
 ec.require(ec.WINDOW_FIXED_CSV, ec.WINDOW_YEAR_CSV, hint="Run 27_window_predictors.py first.")
@@ -68,7 +68,8 @@ for mode, path in (('fixed', ec.WINDOW_FIXED_CSV), ('year', ec.WINDOW_YEAR_CSV))
                         rate, cum, ln = f'{cv}_mean__{win}', f'{cv}_cum__{win}', f'len__{win}'
                         if rate not in wg.columns:
                             continue
-                        d = wg[wg['vi_index'] == vi][[target, 'site_id', rate, cum, ln]].dropna().reset_index(drop=True)
+                        d = wg[wg['vi_index'] == vi][[target, 'site_id', rate, cum, ln]].dropna()
+                        d = d[d.groupby('site_id')['site_id'].transform('size') >= ec.MIN_YEARS_WITHIN].reset_index(drop=True)
                         if len(d) < ec.MIN_OBS or d['site_id'].nunique() < ec.MIN_SITES:
                             continue
                         models = {'R_rate': [rate], 'C_cum': [cum], 'RD_rate+duration': [rate, ln]}
@@ -76,15 +77,14 @@ for mode, path in (('fixed', ec.WINDOW_FIXED_CSV), ('year', ec.WINDOW_YEAR_CSV))
                                'window': win, 'n_obs': len(d), 'n_sites': d['site_id'].nunique()}
                         ok = True
                         for mname, xs in models.items():
-                            f_ml, f_re = ec.fit_lme(d, target, xs, reml=False), ec.fit_lme(d, target, xs, reml=True)
-                            if f_ml is None or f_re is None:
+                            f = ec.fit_within(d, target, xs)
+                            if f is None:
                                 ok = False
                                 break
-                            rec[f'aic_{mname}'] = f_ml.aic
-                            rec[f'r2m_{mname}'] = ec.r2_nakagawa(f_re)[0]
-                            rec[f'loso_r2_{mname}'] = (ec.loso_cv(d, target, xs)['loso_r2']
-                                                       if (gname, mode) == LOSO_ONLY_FOR else np.nan)
-                            ct = ec.coef_table(f_re, xs)
+                            rec[f'aic_{mname}'] = f.aic
+                            rec[f'r2w_{mname}'] = float(f.rsquared)
+                            rec[f'loso_r2_{mname}'] = ec.loso_within(d, target, xs)['loso_r2']
+                            ct = ec.within_coef_table(f, xs)
                             if mname == 'RD_rate+duration':
                                 rec['beta_rate_in_RD'], rec['p_rate_in_RD'] = ct.iloc[0][['beta_days_per_sd', 'p_value']]
                                 rec['beta_duration_in_RD'], rec['p_duration_in_RD'] = ct.iloc[1][['beta_days_per_sd', 'p_value']]
@@ -109,7 +109,7 @@ if res.empty:
 
 pd.set_option('display.width', 220)
 show = res[(res['group'] == 'ALL') & (res['target'] == 'EOS10')]
-print("\nALL sites, target EOS10 (beta = days per +1 SD):")
+print("\nALL sites, target EOS10 (within-site beta = days per +1 SD):")
 print(show[['anchor', 'vi_index', 'carbon', 'window', 'n_obs', 'beta_rate', 'beta_cum',
             'loso_r2_R_rate', 'loso_r2_C_cum', 'rate_negative', 'rate_over_duration_ratio']]
       .round(3).to_string(index=False))

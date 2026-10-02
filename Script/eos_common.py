@@ -1,13 +1,20 @@
 """
-Shared helpers for pipeline steps 27-39 (EOS <-> carbon source/sink analysis,
+Shared helpers for pipeline steps 27-45 (EOS <-> carbon source/sink analysis,
 from the Notion page "Ideas in Sep, 2026"). NOT a pipeline step itself -
-run_pipeline.sh does not call it; steps 27-39 import it as `eos_common`.
+run_pipeline.sh does not call it; steps 27-45 import it as `eos_common`.
 
-Conventions kept identical to legacy steps 06-09:
+Conventions:
   * site-year-index rows, keyed (site_id, year, vi_index)
-  * mixed-effects models with a site random intercept (statsmodels mixedlm)
-  * predictors z-scored, so betas are "days of EOS shift per 1 SD"
-  * leave-one-site-out CV predicts with FIXED EFFECTS ONLY
+  * HEADLINE MODEL = strictly within sites: every variable is the year's value
+    minus the site's own mean (sites with >= MIN_YEARS_WITHIN years), predictors
+    are scaled to their within-site SD, OLS with standard errors clustered by
+    site. Betas are "days of EOS shift per +1 within-site SD".
+  * The site-random-intercept mixed model (statsmodels mixedlm, predictors
+    z-scored over all rows) of the legacy steps is kept for comparison only
+    (lme_ columns): it also picks up differences BETWEEN sites and gives
+    effects about twice as large.
+  * leave-one-site-out CV: the model is fitted on the anomalies of the other
+    sites and predicts the anomalies of the held-out site.
 
 Test/CI override: set PHENO_DATA_DIR / PHENO_FIGURE_DIR to redirect I/O.
 Set PHENO_VI="NDVI,GCC" to restrict which vi_index values are analysed
@@ -19,6 +26,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import statsmodels.api as sm
 import statsmodels.formula.api as smf
 from scipy.stats import pearsonr
 
@@ -29,7 +37,7 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 PHENOLOGY_CSV = DATA_DIR / "phenology_double_logistic_by_site_year_index.csv"   # step 23
 # OPTIONAL extra EOS sources, same columns as the step-23 table; appended when present
-# (vi_index = NDVI_tower / GCC), so steps 27-39 analyse them too.
+# (vi_index = NDVI_tower / GCC), so steps 27-45 analyse them too.
 EXTRA_PHENOLOGY_CSVS = [DATA_DIR / "phenology_tower_by_site_year_index.csv",       # step 24
                         DATA_DIR / "phenology_phenocam_by_site_year_index.csv"]    # step 25
 FLUX_CSV = DATA_DIR / "fluxnet_landsat_merged.csv"                               # step 22
@@ -50,6 +58,7 @@ MIN_OBS, MIN_SITES = 20, 5   # as legacy steps 8/9
 MIN_COVERAGE = 0.8           # min fraction of window days with valid flux data
 MIN_WINDOW_DAYS = 5
 MIN_YEARS_ANCHOR = 3         # min years to compute a per-site mean EOS anchor
+MIN_YEARS_WITHIN = 3         # min years per site for the within-site (anomaly) models
 TARGETS = ['EOS10', 'EOS50', 'EOS90']
 PRIMARY_TARGETS = ['EOS10', 'EOS50']   # Notion: "may first focus on EOS10 at this stage"
 
@@ -137,6 +146,8 @@ def load_flux_daily():
             npp = pd.concat(parts, ignore_index=True)
         out = out.merge(npp[['site_id', 'year', 'doy'] + vals].drop_duplicates(['site_id', 'year', 'doy']),
                         on=['site_id', 'year', 'doy'], how='left')
+        if 'GPP' in out.columns:      # NPP = CUE x GPP: no NPP where GPP is missing or implausible
+            out.loc[out['GPP'].isna(), [c for c in ('NPP', 'NPPd') if c in out.columns]] = np.nan
         print(f"  [note] {vals} loaded from '{NPP_CSV.name}'.")
     else:
         print(f"  [note] '{NPP_CSV.name}' not found -> NPP (sink) analyses skipped, GPP/NEP only.")
@@ -218,21 +229,26 @@ def coef_table(fit, xs):
     return pd.DataFrame(rows)
 
 
-def lme_slope(d, y, x):
-    """Single-predictor LME. Returns dict or None if data are insufficient."""
+def site_slope(d, y, x, with_lme=True):
+    """Single-predictor slope of y on x. beta_days_per_sd / std_err / p_value are the
+    WITHIN-SITE estimate (days per +1 within-site SD); the mixed-model estimate is
+    returned as lme_* for comparison. None if data are insufficient."""
     d = d[[y, x, 'site_id']].dropna()
-    n, ns = len(d), d['site_id'].nunique()
-    if n < MIN_OBS or ns < MIN_SITES:
+    wf = within_fit(d, y, [x], MIN_YEARS_WITHIN, MIN_OBS, MIN_SITES)
+    if wf is None:
         return None
-    fit = fit_lme(d, y, [x])
-    if fit is None:
-        return None
-    r_pool = pearsonr(d[x], d[y])[0]
+    (b, se, p), n, ns = wf[0][x], wf[1], wf[2]
+    r_pool = pearsonr(d[x], d[y])[0] if d[x].std() > 0 else np.nan
     dm = d[[x, y]] - d.groupby('site_id')[[x, y]].transform('mean')
     r_within = pearsonr(dm[x], dm[y])[0] if dm[x].std() > 0 and dm[y].std() > 0 else np.nan
-    return {'beta_days_per_sd': float(fit.fe_params['v0']), 'std_err': _bse(fit, 'v0'),
-            'p_value': float(fit.pvalues['v0']), 'r_pooled': float(r_pool),
-            'r_within_site': float(r_within), 'n_obs': n, 'n_sites': ns}
+    out = {'beta_days_per_sd': b, 'std_err': se, 'p_value': p, 'r_pooled': float(r_pool),
+           'r_within_site': float(r_within), 'n_obs': n, 'n_sites': ns}
+    if with_lme:
+        fit = fit_lme(d, y, [x])
+        if fit is not None:
+            out.update({'lme_beta_days_per_sd': float(fit.fe_params['v0']), 'lme_std_err': _bse(fit, 'v0'),
+                        'lme_p_value': float(fit.pvalues['v0']), 'lme_n_obs': len(d)})
+    return out
 
 
 def r2_nakagawa(fit):
@@ -283,6 +299,101 @@ def loso_cv(d, y, xs):
     ss_tot = float(np.sum((yt - yt.mean()) ** 2))
     return {'n_predicted': int(ok.sum()), 'loso_rmse_days': float(np.sqrt(np.mean(res ** 2))),
             'loso_r2': float(1 - np.sum(res ** 2) / ss_tot) if ss_tot > 0 else np.nan}
+
+
+def within_fit(d, y, xs, min_years=3, min_obs=30, min_sites=5):
+    """OLS on within-site anomalies (year minus site mean), predictors scaled to their
+    within-site SD, SE clustered by site. Isolates year-to-year changes at a site; a
+    random-intercept mixed model also picks up differences between sites.
+    Returns ({x: (beta, se, p two-sided)}, n, n_sites) or None if there are too few data."""
+    d = d[['site_id', y] + list(xs)].dropna()
+    d = d[d.groupby('site_id')['site_id'].transform('size') >= min_years]
+    if len(d) < min_obs or d['site_id'].nunique() < min_sites:
+        return None
+    dm = d[[y] + list(xs)] - d.groupby('site_id')[[y] + list(xs)].transform('mean')
+    sd = dm[list(xs)].std()
+    if (sd == 0).any() or sd.isna().any():
+        return None
+    X = sm.add_constant((dm[list(xs)] / sd).to_numpy(float))
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        f = sm.OLS(dm[y].to_numpy(float), X).fit(cov_type='cluster',
+                                                  cov_kwds={'groups': pd.factorize(d['site_id'])[0]})
+    return {x: (float(f.params[i + 1]), float(f.bse[i + 1]), float(f.pvalues[i + 1])) for i, x in enumerate(xs)}, \
+        len(d), d['site_id'].nunique()
+
+
+def within_frame(d, y, xs, min_years=MIN_YEARS_WITHIN):
+    """Complete rows of sites with >= min_years years, as within-site anomalies; predictors
+    scaled to their within-site SD and renamed v0..vk. Returns a frame (y, v0.., site_id),
+    or None if a predictor does not vary."""
+    xs = list(xs)
+    d = d[['site_id', y] + xs].dropna()
+    d = d[d.groupby('site_id')['site_id'].transform('size') >= min_years]
+    if d.empty:
+        return None
+    dm = d[[y] + xs] - d.groupby('site_id')[[y] + xs].transform('mean')
+    sd = dm[xs].std()
+    if (sd == 0).any() or sd.isna().any():
+        return None
+    out = dm[xs] / sd
+    out.columns = [f'v{i}' for i in range(len(xs))]
+    out.insert(0, y, dm[y])
+    out['site_id'] = d['site_id'].to_numpy()
+    return out.reset_index(drop=True)
+
+
+def fit_within(d, y, xs, min_years=MIN_YEARS_WITHIN):
+    """Multi-predictor within-site OLS (SE clustered by site). Returns a statsmodels fit whose
+    parameters are named const, v0..vk (see within_coef_table), or None."""
+    f = within_frame(d, y, xs, min_years)
+    if f is None or len(f) < len(xs) + 5:
+        return None
+    X = sm.add_constant(f[[f'v{i}' for i in range(len(xs))]])
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        try:
+            return sm.OLS(f[y], X).fit(cov_type='cluster', cov_kwds={'groups': pd.factorize(f['site_id'])[0]})
+        except Exception:
+            return None
+
+
+def within_coef_table(fit, xs):
+    return pd.DataFrame([{'predictor': name, 'beta_days_per_sd': float(fit.params[f'v{i}']),
+                          'std_err': float(fit.bse[f'v{i}']), 'p_value': float(fit.pvalues[f'v{i}'])}
+                         for i, name in enumerate(xs)])
+
+
+def loso_within(d, y, xs, min_years=MIN_YEARS_WITHIN):
+    """Leave-one-site-out CV of the within-site model: fitted on the anomalies of the other
+    sites, it predicts the year-to-year anomalies of the held-out site."""
+    f = within_frame(d, y, xs, min_years)
+    if f is None:
+        return {'n_predicted': 0, 'loso_rmse_days': np.nan, 'loso_r2': np.nan}
+    cols = [f'v{i}' for i in range(len(xs))]
+    X, yy, site = f[cols].to_numpy(float), f[y].to_numpy(float), f['site_id'].to_numpy()
+    preds = np.full(len(f), np.nan)
+    for s in np.unique(site):
+        te = site == s
+        if (~te).sum() < len(cols) + 5:
+            continue
+        beta, *_ = np.linalg.lstsq(X[~te], yy[~te], rcond=None)
+        preds[te] = X[te] @ beta
+    ok = np.isfinite(preds)
+    if ok.sum() < 5:
+        return {'n_predicted': int(ok.sum()), 'loso_rmse_days': np.nan, 'loso_r2': np.nan}
+    res = yy[ok] - preds[ok]
+    ss_tot = float(np.sum(yy[ok] ** 2))                       # anomalies: the mean is zero
+    return {'n_predicted': int(ok.sum()), 'loso_rmse_days': float(np.sqrt(np.mean(res ** 2))),
+            'loso_r2': float(1 - np.sum(res ** 2) / ss_tot) if ss_tot > 0 else np.nan}
+
+
+def makkink_pet(sw, ta):
+    """Potential evapotranspiration (mm/day) from shortwave (W m-2) and air temperature (C)."""
+    es = 0.6108 * np.exp(17.27 * ta / (ta + 237.3))
+    delta = 4098.0 * es / (ta + 237.3) ** 2                       # kPa/C
+    gamma, lam = 0.066, 2.45                                     # kPa/C, MJ/kg
+    return np.clip(0.61 * delta / (delta + gamma) * (sw * 0.0864) / lam - 0.12, 0, None)
 
 
 def stars(p):

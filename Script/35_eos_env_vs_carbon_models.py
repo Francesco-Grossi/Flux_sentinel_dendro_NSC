@@ -15,12 +15,19 @@ NOTE: unlike legacy step 09, ENV deliberately excludes temperature/photoperiod
 "senescence rate" - those (legacy step 07) are computed over EOS90->EOS10 of the
 same year, i.e. from the target itself, which is circular for an EOS10 target.
 
-Models (all fit on identical complete-case rows so AIC/LRT are comparable):
+Models (all fit on identical complete-case rows so AIC and the nested tests
+are comparable):
   M0 ENV | M1 ENV+SOS | M2 ENV+SOURCE | M3 ENV+SINK | M4 ENV+SOURCE+SINK
   | M5 ENV+SOS+SOURCE(+SINK)      (M3/M4 only when NPP is available)
-For each: AIC/BIC (ML), marginal & conditional R2 (Nakagawa), delta marginal
-R2 vs ENV, max VIF, leave-one-site-out CV RMSE/R2, nested LRTs, and the
-standardized coefficients of the fullest model.
+All models are fitted WITHIN SITES (year minus site mean, sites with >= 3
+years, SE clustered by site): the question is what explains a late or early
+year at a site, not why sites differ. The random-intercept mixed models used
+before also absorbed between-site differences and overstated every effect.
+For each: AIC/BIC, within-site R2 (share of the year-to-year variance
+explained), its gain over ENV, max VIF, leave-one-site-out CV RMSE/R2
+(predicting the anomalies of a site the model has not seen), nested Wald
+tests (cluster-robust), and the coefficients of the fullest model (days per
++1 within-site SD).
 
 Input : data/eos_window_predictors_fixed_anchor.csv   (step 27)
 Output: data/eos_env_vs_carbon_comparison.csv
@@ -30,7 +37,6 @@ Output: data/eos_env_vs_carbon_comparison.csv
 """
 import numpy as np
 import pandas as pd
-from scipy.stats import chi2
 import eos_common as ec
 
 OUT_CMP = ec.DATA_DIR / "eos_env_vs_carbon_comparison.csv"
@@ -71,7 +77,8 @@ cmp_rows, lrt_rows, cv_rows, coef_rows = [], [], [], []
 for vi in sorted(w['vi_index'].unique()):
     for target in ec.PRIMARY_TARGETS:
         all_vars = sorted(set(sum(BLOCKS.values(), [])))
-        d = w[w['vi_index'] == vi][[target, 'site_id'] + all_vars].dropna().reset_index(drop=True)
+        d = w[w['vi_index'] == vi][[target, 'site_id'] + all_vars].dropna()
+        d = d[d.groupby('site_id')['site_id'].transform('size') >= ec.MIN_YEARS_WITHIN].reset_index(drop=True)
         n_obs, n_sites = len(d), d['site_id'].nunique()
         tag = f"{vi} / {target}"
         if n_obs < ec.MIN_OBS or n_sites < ec.MIN_SITES:
@@ -81,40 +88,45 @@ for vi in sorted(w['vi_index'].unique()):
 
         fits_ml, r2 = {}, {}
         for name, xs in BLOCKS.items():
-            f_ml, f_re = ec.fit_lme(d, target, xs, reml=False), ec.fit_lme(d, target, xs, reml=True)
-            if f_ml is None or f_re is None:
+            f = ec.fit_within(d, target, xs)
+            if f is None:
                 continue
-            fits_ml[name] = f_ml
-            r2m, r2c = ec.r2_nakagawa(f_re)
-            r2[name] = r2m
+            fits_ml[name] = f
+            r2[name] = float(f.rsquared)
+            frame = ec.within_frame(d, target, xs)
             cmp_rows.append({'vi_index': vi, 'target': target, 'model': name, 'n_predictors': len(xs),
-                             'n_obs': n_obs, 'n_sites': n_sites, 'aic': f_ml.aic, 'bic': f_ml.bic,
-                             'loglik': f_ml.llf, 'r2_marginal': r2m, 'r2_conditional': r2c,
-                             'max_vif': ec.max_vif(d, xs)})
-            cvr = ec.loso_cv(d, target, xs)
+                             'n_obs': n_obs, 'n_sites': n_sites, 'aic': f.aic, 'bic': f.bic,
+                             'loglik': f.llf, 'r2_within': float(f.rsquared),
+                             'max_vif': ec.max_vif(frame, [f'v{i}' for i in range(len(xs))])})
+            cvr = ec.loso_within(d, target, xs)
             cv_rows.append({'vi_index': vi, 'target': target, 'model': name, **cvr})
             if name == FULL:
-                ct = ec.coef_table(f_re, xs)
+                ct = ec.within_coef_table(f, xs)
                 ct.insert(0, 'model', name); ct.insert(0, 'target', target); ct.insert(0, 'vi_index', vi)
                 coef_rows.append(ct)
 
         base = r2.get('M0_env', np.nan)
         for r in cmp_rows:
             if r['vi_index'] == vi and r['target'] == target:
-                r['delta_r2_marginal_vs_env'] = r['r2_marginal'] - base
+                r['delta_r2_within_vs_env'] = r['r2_within'] - base
         cur = pd.DataFrame([r for r in cmp_rows if r['vi_index'] == vi and r['target'] == target])
         cvd = pd.DataFrame([r for r in cv_rows if r['vi_index'] == vi and r['target'] == target])
         print(cur.merge(cvd[['model', 'loso_rmse_days', 'loso_r2']], on='model')
-              [['model', 'aic', 'r2_marginal', 'delta_r2_marginal_vs_env', 'max_vif', 'loso_rmse_days', 'loso_r2']]
+              [['model', 'aic', 'r2_within', 'delta_r2_within_vs_env', 'max_vif', 'loso_rmse_days', 'loso_r2']]
               .round(3).to_string(index=False))
 
         for red, xr in BLOCKS.items():
             for full, xf in BLOCKS.items():
                 if set(xr) < set(xf) and red in fits_ml and full in fits_ml:
-                    stat = max(2 * (fits_ml[full].llf - fits_ml[red].llf), 0.0)
-                    dfd = len(xf) - len(xr)
+                    extra = [f'v{i}' for i, x in enumerate(xf) if x not in xr]   # the added terms are jointly zero?
+                    try:
+                        wt = fits_ml[full].wald_test(', '.join(f'{v} = 0' for v in extra), use_f=False, scalar=True)
+                        stat, p = float(wt.statistic), float(wt.pvalue)
+                    except Exception:
+                        stat, p = np.nan, np.nan
                     lrt_rows.append({'vi_index': vi, 'target': target, 'reduced': red, 'full': full,
-                                     'df_diff': dfd, 'chi2': stat, 'p_value': float(chi2.sf(stat, dfd))})
+                                     'df_diff': len(extra), 'chi2': stat, 'p_value': p,
+                                     'test': 'Wald, cluster-robust'})
 
 pd.DataFrame(cmp_rows).to_csv(OUT_CMP, index=False)
 pd.DataFrame(lrt_rows).to_csv(OUT_LRT, index=False)

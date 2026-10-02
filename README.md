@@ -37,7 +37,7 @@ shown by `python -m certifi`, or turn off its HTTPS scanning.
 ./run_pipeline.sh              # everything, from scratch
 ./run_pipeline.sh --list       # show the steps
 ./run_pipeline.sh 21           # resume from step 21 to the end
-./run_pipeline.sh 30 42        # only the analysis
+./run_pipeline.sh 30 45        # only the analysis
 ```
 
 Each step can also be run on its own (`python Script/<step>.py`); it stops
@@ -94,7 +94,10 @@ EOS10 mean the same thing for every source.
 | 39 | `39_anomaly_timing_drought.py` | Timing of positive / negative anomalies; drought vs non-drought years |
 | 40 | `40_plot_predictor_correlations.py` | 1:1 scatter of every EOS x predictor pair (split-GPP effect) |
 | 41 | `41_split_gpp_cancellation_test.py` | Are Zani and Lu both right? Pre-solstice GPP negative, post-solstice positive, whole-season none (within sites) |
-| 42 | `42_results_report.py` | Builds `Output/results_report.md`: all results with their figures |
+| 42 | `42_compare_phenocam_satellite.py` | Do PhenoCam and satellite EOS give the same answer on the same site-years? |
+| 43 | `43_presolstice_robustness.py` | Is the pre-solstice effect solid? Leave one site out, other QC thresholds, statistical power |
+| 44 | `44_mechanism_tests.py` | Why? Leaf-out date, water balance and sink variables (respiration, sink index) against GPP |
+| 45 | `45_results_report.py` | Builds `Output/results_report.md`: all results with their figures |
 
 ### Not pipeline steps
 
@@ -122,8 +125,11 @@ EOS10 mean the same thing for every source.
   fallen to 90 / 50 / 10 % of its seasonal amplitude after the peak.
 - Carbon windows end at the site's mean EOS ("fixed anchors"), not at the
   same year's EOS, to avoid the window-length effect described above.
-- Effects are reported as days of EOS shift per +1 SD of the predictor, from
-  mixed models with a site random intercept.
+- Effects are reported as days of EOS shift per +1 within-site SD of the
+  predictor, from within-site models (year minus site mean, standard errors
+  clustered by site). Mixed models with a site random intercept also pick up
+  differences between sites and give larger effects; step 33 keeps them for
+  comparison only.
 - CUE: Python port of the MATLAB code of Luo et al.
   (https://www.researchsquare.com/article/rs-3989566/v1); see the docstring
   of step 26 for the two points where it departs from the MATLAB code.

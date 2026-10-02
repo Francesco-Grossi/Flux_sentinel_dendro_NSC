@@ -1,7 +1,8 @@
 """
 PIPELINE STEP 28 - Build ONE consolidated site-year-index predictor table
-for the satellite EOS (NDVI, NIRv): spring/autumn phenology timing (from
-step 23), cumulative-GPP windows split around the summer solstice, and
+for every EOS source - satellite NDVI and NIRv (step 23), tower NDVI (step 24)
+and PhenoCam GCC (step 25): spring/autumn phenology timing, cumulative-GPP
+windows split around the summer solstice, and
 environmental covariates (radiation, mean temperature, respiration). Also
 writes an exploratory correlation table (autumn parameter x predictor, pooled
 across sites). Step 40 plots every pair 1:1; the legacy hypothesis tests
@@ -22,6 +23,13 @@ later, so its cumulative GPP rises with EOS by construction. Comparing the
 1:1 plots of the year-anchored and the fixed window shows how much of the
 positive post-solstice relation is that length effect and how much is real.
 
+Growing-season totals and means (GPP, Reco, radiation, temperature) run from
+the year's SOS10 to the SITE'S MEAN EOS10, for the same reason: ending them at
+the same year's EOS10 made a late EOS add extra (cold, dark, low-GPP) autumn
+days, which produced strong correlations with EOS by construction. The
+same-year versions are kept in the table as <name>_same_year, but are not in
+the correlation table or the 1:1 plots.
+
 Output: data/phenology_flux_predictors_by_site_year_index.csv
         data/autumn_phenology_correlations.csv
 """
@@ -34,12 +42,15 @@ from scipy.stats import pearsonr
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 PHENOLOGY_CSV = DATA_DIR / "phenology_double_logistic_by_site_year_index.csv"  # step 23 output
+# tower NDVI (step 24) and PhenoCam (step 25) phenology, same columns; used when present
+EXTRA_PHENOLOGY_CSVS = [DATA_DIR / "phenology_tower_by_site_year_index.csv",
+                        DATA_DIR / "phenology_phenocam_by_site_year_index.csv"]
 FLUX_CSV = DATA_DIR / "fluxnet_landsat_merged.csv"                            # step 22 output
 
 OUTPUT_SITEYEAR_CSV = DATA_DIR / "phenology_flux_predictors_by_site_year_index.csv"
 OUTPUT_CORR_CSV = DATA_DIR / "autumn_phenology_correlations.csv"
 
-VI_INDICES = ['NDVI', 'NIRv']
+VI_INDICES = ['NDVI', 'NIRv', 'NDVI_tower', 'GCC']
 AUTUMN_PARAMS = ['EOS90', 'EOS50', 'EOS10', 'senescence_kinetic_i']
 SPRING_PARAMS = ['leaf_out_10', 'leaf_out_50', 'leaf_out_90']
 MIN_PAIRS_FOR_CORR = 5
@@ -57,7 +68,9 @@ if not os.path.exists(PHENOLOGY_CSV):
 if not os.path.exists(FLUX_CSV):
     raise FileNotFoundError(f"Missing '{FLUX_CSV}'. Run 22_merge_fluxnet_hls.py first.")
 
-pheno = pd.read_csv(PHENOLOGY_CSV)
+pheno = pd.concat([pd.read_csv(p) for p in [PHENOLOGY_CSV] + EXTRA_PHENOLOGY_CSVS if os.path.exists(p)],
+                  ignore_index=True)
+VI_INDICES = [v for v in VI_INDICES if v in set(pheno['vi_index'])]
 pheno = pheno[pheno['vi_index'].isin(VI_INDICES) & (pheno['method'] == 'double_logistic')
               & (pheno['corr'] >= MIN_FIT_CORR)].copy()
 if 'qc_pass' in pheno.columns:  # step-23 QC flags (autumn coverage, R2, date order, ...)
@@ -134,7 +147,9 @@ for _, row in pheno.iterrows():
     for var_name in FLUX_VARS:
         agg = FLUX_VARS[var_name]['agg']
         label = 'total' if agg == 'sum' else 'mean'
-        rec[f'{label}_{var_name}_growing_season'] = agg_flux_var(var_name, site_id, year, sos10, eos10)
+        rec[f'{label}_{var_name}_growing_season'] = agg_flux_var(var_name, site_id, year, sos10,
+                                                                 row.get('EOS10_site_mean'))
+        rec[f'{label}_{var_name}_growing_season_same_year'] = agg_flux_var(var_name, site_id, year, sos10, eos10)
 
     # Split GPP windows around the summer solstice - the core predictors for
     # the split-GPP (opposite-effect) hypothesis.
