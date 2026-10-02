@@ -37,7 +37,7 @@ shown by `python -m certifi`, or turn off its HTTPS scanning.
 ./run_pipeline.sh              # everything, from scratch
 ./run_pipeline.sh --list       # show the steps
 ./run_pipeline.sh 21           # resume from step 21 to the end
-./run_pipeline.sh 30 45        # only the analysis
+./run_pipeline.sh 30 46        # only the analysis
 ```
 
 Each step can also be run on its own (`python Script/<step>.py`); it stops
@@ -60,6 +60,7 @@ Numbered by stage. Every step reads only files written by earlier steps.
 | 11 | `11_fluxnet_download.py` | `data_raw/*.zip`, `data/fluxnet_daily_all_vars.csv` (sites > 30 N, natural land cover, >= 10 consecutive years) |
 | 12 | `12_hls_extraction.py` | HLS Landsat + Sentinel-2 reflectance within 1 km of each tower (own vegetation type only): `data/fluxnet_all_highlat_landsat_raw_bands.csv`, `..._indices.csv` |
 | 13 | `13_phenocam_download.py` | `data/phenocam_site_matches.csv`, `data_raw/phenocam/*_1day.csv` |
+| 14 | `14_dendrometer_download.py` | open dendrometer datasets at flux sites: `data_raw/dendro/` (see `Output/dendrometer_datasets.md`) |
 
 ### 2x - filtering and fitting
 
@@ -72,7 +73,8 @@ Numbered by stage. Every step reads only files written by earlier steps.
 | 25 | `25_phenology_phenocam.py` | leaf-out / EOS from PhenoCam greenness (GCC) |
 | 26 | `26_cue_npp_luo2025.py` | CUE (annual, by temperature, seasonal, daily) after Luo et al.; daily NPP |
 | 27 | `27_window_predictors.py` | carbon and climate window predictors per site-year, for every EOS source |
-| 28 | `28_autumn_phenology_predictors.py` | satellite EOS with split-GPP windows (year-anchored and fixed), for the 1:1 plots |
+| 28 | `28_autumn_phenology_predictors.py` | every EOS source with split-GPP windows (year-anchored and fixed), for the 1:1 plots |
+| 29 | `29_dendrometer_growth.py` | stem growth per site-year from dendrometers: amount, rate before / after the solstice, onset and cessation dates |
 
 Steps 23-25 share one fitting routine (`pheno_fit.py`: double logistic,
 dormant-season background, climatology gap-fill, QC flags), so EOS90 / EOS50 /
@@ -97,7 +99,8 @@ EOS10 mean the same thing for every source.
 | 42 | `42_compare_phenocam_satellite.py` | Do PhenoCam and satellite EOS give the same answer on the same site-years? |
 | 43 | `43_presolstice_robustness.py` | Is the pre-solstice effect solid? Leave one site out, other QC thresholds, statistical power |
 | 44 | `44_mechanism_tests.py` | Why? Leaf-out date, water balance and sink variables (respiration, sink index) against GPP |
-| 45 | `45_results_report.py` | Builds `Output/results_report.md`: all results with their figures |
+| 45 | `45_growth_vs_senescence.py` | Is measured stem growth coupled to GPP, and does it predict the onset of senescence? (few sites) |
+| 46 | `46_results_report.py` | Builds `Output/results_report.md`: all results with their figures |
 
 ### Not pipeline steps
 

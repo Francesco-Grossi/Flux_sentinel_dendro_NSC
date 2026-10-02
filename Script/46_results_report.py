@@ -1,5 +1,5 @@
 """
-PIPELINE STEP 45 - Build one Markdown report with the results of every
+PIPELINE STEP 46 - Build one Markdown report with the results of every
 analysis step and the corresponding figures: Output/results_report.md.
 
 The report only reads the tables and figures written by steps 21-44, so it
@@ -73,7 +73,7 @@ def stars(p):
 
 
 add("# Phenology - carbon pipeline: results", "",
-    f"Generated on {date.today().isoformat()} by `Script/45_results_report.py` from the outputs of the last pipeline run. "
+    f"Generated on {date.today().isoformat()} by `Script/46_results_report.py` from the outputs of the last pipeline run. "
     "A written interpretation of these results, with the analyses still to do, is in "
     "[findings_and_next_steps.md](findings_and_next_steps.md).",
     "", "Effects are days of shift in the end of season (EOS) per +1 within-site SD of the predictor (within-site "
@@ -524,6 +524,17 @@ figure("mechanism/leafout_vs_gpp.png", "Deciduous forests: leaf-out date against
 figure("mechanism/water.png", "Pre-solstice GPP against the spring water balance, by season type (step 44)")
 figure("mechanism/sink.png", "GPP and sink variables in the same two-window model (step 44)")
 figure("mechanism/temperature.png", "Spring temperature against pre-solstice GPP, and the years in which they diverge (step 44)")
+
+add("## 15. Measured stem growth: the sink itself (steps 29, 45)", "",
+    "Dendrometer data at the few flux sites that have them (`Output/dendrometer_datasets.md`). Growth is counted "
+    "by the zero-growth concept (only new maxima of stem size), scaled so that 1 is a normal year's growth of a "
+    "tree, and averaged over trees. Tables: `data/dendro_growth_by_site_year.csv`, `data/growth_vs_gpp.csv`, "
+    "`data/growth_vs_senescence.csv`.")
+include("growth_vs_senescence_summary.md")
+for site in ['US-Ha1', 'AT-Zoe', 'CH-Dav']:
+    figure(f"dendro_growth/{site}.png", f"{site}: cumulative stem growth, one line per year (step 29)")
+figure("dendro_growth/growth_vs_gpp.png", "Stem growth against GPP, within sites (step 45)")
+figure("dendro_growth/growth_vs_eos90.png", "Onset of senescence against stem growth, within sites (step 45)")
 
 add("---", "", "Per-step logs are in `logs/`. Method notes are in `README.md` and in the docstring of each script.", "")
 OUT_MD.write_text("\n".join(lines) + "\n", encoding='utf-8')

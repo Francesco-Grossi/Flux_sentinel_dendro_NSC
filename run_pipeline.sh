@@ -7,13 +7,13 @@
 # Steps are numbered by stage:
 #   1x  raw downloads            (network; slow)
 #   2x  filtering and fitting    (QC, merge, phenology, CUE / NPP, predictors)
-#   3x-45  analysis              (results, figures, summaries)
+#   3x-46  analysis              (results, figures, summaries)
 #
 # Usage:
 #   ./run_pipeline.sh              run everything, from scratch
 #   ./run_pipeline.sh 21           resume from step 21 to the end
 #   ./run_pipeline.sh 21 27        run steps 21 through 27
-#   ./run_pipeline.sh 30 45        only the analysis
+#   ./run_pipeline.sh 30 46        only the analysis
 #   ./run_pipeline.sh --list       show the steps and exit
 #
 # Logs: each step's stdout+stderr goes to logs/<step>.log AND the console at
@@ -31,6 +31,7 @@ STEPS=(
   "11_fluxnet_download.py"              # FLUXNET daily files -> data_raw/, data/fluxnet_daily_all_vars.csv
   "12_hls_extraction.py"                # HLS Landsat + Sentinel-2 reflectance (Google Earth Engine)
   "13_phenocam_download.py"             # PhenoCam GCC for the matched flux sites
+  "14_dendrometer_download.py"          # open dendrometer (stem growth) datasets at flux sites
   # ---- 2x filtering and fitting
   "21_growing_season_qc_filter.py"      # drop site-years with poor growing-season flux quality
   "22_merge_fluxnet_hls.py"             # daily flux + satellite indices
@@ -40,6 +41,7 @@ STEPS=(
   "26_cue_npp_luo2025.py"               # CUE (annual, seasonal, daily) and daily NPP
   "27_window_predictors.py"             # carbon / climate window predictors per site-year
   "28_autumn_phenology_predictors.py"   # every EOS source + split-GPP windows, for the 1:1 plots
+  "29_dendrometer_growth.py"            # stem growth per site-year: amount, rate, timing
   # ---- 3x analysis
   "30_eos_satellite_vs_gpp.py"          # GPP-derived EOS10; each EOS source against it
   "31_compare_eos_sources.py"           # agreement between EOS sources
@@ -56,7 +58,8 @@ STEPS=(
   "42_compare_phenocam_satellite.py"    # PhenoCam vs satellite EOS on the same site-years
   "43_presolstice_robustness.py"        # leave-one-site-out, QC thresholds, power
   "44_mechanism_tests.py"               # leaf-out, water, sink variables against GPP
-  "45_results_report.py"                # one Markdown report with all results and figures
+  "45_growth_vs_senescence.py"          # measured stem growth against GPP and against EOS90
+  "46_results_report.py"                # one Markdown report with all results and figures
 )
 
 step_number() { echo "${1%%_*}"; }

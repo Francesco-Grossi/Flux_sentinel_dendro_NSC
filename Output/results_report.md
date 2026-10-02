@@ -1,6 +1,6 @@
 # Phenology - carbon pipeline: results
 
-Generated on 2026-10-02 by `Script/45_results_report.py` from the outputs of the last pipeline run. A written interpretation of these results, with the analyses still to do, is in [findings_and_next_steps.md](findings_and_next_steps.md).
+Generated on 2026-10-02 by `Script/46_results_report.py` from the outputs of the last pipeline run. A written interpretation of these results, with the analyses still to do, is in [findings_and_next_steps.md](findings_and_next_steps.md).
 
 Effects are days of shift in the end of season (EOS) per +1 within-site SD of the predictor (within-site models: each year minus its site's mean, standard errors clustered by site) unless stated otherwise; negative = earlier senescence. EOS90 / EOS50 / EOS10 = day of year when greenness has fallen to 90 / 50 / 10 % of its seasonal amplitude (onset, middle, end of senescence).
 
@@ -1145,6 +1145,76 @@ Plant-available soil water = measured soil water content relative to the site's 
 ![Spring temperature against pre-solstice GPP, and the years in which they diverge (step 44)](../figure/mechanism/temperature.png)
 
 *Spring temperature against pre-solstice GPP, and the years in which they diverge (step 44)*
+
+## 15. Measured stem growth: the sink itself (steps 29, 45)
+
+Dendrometer data at the few flux sites that have them (`Output/dendrometer_datasets.md`). Growth is counted by the zero-growth concept (only new maxima of stem size), scaled so that 1 is a normal year's growth of a tree, and averaged over trees. Tables: `data/dendro_growth_by_site_year.csv`, `data/growth_vs_gpp.csv`, `data/growth_vs_senescence.csv`.
+
+
+### Growth data
+
+| site | dataset | years | units (median) | years with flux data | years with timing | share of growth done by the solstice |
+|---|---|---|---|---|---|---|
+| AT-Zoe | LTER Zoebelboden | 24 (1996-2019) | 4 | 4 | 22 | 40% |
+| CH-Dav | DenDrought2018 | 3 (2016-2018) | 9 | 3 | 3 | 34% |
+| CZ-BK1 | DenDrought2018 | 3 (2016-2018) | 8 | 3 | 3 | 44% |
+| CZ-RAJ | DenDrought2018 | 2 (2017-2018) | 7 | 2 | 2 | 36% |
+| CZ-Stn | DenDrought2018 | 1 (2018-2018) | 7 | 1 | 1 | 78% |
+| FR-Fon | DenDrought2018 | 3 (2016-2018) | 12 | 0 | 3 | 69% |
+| US-Ha1 | Harvard Forest HF069 | 24 (1999-2024) | 620 | 24 | 2 | 39% |
+| US-Ton | Rao et al. (Dryad) | 1 (2023-2023) | 5 | 1 | 1 | 93% |
+
+### A. Is growth coupled to GPP?
+
+| relation | within-site r | p | site-years | sites (years) |
+|---|---|---|---|---|
+| annual growth ~ annual GPP | +0.42 | 0.003 | 34 | US-Ha1 (24), AT-Zoe (4), CH-Dav (3), CZ-BK1 (3) |
+| growth by the solstice ~ pre-solstice GPP | +0.07 | 0.731 | 34 | US-Ha1 (24), AT-Zoe (4), CH-Dav (3), CZ-BK1 (3) |
+| growth rate before the solstice ~ pre-solstice GPP | +0.05 | 0.794 | 34 | US-Ha1 (24), AT-Zoe (4), CH-Dav (3), CZ-BK1 (3) |
+| growth by the solstice ~ spring temperature | +0.41 | 0.019 | 36 | US-Ha1 (24), AT-Zoe (6), CH-Dav (3), CZ-BK1 (3) |
+
+### B. Does growth predict EOS90? (days per +1 within-site SD)
+
+| EOS source | predictor | slope [95% CI] | p | site-years | sites (years) |
+|---|---|---|---|---|---|
+| PhenoCam | growth by the solstice | -4.9 [-12.0, +2.1] | 0.171 | 15 | US-Ha1 (15) |
+| PhenoCam | growth rate before the solstice | -3.3 [-10.6, +4.0] | 0.373 | 15 | US-Ha1 (15) |
+| PhenoCam | annual growth | -6.5 [-12.5, -0.5] | 0.034 | 15 | US-Ha1 (15) |
+| PhenoCam | share of growth done by the solstice | +0.7 [-7.2, +8.5] | 0.869 | 15 | US-Ha1 (15) |
+| PhenoCam | GPP, 60 days before the solstice | -6.0 [-9.6, -2.4] | 0.001 | 15 | US-Ha1 (15) |
+| PhenoCam | air temperature, 60 days before the solstice | +2.2 [-4.5, +8.9] | 0.518 | 15 | US-Ha1 (15) |
+| satellite NIRv | growth by the solstice | +4.5 [-2.2, +11.2] | 0.190 | 16 | US-Ha1 (9), AT-Zoe (4), CH-Dav (3) |
+| satellite NIRv | growth rate before the solstice | +4.5 [-2.2, +11.2] | 0.185 | 16 | US-Ha1 (9), AT-Zoe (4), CH-Dav (3) |
+| satellite NIRv | annual growth | +3.5 [-4.0, +11.1] | 0.356 | 16 | US-Ha1 (9), AT-Zoe (4), CH-Dav (3) |
+| satellite NIRv | share of growth done by the solstice | +3.7 [-1.3, +8.7] | 0.150 | 16 | US-Ha1 (9), AT-Zoe (4), CH-Dav (3) |
+| satellite NIRv | GPP, 60 days before the solstice | +1.7 [-6.5, +9.9] | 0.683 | 12 | US-Ha1 (9), CH-Dav (3) |
+| satellite NIRv | air temperature, 60 days before the solstice | -0.4 [-5.2, +4.4] | 0.866 | 16 | US-Ha1 (9), AT-Zoe (4), CH-Dav (3) |
+| all sources stacked | growth by the solstice | +0.8 [-3.2, +4.9] | 0.690 | 40 | US-Ha1 (33), AT-Zoe (4), CH-Dav (3) |
+| all sources stacked | growth rate before the solstice | +1.4 [-2.6, +5.4] | 0.499 | 40 | US-Ha1 (33), AT-Zoe (4), CH-Dav (3) |
+| all sources stacked | annual growth | -2.1 [-6.8, +2.6] | 0.386 | 40 | US-Ha1 (33), AT-Zoe (4), CH-Dav (3) |
+| all sources stacked | share of growth done by the solstice | +2.5 [-0.8, +5.9] | 0.141 | 40 | US-Ha1 (33), AT-Zoe (4), CH-Dav (3) |
+| all sources stacked | GPP, 60 days before the solstice | -2.4 [-5.8, +1.0] | 0.166 | 36 | US-Ha1 (33), CH-Dav (3) |
+| all sources stacked | air temperature, 60 days before the solstice | +0.7 [-2.3, +3.6] | 0.645 | 40 | US-Ha1 (33), AT-Zoe (4), CH-Dav (3) |
+
+![US-Ha1: cumulative stem growth, one line per year (step 29)](../figure/dendro_growth/US-Ha1.png)
+
+*US-Ha1: cumulative stem growth, one line per year (step 29)*
+
+![AT-Zoe: cumulative stem growth, one line per year (step 29)](../figure/dendro_growth/AT-Zoe.png)
+
+*AT-Zoe: cumulative stem growth, one line per year (step 29)*
+
+![CH-Dav: cumulative stem growth, one line per year (step 29)](../figure/dendro_growth/CH-Dav.png)
+
+*CH-Dav: cumulative stem growth, one line per year (step 29)*
+
+![Stem growth against GPP, within sites (step 45)](../figure/dendro_growth/growth_vs_gpp.png)
+
+*Stem growth against GPP, within sites (step 45)*
+
+![Onset of senescence against stem growth, within sites (step 45)](../figure/dendro_growth/growth_vs_eos90.png)
+
+*Onset of senescence against stem growth, within sites (step 45)*
 
 ---
 

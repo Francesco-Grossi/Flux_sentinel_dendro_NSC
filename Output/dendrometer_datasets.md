@@ -14,6 +14,11 @@ below). Nothing here is used by the pipeline yet.
 | `hyytiala_liu2023/` | Liu et al., Zenodo record 10037224, CC-BY 4.0 | 30-minute stem size and sap flow of two Scots pines, 2015-2019 | FI-Hyy | yes (1997-2025) |
 | `automated_bands_four_forests/` | Zenodo record 4944203, CC0 | 15-minute automated dendrometer bands, 12-40 trees per site, from 2014 | SCBI, SERC, Wind River (US-Wrc), BCI | no (none of these is in the pipeline) |
 
+| `rao_oaks_dryad/` | Rao et al. 2026, Dryad doi:10.5061/dryad.m63xsj4h4, CC0. **Downloaded by hand** (Dryad refuses automated downloads): put `r_markdown.zip` in this folder | Hourly point dendrometers on oaks at four sites, with flux and PhenoCam data | US-Ton (5 trees, Nov 2022 - Jan 2024: one full year, 2023) | yes, but one year only |
+
+Steps 14 (download) and 29 (growth per site-year) of the pipeline use these. Hyytiälä is read but
+dropped: two trees, and their yearly totals differ tenfold between years.
+
 `harvard_forest/` also holds the other HF069 tables (litter, soil respiration, soil water) that came
 with the same record.
 
@@ -36,7 +41,6 @@ FI-Hyy and CZ-BK1 qualify.
 
 | Dataset | Why not | How to get it |
 |---|---|---|
-| Rao et al. 2026, oaks incl. US-Ton (Dryad, doi:10.5061/dryad.m63xsj4h4, 384 MB, CC0) | The Dryad download API refused an anonymous request (HTTP 401) | Download in a browser from the Dryad page and put the zip in `data_raw/dendro/rao_oaks_dryad/` |
 | TreeNet (WSL): CH-Dav and CH-Lae, 10-minute data since 2011 | On request only | Ask the TreeNet team at WSL |
 | Paired flux-tower and dendrometer network (M. Rao; includes SE-Svb) | No public release found | Contact the author |
 | Davos Seehornwald on EnviDat | The public resource is a picture, the data are linked to ICOS / TreeNet | Covered by DenDrought2018 and TreeNet |
