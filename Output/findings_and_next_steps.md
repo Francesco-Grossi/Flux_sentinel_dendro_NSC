@@ -303,18 +303,32 @@ The scan now starts 120 days before the solstice and is fitted within sites.
    effect that is diluted over the season, not on two opposite effects.
 2. More ground-based site-years. PhenoCam and tower NDVI have about a fifth of the power needed. Adding
    PhenoCam sites beyond the flux network would not help (no GPP); longer tower records would.
-3. Deciduous forests: the result there is "leaf-out date, not GPP". Test whether leaf-out acts through
-   leaf age (a fixed leaf life span) with the PhenoCam leaf-out dates, which are more precise.
-4. Dry-summer sites: only 6 have both soil water and enough EOS90 years. Add the Mediterranean sites
+3. Dry-summer sites: only 6 have both soil water and enough EOS90 years. Add the Mediterranean sites
    that currently fail the phenology QC before drawing a conclusion about water there.
 
 **To test the sink mechanism directly**
-5. Dendrometer growth at CH-Dav, CZ-BK1, CZ-Stn and CZ-RAJ (DenDrought2018), CH-Lae (TreeNet) and
-   US-Ha1 (HF149): does growth before the solstice, or the date growth stops, relate to EOS90?
-6. Save mR0 and T0 in step 26 so that maintenance respiration can be computed from temperature and
-   biomass, independently of the same day's GPP. The respiration terms used now are GPP times a factor.
+4. Get TreeNet data for CH-Dav and CH-Lae (10-minute dendrometers since 2011). The growth-timing test
+   below rests on 13 site-years; TreeNet would add about 25 with daily timing.
 
 **Housekeeping**
-7. Rebuild the environment on Python 3.11 or newer: Earth Engine stops supporting 3.10 on 2026-10-04.
-8. Make step 26 save per site, so that an interrupted run does not cost an hour.
-9. Report the two MATLAB issues to the authors of the CUE code.
+5. Rebuild the environment on Python 3.11 or newer: Earth Engine stopped supporting 3.10 on 2026-10-04.
+6. Report the two MATLAB issues to the authors of the CUE code.
+
+## Done since this list was first written (results in results_report.md)
+
+- **Leaf age (section 14 E).** Rejected. In deciduous forests EOS90 follows leaf-out by +0.15 days per
+  day with the PhenoCam (95% CI -0.21 to +0.51, 116 site-years), -0.12 to +0.26 in the other sources;
+  all are significantly below the 1 day per day a fixed leaf life span predicts, and none differs from
+  zero. With PhenoCam leaf-out against the EOS90 of another instrument: 0.00 to +0.24. The leaf life
+  span varies more between years (10-15 days) than EOS90 itself (9-13 days).
+- **Dendrometer growth (sections 15 A, B).** Stem growth by the solstice follows spring temperature
+  (r = +0.41), not pre-solstice GPP (r = +0.07). Growth by the solstice does not predict EOS90 (+0.8
+  days per SD, 40 site-years, mostly US-Ha1). The date growth stops could be tested on only 13
+  site-years at 4 sites: later end of growth, later EOS90 (+3.2 days per SD, p = 0.31) - the direction
+  a sink mechanism predicts, not a result. CH-Lae needs TreeNet. HF149 covers the Hemlock and LPH
+  towers, which are not in the pipeline; US-Ha1 uses HF069.
+- **Respiration independent of the day's GPP (step 26, sections 14 C, 15 C).** mR0 and T0 are saved
+  and maintenance respiration is computed from temperature and accumulated biomass. Taken literally the
+  model gives a level above GPP (it is fitted on differences), so it is scaled to the year's
+  (1 - CUE) x GPP. It does not predict EOS90 next to GPP (-0.7 to +0.4 days per SD).
+- **Step 26 saves each site as it finishes**; a rerun computes only what is missing.

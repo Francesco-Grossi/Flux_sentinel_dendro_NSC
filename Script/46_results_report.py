@@ -1019,6 +1019,30 @@ def c_mech():
         + ". Senescence is early when spring is both warm and productive and late when it is both cool and "
           "unproductive. When only one of the two is high the shift is small. Neither variable alone drives the "
           "onset of senescence; the two add up.")
+    LA = read("mechanism_leaf_age.csv")
+    if LA is not None and len(LA):
+        e = LA[(LA['group'] == 'deciduous') & (LA['leafout'] == 'leaf_out_50') & (LA['eos'] == 'EOS90') & (LA['model'] == 'leaf-out alone')]
+        own, cross = e[e['eos_source'] == e['leafout_source']], e[(e['leafout_source'] == 'GCC') & (e['eos_source'] != 'GCC')]
+        pc = own[own['eos_source'] == 'GCC']
+        pts.append(
+            "**E. Leaf age.** If leaves had a fixed life span, a leaf-out one day earlier would bring senescence one "
+            "day earlier: a slope of 1 day per day. In deciduous forests the within-site slope of EOS90 on leaf-out "
+            f"(SOS50) is {by_source(own, 'slope_days_per_day', 'p_vs_0', fmt='+.2f')} days per day"
+            + (f"; with the PhenoCam, whose leaf-out dates are the most precise, {one(pc, 'slope_days_per_day'):+.2f} "
+               f"(95% CI {one(pc, 'slope_days_per_day') - 1.96 * one(pc, 'se'):+.2f} to {one(pc, 'slope_days_per_day') + 1.96 * one(pc, 'se'):+.2f}, "
+               f"{int(one(pc, 'n_obs'))} site-years)" if len(pc) else "")
+            + f". Every one of these slopes is significantly below 1 ({n_of(own['p_vs_1'] < 0.05)}), and "
+              f"{n_of(own['p_vs_0'] < 0.05)} differ from 0.")
+        if len(cross):
+            pts.append(
+                "Taking leaf-out from the PhenoCam and EOS90 from another instrument (so that errors of one curve fit "
+                f"cannot link the two dates) gives {by_source(cross, 'slope_days_per_day', 'p_vs_0', fmt='+.2f')} days per day.")
+        pts.append(
+            f"The leaf life span itself (EOS90 minus leaf-out) varies by {span(own['sd_lifespan'], '.1f')} days between years at "
+            f"a site, more than EOS90 does ({span(own['sd_eos'], '.1f')} days). A fixed life span would make it vary less. "
+            "**The leaf-age explanation is rejected:** senescence follows leaf-out by at most a fifth to a quarter of a "
+            "day per day, and that weak link is not distinguishable from zero in most sources. Leaf-out date matters "
+            "for the onset of senescence in deciduous forests a little, but not through a fixed leaf life span.")
     pts.append("**Overall.** About half of the uncorrected 'pre-solstice GPP' effect is a spring-temperature effect. "
                "What remains (about one day per SD) is not explained by leaf-out date, water or weather, and is found "
                "mainly in evergreen forests. Whether it is a sink effect cannot be told from flux-derived variables, "
@@ -1031,6 +1055,7 @@ figure("mechanism/leafout_vs_gpp.png", "Deciduous forests: leaf-out date against
 figure("mechanism/water.png", "Pre-solstice GPP against the spring water balance, by season type (step 44)")
 figure("mechanism/sink.png", "GPP and sink variables in the same two-window model (step 44)")
 figure("mechanism/temperature.png", "Spring temperature against pre-solstice GPP, and the years in which they diverge (step 44)")
+figure("mechanism/leaf_age.png", "Deciduous forests: onset of senescence against leaf-out date, with the 1:1 line of a fixed leaf life span (step 44)")
 
 add("## 15. Measured stem growth: the sink itself (steps 29, 45)", "",
     "Dendrometer data at the few flux sites that have them (`Output/dendrometer_datasets.md`). Growth is counted "
@@ -1068,6 +1093,20 @@ def c_growth():
         f"pre-solstice GPP on the same years {stk.at['gpp_pre', 'beta']:+.1f} days per SD; none can be distinguished from "
         "zero. Single sources disagree in sign. With one site supplying most of the years and band readings only "
         "4-5 times a year there, this is not a test of the sink hypothesis yet.")
+    tim = b[(b['eos_source'] == 'stacked') & b['predictor'].isin(['doy_g90', 'doy_g50', 'doy_rate_max', 'rate_max'])]
+    if len(tim):
+        tm_ = tim.set_index('predictor')
+        pts.append(
+            f"**Timing of growth and EOS90.** Only {int(tim['n_obs'].max())} site-years at {int(tim['n_sites'].max())} sites "
+            "have both a dated growth curve and an EOS90 (sites with two years admitted). A later end of growth goes "
+            f"with a later onset of senescence ({tm_.at['doy_g90', 'beta']:+.1f} days per SD, p = {tm_.at['doy_g90', 'p']:.2f}); "
+            f"so does a later peak of growth ({tm_.at['doy_rate_max', 'beta']:+.1f}). The direction is what a sink "
+            "mechanism predicts (growth finished early, canopy shed early), but with a dozen site-years, two-year sites "
+            "and mostly one EOS source, this is an indication to follow up, not a result. The p-values of this row "
+            "are not reliable.")
+    else:
+        pts.append("**Timing of growth and EOS90.** Too few site-years have both a dated growth curve and an EOS90 to "
+                   "test whether the date growth stops relates to the onset of senescence.")
     if cb is not None and len(cb):
         m = cb.groupby('site_id').mean(numeric_only=True)
         pts.append(
@@ -1120,7 +1159,9 @@ add("## 16. What the results add up to", "",
     "5. **Spring temperature** is a stronger predictor of the onset of senescence than GPP and accounts for about "
     "half of the uncorrected GPP effect (section 14 D). Stem growth before the solstice also follows temperature, "
     "not GPP (section 15).",
-    "6. **Deciduous forests:** leaf-out date, not GPP, predicts the onset of senescence. **Dry-summer sites:** "
+    "6. **Deciduous forests:** leaf-out date, not GPP, predicts the onset of senescence - but only weakly, and not "
+    "through a fixed leaf life span (senescence follows leaf-out by about a fifth of a day per day, section 14 E). "
+    "**Dry-summer sites:** "
     "spring water balance, not GPP. The GPP effect that remains is mainly in evergreen forests (section 14).",
     "7. **Sink variables from the flux data** (NPP, respiration) cannot separate sink from source, because they "
     "are GPP times a factor. Measured stem growth can, but exists for too few site-years to decide (sections 5, 14 C, 15).",

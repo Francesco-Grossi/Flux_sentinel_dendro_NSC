@@ -1,6 +1,6 @@
 # Phenology - carbon pipeline: results
 
-Generated on 2026-10-02 by `Script/46_results_report.py` from the outputs of the last pipeline run. A written interpretation of these results, with the analyses still to do, is in [findings_and_next_steps.md](findings_and_next_steps.md).
+Generated on 2026-10-05 by `Script/46_results_report.py` from the outputs of the last pipeline run. A written interpretation of these results, with the analyses still to do, is in [findings_and_next_steps.md](findings_and_next_steps.md).
 
 Effects are days of shift in the end of season (EOS) per +1 within-site SD of the predictor (within-site models: each year minus its site's mean, standard errors clustered by site) unless stated otherwise; negative = earlier senescence. EOS90 / EOS50 / EOS10 = day of year when greenness has fallen to 90 / 50 / 10 % of its seasonal amplitude (onset, middle, end of senescence).
 
@@ -1269,6 +1269,48 @@ Plant-available soil water = measured soil water content relative to the site's 
 | evergreen | all sources stacked | warm + low GPP | earlier if temperature drives it | 72 (23) | 18% | +0.2 [-3.8, +4.2] |
 | evergreen | all sources stacked | cool + high GPP | earlier if GPP drives it | 85 (27) | 21% | +0.5 [-1.9, +2.9] |
 
+### E. Leaf age: does senescence follow leaf-out day for day? (deciduous forests)
+
+Within-site slope of the EOS date on the leaf-out date (SOS50), in days per day. A fixed leaf life span predicts a slope of 1; no link predicts 0. 'PhenoCam leaf-out' rows take the leaf-out date from the camera and the EOS from another instrument, so errors of one curve fit cannot produce the relation.
+
+| EOS from | leaf-out from | EOS level | model | n (sites) | slope [95% CI] | differs from 0 | differs from 1 | SD leaf-out / EOS / life span (days) |
+|---|---|---|---|---|---|---|---|---|
+| PhenoCam | PhenoCam | EOS90 | leaf-out alone | 116 (10) | +0.15 [-0.21, +0.51] | p = 0.413 | p = 0.000 | 6.5 / 13.0 / 14.1 |
+| PhenoCam | PhenoCam | EOS90 | + spring temperature and GPP | 104 (9) | +0.20 [-0.18, +0.57] | p = 0.304 | p = 0.000 | 6.4 / 13.5 / 14.5 |
+| PhenoCam | PhenoCam | EOS50 | leaf-out alone | 116 (10) | +0.05 [-0.43, +0.53] | p = 0.833 | p = 0.000 | 6.5 / 10.6 / 12.3 |
+| PhenoCam | PhenoCam | EOS50 | + spring temperature and GPP | 104 (9) | -0.00 [-0.56, +0.56] | p = 0.992 | p = 0.000 | 6.4 / 11.1 / 12.8 |
+| PhenoCam | PhenoCam | EOS10 | leaf-out alone | 116 (10) | -0.03 [-0.80, +0.74] | p = 0.941 | p = 0.009 | 6.5 / 13.5 / 15.1 |
+| PhenoCam | PhenoCam | EOS10 | + spring temperature and GPP | 104 (9) | -0.20 [-1.26, +0.85] | p = 0.707 | p = 0.026 | 6.4 / 14.2 / 15.8 |
+| tower NDVI | tower NDVI | EOS90 | leaf-out alone | 189 (18) | -0.05 [-0.35, +0.25] | p = 0.750 | p = 0.000 | 7.7 / 12.3 / 14.7 |
+| tower NDVI | tower NDVI | EOS90 | + spring temperature and GPP | 174 (17) | +0.01 [-0.23, +0.26] | p = 0.906 | p = 0.000 | 7.4 / 12.3 / 14.0 |
+| tower NDVI | tower NDVI | EOS50 | leaf-out alone | 189 (18) | -0.15 [-0.38, +0.08] | p = 0.192 | p = 0.000 | 7.7 / 9.6 / 13.0 |
+| tower NDVI | tower NDVI | EOS50 | + spring temperature and GPP | 174 (17) | -0.15 [-0.39, +0.09] | p = 0.232 | p = 0.000 | 7.4 / 9.6 / 12.4 |
+| tower NDVI | tower NDVI | EOS10 | leaf-out alone | 189 (18) | -0.29 [-0.64, +0.05] | p = 0.093 | p = 0.000 | 7.7 / 13.0 / 16.2 |
+| tower NDVI | tower NDVI | EOS10 | + spring temperature and GPP | 174 (17) | -0.35 [-0.68, -0.01] | p = 0.044 | p = 0.000 | 7.4 / 12.8 / 15.6 |
+| tower NDVI | PhenoCam | EOS90 | leaf-out alone | 37 (5) | +0.24 [-0.52, +1.01] | p = 0.538 | p = 0.052 | 7.2 / 10.2 / 11.5 |
+| tower NDVI | PhenoCam | EOS50 | leaf-out alone | 37 (5) | +0.07 [-0.39, +0.53] | p = 0.774 | p = 0.000 | 7.2 / 7.3 / 9.9 |
+| tower NDVI | PhenoCam | EOS10 | leaf-out alone | 37 (5) | -0.14 [-0.39, +0.11] | p = 0.279 | p = 0.000 | 7.2 / 10.5 / 13.3 |
+| satellite NDVI | satellite NDVI | EOS90 | leaf-out alone | 194 (26) | +0.26 [-0.04, +0.56] | p = 0.093 | p = 0.000 | 6.2 / 9.1 / 10.0 |
+| satellite NDVI | satellite NDVI | EOS90 | + spring temperature and GPP | 172 (23) | +0.26 [-0.14, +0.65] | p = 0.201 | p = 0.000 | 6.2 / 9.3 / 10.3 |
+| satellite NDVI | satellite NDVI | EOS50 | leaf-out alone | 194 (26) | +0.05 [-0.10, +0.19] | p = 0.522 | p = 0.000 | 6.2 / 5.3 / 7.9 |
+| satellite NDVI | satellite NDVI | EOS50 | + spring temperature and GPP | 172 (23) | +0.03 [-0.14, +0.20] | p = 0.753 | p = 0.000 | 6.2 / 5.5 / 8.1 |
+| satellite NDVI | satellite NDVI | EOS10 | leaf-out alone | 194 (26) | -0.14 [-0.39, +0.11] | p = 0.267 | p = 0.000 | 6.2 / 9.7 / 12.0 |
+| satellite NDVI | satellite NDVI | EOS10 | + spring temperature and GPP | 172 (23) | -0.17 [-0.50, +0.17] | p = 0.325 | p = 0.000 | 6.2 / 10.1 / 12.3 |
+| satellite NDVI | PhenoCam | EOS90 | leaf-out alone | 56 (8) | +0.22 [-0.08, +0.52] | p = 0.159 | p = 0.000 | 5.2 / 6.5 / 7.6 |
+| satellite NDVI | PhenoCam | EOS50 | leaf-out alone | 56 (8) | +0.03 [-0.26, +0.32] | p = 0.843 | p = 0.000 | 5.2 / 4.3 / 6.6 |
+| satellite NDVI | PhenoCam | EOS10 | leaf-out alone | 56 (8) | -0.17 [-0.65, +0.32] | p = 0.499 | p = 0.000 | 5.2 / 7.8 / 9.8 |
+| satellite NIRv | satellite NIRv | EOS90 | leaf-out alone | 224 (28) | -0.12 [-0.47, +0.23] | p = 0.494 | p = 0.000 | 5.8 / 10.7 / 12.5 |
+| satellite NIRv | satellite NIRv | EOS90 | + spring temperature and GPP | 197 (25) | -0.29 [-0.66, +0.07] | p = 0.119 | p = 0.000 | 5.7 / 10.7 / 12.3 |
+| satellite NIRv | satellite NIRv | EOS50 | leaf-out alone | 224 (28) | -0.18 [-0.42, +0.06] | p = 0.141 | p = 0.000 | 5.8 / 6.9 / 9.6 |
+| satellite NIRv | satellite NIRv | EOS50 | + spring temperature and GPP | 197 (25) | -0.26 [-0.48, -0.03] | p = 0.025 | p = 0.000 | 5.7 / 6.8 / 9.5 |
+| satellite NIRv | satellite NIRv | EOS10 | leaf-out alone | 224 (28) | -0.18 [-0.48, +0.12] | p = 0.240 | p = 0.000 | 5.8 / 10.9 / 12.8 |
+| satellite NIRv | satellite NIRv | EOS10 | + spring temperature and GPP | 197 (25) | -0.19 [-0.50, +0.11] | p = 0.215 | p = 0.000 | 5.7 / 11.0 / 12.9 |
+| satellite NIRv | PhenoCam | EOS90 | leaf-out alone | 58 (8) | +0.00 [-0.66, +0.66] | p = 0.992 | p = 0.003 | 5.1 / 12.0 / 13.1 |
+| satellite NIRv | PhenoCam | EOS50 | leaf-out alone | 58 (8) | +0.14 [-0.21, +0.50] | p = 0.423 | p = 0.000 | 5.1 / 5.5 / 7.0 |
+| satellite NIRv | PhenoCam | EOS10 | leaf-out alone | 58 (8) | +0.34 [+0.05, +0.62] | p = 0.020 | p = 0.000 | 5.1 / 7.6 / 8.2 |
+
+For comparison, EOS90 on SOS50 in the other plant types (same source for both dates): evergreen, tower NDVI +0.01; evergreen, satellite NDVI +0.20; evergreen, satellite NIRv +0.22*; grass/shrub, PhenoCam +0.32; grass/shrub, tower NDVI +0.19; grass/shrub, satellite NDVI +0.23*; grass/shrub, satellite NIRv +0.11.
+
 **What this shows**
 
 - Each explanation is tested by putting the competing variable in the same within-site model as GPP. 'Stacked' rows use all four EOS sources at once (each site-year once per source); they have the most power and are quoted here.
@@ -1278,6 +1320,9 @@ Plant-available soil water = measured soil water content relative to the site's 
 - **D. Spring temperature.** GPP and temperature of the 60 days before the solstice are only weakly correlated within sites (r = 0.19), so their effects can be separated. Together in one model: temperature -2.0***, GPP -1.1** days per SD. With radiation and water balance also held fixed, GPP keeps -1.1*. Temperature alone explains 4 times more variance than GPP adds to it.
 - By plant type, GPP net of all weather: evergreen -1.5**, deciduous -0.1. The GPP effect that the weather does not explain is carried by evergreen forests.
 - **Years in which temperature and GPP diverge.** Mean EOS90 anomaly: warm + high GPP -2.4** days; cool + low GPP +1.6* days; warm + low GPP -0.2 days; cool + high GPP +1.1 days. Senescence is early when spring is both warm and productive and late when it is both cool and unproductive. When only one of the two is high the shift is small. Neither variable alone drives the onset of senescence; the two add up.
+- **E. Leaf age.** If leaves had a fixed life span, a leaf-out one day earlier would bring senescence one day earlier: a slope of 1 day per day. In deciduous forests the within-site slope of EOS90 on leaf-out (SOS50) is PhenoCam (GCC) +0.15, Tower NDVI -0.05, Satellite NDVI +0.26, Satellite NIRv -0.12 days per day; with the PhenoCam, whose leaf-out dates are the most precise, +0.15 (95% CI -0.21 to +0.51, 116 site-years). Every one of these slopes is significantly below 1 (4 of 4), and 0 of 4 differ from 0.
+- Taking leaf-out from the PhenoCam and EOS90 from another instrument (so that errors of one curve fit cannot link the two dates) gives Tower NDVI +0.24, Satellite NDVI +0.22, Satellite NIRv +0.00 days per day.
+- The leaf life span itself (EOS90 minus leaf-out) varies by 10.0 to 14.7 days between years at a site, more than EOS90 does (9.1 to 13.0 days). A fixed life span would make it vary less. **The leaf-age explanation is rejected:** senescence follows leaf-out by at most a fifth to a quarter of a day per day, and that weak link is not distinguishable from zero in most sources. Leaf-out date matters for the onset of senescence in deciduous forests a little, but not through a fixed leaf life span.
 - **Overall.** About half of the uncorrected 'pre-solstice GPP' effect is a spring-temperature effect. What remains (about one day per SD) is not explained by leaf-out date, water or weather, and is found mainly in evergreen forests. Whether it is a sink effect cannot be told from flux-derived variables, because every one of them is tied to GPP.
 
 ![Deciduous forests: leaf-out date against early GPP (step 44)](../figure/mechanism/leafout_vs_gpp.png)
@@ -1295,6 +1340,10 @@ Plant-available soil water = measured soil water content relative to the site's 
 ![Spring temperature against pre-solstice GPP, and the years in which they diverge (step 44)](../figure/mechanism/temperature.png)
 
 *Spring temperature against pre-solstice GPP, and the years in which they diverge (step 44)*
+
+![Deciduous forests: onset of senescence against leaf-out date, with the 1:1 line of a fixed leaf life span (step 44)](../figure/mechanism/leaf_age.png)
+
+*Deciduous forests: onset of senescence against leaf-out date, with the 1:1 line of a fixed leaf life span (step 44)*
 
 ## 15. Measured stem growth: the sink itself (steps 29, 45)
 
@@ -1337,12 +1386,20 @@ Dendrometer data at the few flux sites that have them (`Output/dendrometer_datas
 | satellite NIRv | growth rate before the solstice | +4.5 [-2.2, +11.2] | 0.185 | 16 | US-Ha1 (9), AT-Zoe (4), CH-Dav (3) |
 | satellite NIRv | annual growth | +3.5 [-4.0, +11.1] | 0.356 | 16 | US-Ha1 (9), AT-Zoe (4), CH-Dav (3) |
 | satellite NIRv | share of growth done by the solstice | +3.7 [-1.3, +8.7] | 0.150 | 16 | US-Ha1 (9), AT-Zoe (4), CH-Dav (3) |
+| satellite NIRv | date growth stops | +3.6 [-3.3, +10.5] | 0.308 | 11 | AT-Zoe (4), CH-Dav (3), CZ-BK1 (2), CZ-RAJ (2) |
+| satellite NIRv | date half of the growth is done | +4.3 [-1.9, +10.4] | 0.172 | 11 | AT-Zoe (4), CH-Dav (3), CZ-BK1 (2), CZ-RAJ (2) |
+| satellite NIRv | date of fastest growth | +6.6 [+2.3, +10.9] | 0.003 | 11 | AT-Zoe (4), CH-Dav (3), CZ-BK1 (2), CZ-RAJ (2) |
+| satellite NIRv | fastest growth rate | +9.2 [+6.7, +11.7] | 0.000 | 11 | AT-Zoe (4), CH-Dav (3), CZ-BK1 (2), CZ-RAJ (2) |
 | satellite NIRv | GPP, 60 days before the solstice | +1.7 [-6.5, +9.9] | 0.683 | 12 | US-Ha1 (9), CH-Dav (3) |
 | satellite NIRv | air temperature, 60 days before the solstice | -0.4 [-5.2, +4.4] | 0.866 | 16 | US-Ha1 (9), AT-Zoe (4), CH-Dav (3) |
 | all sources stacked | growth by the solstice | +0.8 [-3.2, +4.9] | 0.690 | 40 | US-Ha1 (33), AT-Zoe (4), CH-Dav (3) |
 | all sources stacked | growth rate before the solstice | +1.4 [-2.6, +5.4] | 0.499 | 40 | US-Ha1 (33), AT-Zoe (4), CH-Dav (3) |
 | all sources stacked | annual growth | -2.1 [-6.8, +2.6] | 0.386 | 40 | US-Ha1 (33), AT-Zoe (4), CH-Dav (3) |
 | all sources stacked | share of growth done by the solstice | +2.5 [-0.8, +5.9] | 0.141 | 40 | US-Ha1 (33), AT-Zoe (4), CH-Dav (3) |
+| all sources stacked | date growth stops | +3.2 [-3.0, +9.4] | 0.310 | 13 | AT-Zoe (6), CH-Dav (3), CZ-BK1 (2), CZ-RAJ (2) |
+| all sources stacked | date half of the growth is done | +3.9 [-1.6, +9.4] | 0.167 | 13 | AT-Zoe (6), CH-Dav (3), CZ-BK1 (2), CZ-RAJ (2) |
+| all sources stacked | date of fastest growth | +6.0 [+2.1, +9.9] | 0.003 | 13 | AT-Zoe (6), CH-Dav (3), CZ-BK1 (2), CZ-RAJ (2) |
+| all sources stacked | fastest growth rate | +8.4 [+6.2, +10.7] | 0.000 | 13 | AT-Zoe (6), CH-Dav (3), CZ-BK1 (2), CZ-RAJ (2) |
 | all sources stacked | GPP, 60 days before the solstice | -2.4 [-5.8, +1.0] | 0.166 | 36 | US-Ha1 (33), CH-Dav (3) |
 | all sources stacked | air temperature, 60 days before the solstice | +0.7 [-2.3, +3.6] | 0.645 | 40 | US-Ha1 (33), AT-Zoe (4), CH-Dav (3) |
 
@@ -1434,6 +1491,7 @@ Growth as a share of NPP over the season: AT-Zoe 33%, US-Ha1 14%.
 - **Seasonal course.** On average 43% of a year's stem growth is done by the summer solstice. Growth starts around day 143, is fastest around day 165 and is 90% complete by day 233 - weeks before the canopy starts to senesce (EOS90 around day 260-270). Stem growth and leaf senescence are separated in time.
 - **A. Growth and GPP.** Annual growth follows annual GPP (within-site r = +0.42, p = 0.003). Growth by the solstice does not follow GPP before the solstice (r = +0.07) but follows spring temperature (r = +0.41, p = 0.019). Early in the season the sink runs on temperature, not on the current carbon supply - the same conclusion as section 14 D, from an independent measurement.
 - **B. Growth and the onset of senescence.** All sources stacked (40 site-years, mostly US-Ha1): growth by the solstice +0.8, annual growth -2.1, pre-solstice GPP on the same years -2.4 days per SD; none can be distinguished from zero. Single sources disagree in sign. With one site supplying most of the years and band readings only 4-5 times a year there, this is not a test of the sink hypothesis yet.
+- **Timing of growth and EOS90.** Only 13 site-years at 4 sites have both a dated growth curve and an EOS90 (sites with two years admitted). A later end of growth goes with a later onset of senescence (+3.2 days per SD, p = 0.31); so does a later peak of growth (+6.0). The direction is what a sink mechanism predicts (growth finished early, canopy shed early), but with a dozen site-years, two-year sites and mostly one EOS source, this is an indication to follow up, not a result. The p-values of this row are not reliable.
 - **C. Carbon budget.** Over the growing season, AT-Zoe: GPP 983, respiration 315 (32% of GPP), measured growth 205, total sink 521, GPP minus total sink 462 gC m-2; US-Ha1: GPP 1566, respiration 353 (23% of GPP), measured growth 165, total sink 518, GPP minus total sink 1048 gC m-2. Measured growth is 33% of NPP at AT-Zoe, 14% of NPP at US-Ha1.
 - The residual (GPP minus total sink) is large because the measured growth is aboveground only and because the respiration estimate is low: forests typically respire 45-55% of GPP. The absolute level of the residual should not be interpreted; its year-to-year variation may be.
 - With respiration from the fitted model (growth + maintenance; the maintenance term follows temperature and accumulated biomass, not the day's GPP), respiration before the solstice is 69 gC m-2 at AT-Zoe (against 88), 75 gC m-2 at US-Ha1 (against 97): the year's total is the same by construction, but its seasonal distribution differs.
@@ -1470,7 +1528,7 @@ Growth as a share of NPP over the season: AT-Zoe 33%, US-Ha1 14%.
 3. **But not because two effects cancel.** Late-season GPP has no consistent delaying effect once the window-length artefact is removed (sections 3.4, 4). The early effect is simply small and is diluted in the seasonal total.
 4. **The end of senescence (EOS10)** is not related to GPP in any window (sections 3.3, 6, 7, 10).
 5. **Spring temperature** is a stronger predictor of the onset of senescence than GPP and accounts for about half of the uncorrected GPP effect (section 14 D). Stem growth before the solstice also follows temperature, not GPP (section 15).
-6. **Deciduous forests:** leaf-out date, not GPP, predicts the onset of senescence. **Dry-summer sites:** spring water balance, not GPP. The GPP effect that remains is mainly in evergreen forests (section 14).
+6. **Deciduous forests:** leaf-out date, not GPP, predicts the onset of senescence - but only weakly, and not through a fixed leaf life span (senescence follows leaf-out by about a fifth of a day per day, section 14 E). **Dry-summer sites:** spring water balance, not GPP. The GPP effect that remains is mainly in evergreen forests (section 14).
 7. **Sink variables from the flux data** (NPP, respiration) cannot separate sink from source, because they are GPP times a factor. Measured stem growth can, but exists for too few site-years to decide (sections 5, 14 C, 15).
 8. **Methodological result.** Same-year windows and mixed models both inflate the apparent effects - the first by construction, the second by a factor of about two (sections 3.4, 6). Within-site models with fixed windows are needed for this question.
 

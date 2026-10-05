@@ -75,7 +75,9 @@ MIN_YEARS, MIN_OBS = 3, 12
 MIN_SITES_CLUSTER = 5      # with fewer sites, clustered standard errors are unreliable: robust (HC1) ones are used
 PREDICTORS = {'growth_pre': 'growth by the solstice', 'rate_pre': 'growth rate before the solstice',
               'growth_annual': 'annual growth', 'frac_pre': 'share of growth done by the solstice',
-              'doy_g90': 'date growth stops', 'gpp_pre': f'GPP, {CAL_PRE} days before the solstice',
+              'doy_g90': 'date growth stops', 'doy_g50': 'date half of the growth is done',
+              'doy_rate_max': 'date of fastest growth', 'rate_max': 'fastest growth rate',
+              'gpp_pre': f'GPP, {CAL_PRE} days before the solstice',
               't_spring': f'air temperature, {CAL_PRE} days before the solstice'}
 SRC_ORDER = ['GCC', 'NDVI_tower', 'NDVI', 'NIRv']
 NAME = {'GCC': 'PhenoCam', 'NDVI_tower': 'tower NDVI', 'NDVI': 'satellite NDVI', 'NIRv': 'satellite NIRv',
@@ -91,11 +93,20 @@ growth['t_spring'] = [lk.window_mean(s, y, 'TA', so - CAL_PRE, so - 1) for s, y,
 growth['gpp_annual'] = [lk.window_mean(s, y, 'GPP', 1, 365) * 365 for s, y in zip(growth['site_id'], growth['year'])]
 
 
-def wfit(d, y, x, unit='site_id'):
+TIMING = {'doy_g90': 'date growth stops', 'doy_g50': 'date half of the growth is done',
+          'doy_rate_max': 'date of fastest growth', 'rate_max': 'fastest growth rate'}
+MIN_OBS_TIMING, MIN_YEARS_TIMING = 8, 2    # timing needs daily or monthly readings, which exist for very few
+                                           # site-years: sites with two years are admitted, and the result is
+                                           # shown for what it is
+
+
+def wfit(d, y, x, unit='site_id', min_obs=None, min_years=None):
     """Within-`unit` slope of y on x (per +1 within-unit SD of x), SE clustered by site."""
+    min_obs = MIN_OBS if min_obs is None else min_obs
+    min_years = MIN_YEARS if min_years is None else min_years
     d = d[list(dict.fromkeys(['site_id', unit, y, x]))].dropna()
-    d = d[d.groupby(unit)[unit].transform('size') >= MIN_YEARS]
-    if len(d) < MIN_OBS:
+    d = d[d.groupby(unit)[unit].transform('size') >= min_years]
+    if len(d) < min_obs:
         return None
     dm = d[[y, x]] - d.groupby(unit)[[y, x]].transform('mean')
     if not dm[x].std() > 0:
@@ -138,7 +149,7 @@ b_rows = []
 for src in sources + ['stacked']:
     d, unit = (m, 'unit') if src == 'stacked' else (m[m['vi_index'] == src], 'site_id')
     for x, lab in PREDICTORS.items():
-        r = wfit(d, TARGET, x, unit)
+        r = wfit(d, TARGET, x, unit, MIN_OBS_TIMING, MIN_YEARS_TIMING) if x in TIMING else wfit(d, TARGET, x, unit)
         if r:
             b_rows.append({'eos_source': src, 'predictor': x, 'label': lab, **r})
 B = pd.DataFrame(b_rows)

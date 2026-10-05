@@ -64,6 +64,17 @@ D. Spring temperature instead of GPP. A warm spring raises GPP and could
        cool + high GPP                    early EOS90 if GPP drives it
    and the mean EOS90 anomaly of each class is reported.
 
+E. Leaf age (deciduous forests). Part A finds that leaf-out date, not early
+   GPP, predicts EOS90 there. One reason could be a fixed leaf life span: a
+   leaf that emerges a day earlier ages a day earlier. That predicts a
+   within-site slope of the EOS date on the leaf-out date of 1 DAY PER DAY;
+   no link predicts 0. The slope is estimated for SOS10 / 50 / 90 against
+   EOS90 / 50 / 10, alone and with spring temperature and GPP held fixed,
+   and tested against both 0 and 1. PhenoCam has the most precise leaf-out
+   dates (daily images). Because both dates of one source come from the same
+   fitted curve, their errors could be linked; so the PhenoCam leaf-out date
+   is also set against the EOS of the other instruments.
+
 For A, B and D the model is also fitted on all EOS sources stacked (anomalies
 relative to each site x source mean, SE clustered by site), which uses every
 site-year once per source: more power, same question.
@@ -371,6 +382,65 @@ print(f"\n   Years in which they diverge -> '{OUT_DQ}'")
 print(Dq[Dq['group'] == 'all'].round(2).to_string(index=False))
 
 
+# ---------------------------------------------------------------- E. leaf age: does senescence follow leaf-out day for day?
+def day_slope(d, y, x, covars=(), unit='site_id'):
+    """Within-`unit` slope of y on x in DAYS PER DAY (not standardized), SE clustered by site.
+    Returns slope, se, p against 0, p against 1 (a fixed leaf life span), n, sites, within-unit SDs."""
+    cols = list(dict.fromkeys(['site_id', unit, y, x, *covars]))
+    d = d[cols].dropna()
+    d = d[d.groupby(unit)[unit].transform('size') >= MIN_YEARS]
+    if len(d) < MIN_OBS or d['site_id'].nunique() < MIN_SITES:
+        return None
+    v = [y, x, *covars]
+    dm = d[v] - d.groupby(unit)[v].transform('mean')
+    if not dm[x].std() > 0:
+        return None
+    X = dm[[x, *covars]].copy()
+    for c in covars:
+        X[c] = X[c] / X[c].std()
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        f = sm.OLS(dm[y].to_numpy(float), sm.add_constant(X.to_numpy(float))).fit(
+            cov_type='cluster', cov_kwds={'groups': pd.factorize(d['site_id'])[0]})
+    b, se = float(f.params[1]), float(f.bse[1])
+    from scipy.stats import norm
+    return {'slope_days_per_day': b, 'se': se, 'p_vs_0': float(f.pvalues[1]), 'p_vs_1': float(2 * norm.sf(abs((b - 1) / se))),
+            'n_obs': len(d), 'n_sites': d['site_id'].nunique(), 'sd_leafout': float(dm[x].std()), 'sd_eos': float(dm[y].std()),
+            'sd_lifespan': float((dm[y] - dm[x]).std()), 'r_within': float(np.corrcoef(dm[x], dm[y])[0, 1])}
+
+
+LEAFOUT, EOS_LEVELS = ['leaf_out_10', 'leaf_out_50', 'leaf_out_90'], ['EOS90', 'EOS50', 'EOS10']
+e_rows = []
+gcc_lo = pheno[pheno['vi_index'] == 'GCC'][['site_id', 'year'] + LEAFOUT].rename(columns={c: f'{c}_gcc' for c in LEAFOUT})
+for group in ('deciduous', 'evergreen', 'grass/shrub'):
+    g = pheno[pheno['leaf_habit'] == group]
+    for src in sources:
+        d = g[g['vi_index'] == src]
+        for lo in LEAFOUT:
+            for eos in EOS_LEVELS:
+                for model, cov in (('leaf-out alone', ()), ('+ spring temperature and GPP', ('ta_pre', 'gpp_cal'))):
+                    r = day_slope(d, eos, lo, cov)
+                    if r:
+                        e_rows.append({'group': group, 'eos_source': src, 'leafout_source': src, 'leafout': lo, 'eos': eos,
+                                       'model': model, **r})
+        if src != 'GCC' and 'GCC' in sources:       # PhenoCam leaf-out against this source's EOS: independent errors
+            dc = d.merge(gcc_lo, on=['site_id', 'year'])
+            for lo in LEAFOUT:
+                for eos in EOS_LEVELS:
+                    r = day_slope(dc, eos, f'{lo}_gcc')
+                    if r:
+                        e_rows.append({'group': group, 'eos_source': src, 'leafout_source': 'GCC', 'leafout': lo, 'eos': eos,
+                                       'model': 'leaf-out alone', **r})
+E = pd.DataFrame(e_rows)
+OUT_E = ec.DATA_DIR / "mechanism_leaf_age.csv"
+E.to_csv(OUT_E, index=False)
+print(f"\nE. Leaf age: within-site slope of EOS on leaf-out date, days per day (1 = fixed leaf life span) -> '{OUT_E}'")
+if len(E):
+    print(E[(E['group'] == 'deciduous') & (E['leafout'] == 'leaf_out_50')]
+          [['eos_source', 'leafout_source', 'eos', 'model', 'n_obs', 'n_sites', 'slope_days_per_day', 'se', 'p_vs_0', 'p_vs_1',
+            'sd_leafout', 'sd_eos', 'sd_lifespan']].round(2).to_string(index=False))
+
+
 # ---------------------------------------------------------------- figures
 def forest(ax, d, specs, title):
     """specs: list of (prefix, label). One row of points per spec, one colour per EOS source."""
@@ -460,6 +530,36 @@ if len(Dt) and len(Dq):
     fig.tight_layout()
     fig.savefig(FIG_DIR / "temperature.png", dpi=150)
     plt.close(fig)
+if len(E):
+    panels = [(s, ls) for s, ls in (('GCC', 'GCC'), ('NDVI', 'GCC'), ('NDVI', 'NDVI'), ('NIRv', 'NIRv'))
+              if len(E[(E['group'] == 'deciduous') & (E['eos_source'] == s) & (E['leafout_source'] == ls)])]
+    if panels:
+        fig, axes = plt.subplots(1, len(panels), figsize=(4.6 * len(panels), 4.4), sharey=True, squeeze=False)
+        dec = pheno[pheno['leaf_habit'] == 'deciduous']
+        for ax, (s, ls) in zip(axes[0], panels):
+            d = dec[dec['vi_index'] == s][['site_id', 'year', TARGET, 'leaf_out_50']]
+            if ls != s:
+                d = d.drop(columns='leaf_out_50').merge(gcc_lo.rename(columns={'leaf_out_50_gcc': 'leaf_out_50'})
+                                                        [['site_id', 'year', 'leaf_out_50']], on=['site_id', 'year'])
+            d = d.dropna()
+            d = d[d.groupby('site_id')['site_id'].transform('size') >= MIN_YEARS]
+            dm = d[[TARGET, 'leaf_out_50']] - d.groupby('site_id')[[TARGET, 'leaf_out_50']].transform('mean')
+            ax.scatter(dm['leaf_out_50'], dm[TARGET], s=14, alpha=0.6, color=COLORS.get(s, 'gray'))
+            lim = float(np.nanpercentile(np.abs(dm.to_numpy()), 99)) + 2
+            xs = np.array([-lim, lim])
+            b = np.polyfit(dm['leaf_out_50'], dm[TARGET], 1)[0]
+            ax.plot(xs, xs, 'k--', lw=0.8, label='fixed leaf life span (slope 1)')
+            ax.plot(xs, b * xs, color='#c53030', lw=1.4, label=f'fitted (slope {b:+.2f})')
+            ax.axhline(0, color='0.85', lw=0.8)
+            ax.set_xlim(-lim, lim)
+            ax.set_title(f"EOS90: {NAME[s]}; leaf-out: {NAME[ls]} (n = {len(dm)})", fontsize=9)
+            ax.set_xlabel('leaf-out (SOS50) anomaly, days')
+            ax.legend(fontsize=7)
+        axes[0][0].set_ylabel('EOS90 anomaly, days')
+        fig.suptitle("Deciduous forests: does the onset of senescence follow leaf-out? (year minus site mean)", fontsize=10)
+        fig.tight_layout()
+        fig.savefig(FIG_DIR / "leaf_age.png", dpi=150)
+        plt.close(fig)
 
 
 # ---------------------------------------------------------------- written summary
@@ -510,5 +610,23 @@ for _, r in Dq.iterrows():
     m, se = r['mean_eos_anomaly_days'], r['se']
     lines.append(f"| {r['group']} | {NAME[r['eos_source']]} | {r['years']} | {r['reading']} | {int(r['n_obs'])} ({int(r['n_sites'])}) | "
                  f"{100 * r['share_of_years']:.0f}% | {m:+.1f}{ec.stars(r['p'])} [{m - 1.96 * se:+.1f}, {m + 1.96 * se:+.1f}] |")
+if len(E):
+    ed = E[(E['group'] == 'deciduous') & (E['leafout'] == 'leaf_out_50')]
+    lines += ["", "## E. Leaf age: does senescence follow leaf-out day for day? (deciduous forests)", "",
+              "Within-site slope of the EOS date on the leaf-out date (SOS50), in days per day. A fixed leaf life span "
+              "predicts a slope of 1; no link predicts 0. 'PhenoCam leaf-out' rows take the leaf-out date from the "
+              "camera and the EOS from another instrument, so errors of one curve fit cannot produce the relation.", "",
+              "| EOS from | leaf-out from | EOS level | model | n (sites) | slope [95% CI] | differs from 0 | differs from 1 | SD leaf-out / EOS / life span (days) |",
+              "|---|---|---|---|---|---|---|---|---|"]
+    for _, r in ed.iterrows():
+        b, se = r['slope_days_per_day'], r['se']
+        lines.append(f"| {NAME[r['eos_source']]} | {NAME[r['leafout_source']]} | {r['eos']} | {r['model']} | {int(r['n_obs'])} ({int(r['n_sites'])}) | "
+                     f"{b:+.2f} [{b - 1.96 * se:+.2f}, {b + 1.96 * se:+.2f}] | p = {r['p_vs_0']:.3f} | p = {r['p_vs_1']:.3f} | "
+                     f"{r['sd_leafout']:.1f} / {r['sd_eos']:.1f} / {r['sd_lifespan']:.1f} |")
+    other = E[(E['group'] != 'deciduous') & (E['leafout'] == 'leaf_out_50') & (E['eos'] == 'EOS90') & (E['model'] == 'leaf-out alone')
+              & (E['eos_source'] == E['leafout_source'])]
+    if len(other):
+        lines += ["", "For comparison, EOS90 on SOS50 in the other plant types (same source for both dates): "
+                  + "; ".join(f"{r['group']}, {NAME[r['eos_source']]} {r['slope_days_per_day']:+.2f}{ec.stars(r['p_vs_0'])}" for _, r in other.iterrows()) + "."]
 OUT_MD.write_text("\n".join(lines) + "\n", encoding='utf-8')
 print(f"\nSummary -> '{OUT_MD}'\nFigures -> '{FIG_DIR}'")

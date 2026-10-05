@@ -355,3 +355,45 @@ Plant-available soil water = measured soil water content relative to the site's 
 | evergreen | all sources stacked | cool + low GPP | both say later | 124 (27) | 31% | +2.8* [+0.6, +5.0] |
 | evergreen | all sources stacked | warm + low GPP | earlier if temperature drives it | 72 (23) | 18% | +0.2 [-3.8, +4.2] |
 | evergreen | all sources stacked | cool + high GPP | earlier if GPP drives it | 85 (27) | 21% | +0.5 [-1.9, +2.9] |
+
+## E. Leaf age: does senescence follow leaf-out day for day? (deciduous forests)
+
+Within-site slope of the EOS date on the leaf-out date (SOS50), in days per day. A fixed leaf life span predicts a slope of 1; no link predicts 0. 'PhenoCam leaf-out' rows take the leaf-out date from the camera and the EOS from another instrument, so errors of one curve fit cannot produce the relation.
+
+| EOS from | leaf-out from | EOS level | model | n (sites) | slope [95% CI] | differs from 0 | differs from 1 | SD leaf-out / EOS / life span (days) |
+|---|---|---|---|---|---|---|---|---|
+| PhenoCam | PhenoCam | EOS90 | leaf-out alone | 116 (10) | +0.15 [-0.21, +0.51] | p = 0.413 | p = 0.000 | 6.5 / 13.0 / 14.1 |
+| PhenoCam | PhenoCam | EOS90 | + spring temperature and GPP | 104 (9) | +0.20 [-0.18, +0.57] | p = 0.304 | p = 0.000 | 6.4 / 13.5 / 14.5 |
+| PhenoCam | PhenoCam | EOS50 | leaf-out alone | 116 (10) | +0.05 [-0.43, +0.53] | p = 0.833 | p = 0.000 | 6.5 / 10.6 / 12.3 |
+| PhenoCam | PhenoCam | EOS50 | + spring temperature and GPP | 104 (9) | -0.00 [-0.56, +0.56] | p = 0.992 | p = 0.000 | 6.4 / 11.1 / 12.8 |
+| PhenoCam | PhenoCam | EOS10 | leaf-out alone | 116 (10) | -0.03 [-0.80, +0.74] | p = 0.941 | p = 0.009 | 6.5 / 13.5 / 15.1 |
+| PhenoCam | PhenoCam | EOS10 | + spring temperature and GPP | 104 (9) | -0.20 [-1.26, +0.85] | p = 0.707 | p = 0.026 | 6.4 / 14.2 / 15.8 |
+| tower NDVI | tower NDVI | EOS90 | leaf-out alone | 189 (18) | -0.05 [-0.35, +0.25] | p = 0.750 | p = 0.000 | 7.7 / 12.3 / 14.7 |
+| tower NDVI | tower NDVI | EOS90 | + spring temperature and GPP | 174 (17) | +0.01 [-0.23, +0.26] | p = 0.906 | p = 0.000 | 7.4 / 12.3 / 14.0 |
+| tower NDVI | tower NDVI | EOS50 | leaf-out alone | 189 (18) | -0.15 [-0.38, +0.08] | p = 0.192 | p = 0.000 | 7.7 / 9.6 / 13.0 |
+| tower NDVI | tower NDVI | EOS50 | + spring temperature and GPP | 174 (17) | -0.15 [-0.39, +0.09] | p = 0.232 | p = 0.000 | 7.4 / 9.6 / 12.4 |
+| tower NDVI | tower NDVI | EOS10 | leaf-out alone | 189 (18) | -0.29 [-0.64, +0.05] | p = 0.093 | p = 0.000 | 7.7 / 13.0 / 16.2 |
+| tower NDVI | tower NDVI | EOS10 | + spring temperature and GPP | 174 (17) | -0.35 [-0.68, -0.01] | p = 0.044 | p = 0.000 | 7.4 / 12.8 / 15.6 |
+| tower NDVI | PhenoCam | EOS90 | leaf-out alone | 37 (5) | +0.24 [-0.52, +1.01] | p = 0.538 | p = 0.052 | 7.2 / 10.2 / 11.5 |
+| tower NDVI | PhenoCam | EOS50 | leaf-out alone | 37 (5) | +0.07 [-0.39, +0.53] | p = 0.774 | p = 0.000 | 7.2 / 7.3 / 9.9 |
+| tower NDVI | PhenoCam | EOS10 | leaf-out alone | 37 (5) | -0.14 [-0.39, +0.11] | p = 0.279 | p = 0.000 | 7.2 / 10.5 / 13.3 |
+| satellite NDVI | satellite NDVI | EOS90 | leaf-out alone | 194 (26) | +0.26 [-0.04, +0.56] | p = 0.093 | p = 0.000 | 6.2 / 9.1 / 10.0 |
+| satellite NDVI | satellite NDVI | EOS90 | + spring temperature and GPP | 172 (23) | +0.26 [-0.14, +0.65] | p = 0.201 | p = 0.000 | 6.2 / 9.3 / 10.3 |
+| satellite NDVI | satellite NDVI | EOS50 | leaf-out alone | 194 (26) | +0.05 [-0.10, +0.19] | p = 0.522 | p = 0.000 | 6.2 / 5.3 / 7.9 |
+| satellite NDVI | satellite NDVI | EOS50 | + spring temperature and GPP | 172 (23) | +0.03 [-0.14, +0.20] | p = 0.753 | p = 0.000 | 6.2 / 5.5 / 8.1 |
+| satellite NDVI | satellite NDVI | EOS10 | leaf-out alone | 194 (26) | -0.14 [-0.39, +0.11] | p = 0.267 | p = 0.000 | 6.2 / 9.7 / 12.0 |
+| satellite NDVI | satellite NDVI | EOS10 | + spring temperature and GPP | 172 (23) | -0.17 [-0.50, +0.17] | p = 0.325 | p = 0.000 | 6.2 / 10.1 / 12.3 |
+| satellite NDVI | PhenoCam | EOS90 | leaf-out alone | 56 (8) | +0.22 [-0.08, +0.52] | p = 0.159 | p = 0.000 | 5.2 / 6.5 / 7.6 |
+| satellite NDVI | PhenoCam | EOS50 | leaf-out alone | 56 (8) | +0.03 [-0.26, +0.32] | p = 0.843 | p = 0.000 | 5.2 / 4.3 / 6.6 |
+| satellite NDVI | PhenoCam | EOS10 | leaf-out alone | 56 (8) | -0.17 [-0.65, +0.32] | p = 0.499 | p = 0.000 | 5.2 / 7.8 / 9.8 |
+| satellite NIRv | satellite NIRv | EOS90 | leaf-out alone | 224 (28) | -0.12 [-0.47, +0.23] | p = 0.494 | p = 0.000 | 5.8 / 10.7 / 12.5 |
+| satellite NIRv | satellite NIRv | EOS90 | + spring temperature and GPP | 197 (25) | -0.29 [-0.66, +0.07] | p = 0.119 | p = 0.000 | 5.7 / 10.7 / 12.3 |
+| satellite NIRv | satellite NIRv | EOS50 | leaf-out alone | 224 (28) | -0.18 [-0.42, +0.06] | p = 0.141 | p = 0.000 | 5.8 / 6.9 / 9.6 |
+| satellite NIRv | satellite NIRv | EOS50 | + spring temperature and GPP | 197 (25) | -0.26 [-0.48, -0.03] | p = 0.025 | p = 0.000 | 5.7 / 6.8 / 9.5 |
+| satellite NIRv | satellite NIRv | EOS10 | leaf-out alone | 224 (28) | -0.18 [-0.48, +0.12] | p = 0.240 | p = 0.000 | 5.8 / 10.9 / 12.8 |
+| satellite NIRv | satellite NIRv | EOS10 | + spring temperature and GPP | 197 (25) | -0.19 [-0.50, +0.11] | p = 0.215 | p = 0.000 | 5.7 / 11.0 / 12.9 |
+| satellite NIRv | PhenoCam | EOS90 | leaf-out alone | 58 (8) | +0.00 [-0.66, +0.66] | p = 0.992 | p = 0.003 | 5.1 / 12.0 / 13.1 |
+| satellite NIRv | PhenoCam | EOS50 | leaf-out alone | 58 (8) | +0.14 [-0.21, +0.50] | p = 0.423 | p = 0.000 | 5.1 / 5.5 / 7.0 |
+| satellite NIRv | PhenoCam | EOS10 | leaf-out alone | 58 (8) | +0.34 [+0.05, +0.62] | p = 0.020 | p = 0.000 | 5.1 / 7.6 / 8.2 |
+
+For comparison, EOS90 on SOS50 in the other plant types (same source for both dates): evergreen, tower NDVI +0.01; evergreen, satellite NDVI +0.20; evergreen, satellite NIRv +0.22*; grass/shrub, PhenoCam +0.32; grass/shrub, tower NDVI +0.19; grass/shrub, satellite NDVI +0.23*; grass/shrub, satellite NIRv +0.11.
